@@ -17,14 +17,14 @@ public class OptionTestCase {
     @Test
     public void option_test_success() {
 
-        final Option result = divide(4.0, 2);
-        assertEquals(2.0, (Double) result.some(), 0.1);
+        final Option<Double> result = divide(4.0, 2);
+        assertEquals(2.0, result.some(), 0.1);
     }
 
     @Test
     public void option_test_failure() {
 
-        final Option result = divide(4.0, 0);
+        final Option<Double> result = divide(4.0, 0);
         assertEquals(Option.none(), result);
 
     }
