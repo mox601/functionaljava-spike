@@ -23,7 +23,7 @@ public class StreamTestCase {
     @Test
     public void testName() throws Exception {
 
-        final Unit println = unlineShow(naturalShow).println(forever(naturalEnumerator, natural(3)
+        final Unit println = unlineShow(naturalShow).println(forever(naturalEnumerator, natural(1)
                 .some(), 2).takeWhile(new F<Natural, Boolean>() {
             @Override
             public Boolean f(Natural natural) {

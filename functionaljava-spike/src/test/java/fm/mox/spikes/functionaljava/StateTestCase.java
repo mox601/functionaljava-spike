@@ -81,6 +81,7 @@ public class StateTestCase {
         assertEquals(st1.run("Robin")._1(), "Batman");
         assertEquals(st1.run("Robin")._2(), "Hello Robin");
 
+
     }
 
     // https://github.com/functionaljava/functionaljava/blob/master/demo/src/main/java/fj/demo/StateDemo_VendingMachine.java
@@ -118,8 +119,6 @@ public class StateTestCase {
     }
 
     public enum Input {COIN, TURN}
-
-    ;
 
     public static class VendingMachine {
 
