@@ -6,12 +6,10 @@ import fj.P;
 import fj.P2;
 import fj.data.List;
 import fj.data.State;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
-import static fm.mox.spikes.functionaljava.StateTestCase.Input.*;
 import static fm.mox.spikes.functionaljava.StateTestCase.Input.COIN;
+import static fm.mox.spikes.functionaljava.StateTestCase.Input.TURN;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -20,8 +18,6 @@ import static org.testng.Assert.assertEquals;
  * @author Matteo Moci ( matteo (dot) moci (at) gmail (dot) com )
  */
 public class StateTestCase {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(StateTestCase.class);
 
     @Test
     public void testName() throws Exception {
@@ -192,5 +188,9 @@ public class StateTestCase {
                 return this;
             }
         }
+    }
+
+    private class Cache {
+
     }
 }

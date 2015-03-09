@@ -4,8 +4,6 @@ import fj.F;
 import fj.F2;
 import fj.Semigroup;
 import fj.data.Validation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertNotNull;
@@ -15,8 +13,6 @@ import static org.testng.Assert.assertTrue;
  * @author Matteo Moci ( matteo (dot) moci (at) gmail (dot) com )
  */
 public class ValidationTestCase {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ValidationTestCase.class);
 
     @Test
     public void testuser() throws Exception {

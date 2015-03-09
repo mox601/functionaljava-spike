@@ -9,13 +9,11 @@
     <packaging>jar</packaging>
 
     <name>functionaljava-spike</name>
-    <url>http://maven.apache.org</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
-        <javac.src.version>1.7</javac.src.version>
-        <javac.target.version>1.7</javac.target.version>
+        <javac.version>1.7</javac.version>
 
         <easymock.version>3.2</easymock.version>
         <guava.version>18.0</guava.version>
@@ -68,12 +66,6 @@
     </dependencyManagement>
 
     <dependencies>
-        <dependency>
-            <groupId>io.projectreactor</groupId>
-            <artifactId>reactor-core</artifactId>
-            <version>2.0.0.RC1</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.functionaljava</groupId>
             <artifactId>functionaljava</artifactId>
@@ -155,8 +147,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <source>${javac.src.version}</source>
-                    <target>${javac.target.version}</target>
+                    <source>${javac.version}</source>
+                    <target>${javac.version}</target>
                 </configuration>
             </plugin>
         </plugins>

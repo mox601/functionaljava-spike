@@ -10,8 +10,6 @@ import fj.control.parallel.Strategy;
 import fj.data.List;
 import fj.function.Effect1;
 import fj.function.Integers;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
 import java.text.MessageFormat;
@@ -22,8 +20,6 @@ import java.util.concurrent.Executors;
  * @author Matteo Moci ( matteo (dot) moci (at) gmail (dot) com )
  */
 public class PromiseTestCase {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(PromiseTestCase.class);
 
     private static int CUTOFF = 35;
 
