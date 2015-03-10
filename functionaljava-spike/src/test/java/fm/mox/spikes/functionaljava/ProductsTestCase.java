@@ -16,19 +16,14 @@ public class ProductsTestCase {
     public void testName() throws Exception {
 
         final P1<String> p = P.p("a string");
+
         assertEquals(p._1(), "a string");
 
         final P1<Integer> aSize = p.apply(new P1<F<String, Integer>>() {
             @Override
             public F<String, Integer> _1() {
 
-                return new F<String, Integer>() {
-                    @Override
-                    public Integer f(String s) {
-
-                        return s.length();
-                    }
-                };
+                return String::length;
             }
         });
 

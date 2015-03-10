@@ -1,7 +1,6 @@
 package fm.mox.spikes.functionaljava;
 
 import fj.F;
-import fj.F2;
 import fj.P;
 import fj.P2;
 import fj.data.List;
@@ -77,41 +76,40 @@ public class StateTestCase {
         assertEquals(st1.run("Robin")._1(), "Batman");
         assertEquals(st1.run("Robin")._2(), "Hello Robin");
 
-
     }
 
     // https://github.com/functionaljava/functionaljava/blob/master/demo/src/main/java/fj/demo/StateDemo_VendingMachine.java
     @Test
     public void testVendingMachine() throws Exception {
 
-        State<VendingMachine, VendingMachine> s = simulate(List.list(COIN, TURN, TURN, COIN, COIN,
-                TURN));
-        VendingMachine m = s.eval(new VendingMachine(true, 5, 0));
-        System.out.println(s.run(new VendingMachine(true, 5, 0)));
-        VendingMachine oracle = new VendingMachine(true, 3, 2);
-        System.out.printf("m1: %s, oracle: %s, equals: %b", m, oracle, m.equals(oracle));
+        final State<VendingMachine, VendingMachine> stateAfterSomeCoins = simulate(List.list(COIN,
+                TURN, TURN, COIN, COIN, TURN));
+        final VendingMachine vendingFive = new VendingMachine(true, 5, 0);
+        final VendingMachine vendingAfterFive = stateAfterSomeCoins.eval(vendingFive);
+        System.out.println(vendingAfterFive);
+
+        final VendingMachine s1 = new VendingMachine(true, 5, 0);
+        final P2<VendingMachine, VendingMachine> vendingMachineTuple = stateAfterSomeCoins.run(s1);
+        System.out.println(vendingMachineTuple);
+
+        final VendingMachine oracle = new VendingMachine(true, 3, 2);
+        System.out.printf("m1: %s, oracle: %s, equals: %b", vendingAfterFive, oracle,
+                vendingAfterFive.equals(oracle));
 
     }
 
     static State<VendingMachine, VendingMachine> simulate(List<Input> list) {
 
-        return list.foldLeft(
-                new F2<State<VendingMachine, VendingMachine>, Input, State<VendingMachine, VendingMachine>>() {
-                    @Override
-                    public State<VendingMachine, VendingMachine> f(
-                            State<VendingMachine, VendingMachine> vendingMachineVendingMachineState,
-                            final Input input) {
+        return list.foldLeft((vendingMachineVendingMachineState, input) -> {
 
-                        return vendingMachineVendingMachineState.map(
-                                new F<VendingMachine, VendingMachine>() {
-                                    @Override
-                                    public VendingMachine f(VendingMachine m) {
+            return vendingMachineVendingMachineState.map(new F<VendingMachine, VendingMachine>() {
+                @Override
+                public VendingMachine f(VendingMachine m) {
 
-                                        return m.next(input);
-                                    }
-                                });
-                    }
-                }, State.<VendingMachine>init());
+                    return m.next(input);
+                }
+            });
+        }, State.<VendingMachine>init());
     }
 
     public enum Input {COIN, TURN}
@@ -190,7 +188,4 @@ public class StateTestCase {
         }
     }
 
-    private class Cache {
-
-    }
 }

@@ -50,19 +50,7 @@ public class ValidationTestCase {
                     }
                 });
 
-        final F<String, F<Integer, User>> userBuilderFunc = new F<String, F<Integer, User>>() {
-            @Override
-            public F<Integer, User> f(final String s) {
-
-                return new F<Integer, User>() {
-                    @Override
-                    public User f(final Integer integer) {
-
-                        return new User(s, integer);
-                    }
-                };
-            }
-        };
+        final F<String, F<Integer, User>> userBuilderFunc = s -> integer -> new User(s, integer);
 
         return validatedName.accumulate(exceptionsSemigroup, validatedAge, userBuilderFunc);
 

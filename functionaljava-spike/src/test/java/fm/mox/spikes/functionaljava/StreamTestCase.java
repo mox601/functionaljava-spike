@@ -2,6 +2,7 @@ package fm.mox.spikes.functionaljava;
 
 import fj.F;
 import fj.data.Natural;
+import fj.data.Stream;
 import org.testng.annotations.Test;
 
 import static fj.Show.naturalShow;
@@ -18,15 +19,13 @@ public class StreamTestCase {
     @Test
     public void testName() throws Exception {
 
-        unlineShow(naturalShow).println(forever(naturalEnumerator, natural(1).some(), 2).takeWhile(
-                new F<Natural, Boolean>() {
-                    @Override
-                    public Boolean f(Natural natural) {
+        final Natural one = natural(1).some();
+        final Stream<Natural> forever = forever(naturalEnumerator, one, 2);
 
-                        return natural.intValue() < 100 ? Boolean.TRUE : Boolean.FALSE;
+        final F<Natural, Boolean> lessThan =
+                natural -> natural.intValue() < 100 ? Boolean.TRUE : Boolean.FALSE;
 
-                    }
-                }));
+        unlineShow(naturalShow).println(forever.takeWhile(lessThan));
 
     }
 }

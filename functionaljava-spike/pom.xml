@@ -13,7 +13,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
-        <javac.version>1.7</javac.version>
+        <javac.version>1.8</javac.version>
 
         <easymock.version>3.2</easymock.version>
         <guava.version>18.0</guava.version>

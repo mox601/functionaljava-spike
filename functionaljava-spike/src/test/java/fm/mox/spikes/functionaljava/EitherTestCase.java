@@ -41,7 +41,7 @@ public class EitherTestCase {
     public void testLiftLength() throws Exception {
 
         final String b = "b";
-        final P1<Either<Exception, Integer>> liftLenghtProduct =
+        final P1<Either<Exception, Integer>> liftLengthProduct =
                 new P1<Either<Exception, Integer>>() {
                     @Override
                     public Either<Exception, Integer> _1() {
@@ -55,21 +55,17 @@ public class EitherTestCase {
                     }
                 };
 
-        assertFalse(liftLenghtProduct._1().isLeft());
-        assertEquals((int) liftLenghtProduct._1().right().value(), 1);
+        assertFalse(liftLengthProduct._1().isLeft());
+        assertEquals((int) liftLengthProduct._1().right().value(), 1);
 
-        final F<String, Either<Exception, Integer>> liftedLengthF =
-                new F<String, Either<Exception, Integer>>() {
-                    @Override
-                    public Either<Exception, Integer> f(final String s) {
+        final F<String, Either<Exception, Integer>> liftedLengthF = s -> {
 
-                        try {
-                            return Either.right(length(s));
-                        } catch (Exception e) {
-                            return Either.left(e);
-                        }
-                    }
-                };
+            try {
+                return Either.right(length(s));
+            } catch (Exception e) {
+                return Either.left(e);
+            }
+        };
 
         assertTrue(liftedLengthF.f("a").isRight());
 
