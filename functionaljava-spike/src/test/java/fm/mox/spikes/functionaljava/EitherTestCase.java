@@ -101,4 +101,14 @@ public class EitherTestCase {
         }
     }
 
+    public static <A> Either<Exception, A> TryMethod(final A a) {
+
+        try {
+            return Either.right(a);
+        } catch (Exception e) {
+            return Either.left(e);
+        }
+
+    }
+
 }
