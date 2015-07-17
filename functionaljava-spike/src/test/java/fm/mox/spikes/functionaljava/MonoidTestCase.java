@@ -1,19 +1,12 @@
 package fm.mox.spikes.functionaljava;
 
-import fj.F;
 import fj.Monoid;
-import fj.P1;
 import fj.Semigroup;
-import fj.data.List;
-import fj.test.Gen;
-import fj.test.Property;
-import fj.test.Shrink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
 
 /**
  * @author Matteo Moci ( matteo (dot) moci (at) gmail (dot) com )

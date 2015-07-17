@@ -19,9 +19,10 @@ public class LensTestCase {
         final Address anAddress = new Address(aZipcode);
         final Person raj = new Person(anAddress);
 
-        final F<Person, Address> get = person -> person.address;
-        final F2<Address, Person, Person> set = (address, person) -> new Person(address);
-        final Lens<Person, Address> lens = Lens.lens(get, set);
+        final F<Person, Address> addressGetter = person -> person.address;
+        final F2<Address, Person, Person> addressSetterPerson = (address, person) -> new Person(
+                address);
+        final Lens<Person, Address> lens = Lens.lens(addressGetter, addressSetterPerson);
 
         final F<Address, String> getZipcode = address -> address.zipcode;
         //input1, input2, output

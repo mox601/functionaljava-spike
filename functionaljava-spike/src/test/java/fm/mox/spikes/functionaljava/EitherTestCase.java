@@ -23,7 +23,12 @@ public class EitherTestCase {
         assertEquals(1, (long) a.right().value());
         assertEquals("", b.left().value().getMessage());
 
+        final int aOrDefault = a.isLeft() ? 0 : a.right().value();
+        final int bOrDefault = b.isLeft() ? 0 : b.right().value();
+        final int multiplied = aOrDefault * bOrDefault;
+
         //compose results and exceptions
+
 
     }
 
@@ -41,24 +46,15 @@ public class EitherTestCase {
     public void testLiftLength() throws Exception {
 
         final String b = "b";
-        final P1<Either<Exception, Integer>> liftLengthProduct =
-                new P1<Either<Exception, Integer>>() {
-                    @Override
-                    public Either<Exception, Integer> _1() {
+        final P1<Either<Exception, Integer>> lazyLengthOfB = new LazyStringLength(b);
+        final P1<Either<Exception, Integer>> lazyLengthOfNull = new LazyStringLength(null);
 
-                        try {
-                            return Either.right(length(b));
-                        } catch (Exception e) {
-                            return Either.left(e);
-                        }
+        assertFalse(lazyLengthOfB._1().isLeft());
+        assertEquals((int) lazyLengthOfB._1().right().value(), 1);
 
-                    }
-                };
+        assertTrue(lazyLengthOfNull._1().isLeft());
 
-        assertFalse(liftLengthProduct._1().isLeft());
-        assertEquals((int) liftLengthProduct._1().right().value(), 1);
-
-        final F<String, Either<Exception, Integer>> liftedLengthF = s -> {
+        final F<String, Either<Exception, Integer>> eagerLiftedLengthF = s -> {
 
             try {
                 return Either.right(length(s));
@@ -67,13 +63,36 @@ public class EitherTestCase {
             }
         };
 
-        assertTrue(liftedLengthF.f("a").isRight());
+        assertTrue(eagerLiftedLengthF.f("a").isRight());
 
-        final Either<Exception, Integer> anException = liftedLengthF.f(null);
+        final Either<Exception, Integer> anException = eagerLiftedLengthF.f(null);
         assertTrue(anException.isLeft());
         assertNotNull(anException.left().value());
         final Exception value = anException.left().value();
         assertTrue(value instanceof NullPointerException);
+
+    }
+
+    //TODO to work with multiple kind of error nest them on the right Either<E1, Either<E2, A>>
+
+    //TODO show some patterns from https://tersesystems.com/2012/12/27/error-handling-in-scala/
+    /*
+    *
+        TL;DR
+        Throw Exception to signal unexpected failure in purely functional code.
+        Use Option to return optional values.
+        Use Option(possiblyNull) to avoid instances of Some(null).
+        Use Either to report expected failure.
+        Use Try rather than Either to return exceptions.
+        Use Try rather than a catch block for handling unexpected failure.
+        Use Try when working with Future.
+        Exposing Try in a public API has a similar effect as a checked exception, consider using exceptions instead.
+    * */
+
+    @Test
+    public void testSomething() throws Exception {
+
+        assertTrue(true);
 
     }
 
@@ -109,6 +128,26 @@ public class EitherTestCase {
             return Either.left(e);
         }
 
+    }
+
+    private static class LazyStringLength extends P1<Either<Exception, Integer>> {
+
+        private final String aString;
+
+        public LazyStringLength(final String aString) {
+
+            this.aString = aString;
+        }
+
+        @Override
+        public Either<Exception, Integer> _1() {
+
+            try {
+                return Either.right(length(aString));
+            } catch (Exception e) { // for npe
+                return Either.left(e);
+            }
+        }
     }
 
 }

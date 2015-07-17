@@ -56,20 +56,20 @@ public class GenTestCase {
 
                     }
                 };
-        Shrink<List<Integer>> c = Shrink.shrinkList(Shrink.shrinkInteger);
-        F<List<Integer>, P1<Property>> headEqualsLastOfReverse = integers -> new P1<Property>() {
-            @Override
-            public Property _1() {
+        final F<List<Integer>, P1<Property>> headEqualsLastOfReverse =
+                integers -> new P1<Property>() {
+                    @Override
+                    public Property _1() {
 
-                final Option<Integer> head = integers.toOption();
-                final Option<Integer> last = integers.reverse().toOption();
+                        final Option<Integer> head = integers.toOption();
+                        final Option<Integer> last = integers.reverse().toOption();
 
-                //TODO fixit
-                final boolean equals = true;
+                        //TODO fixit
+                        final boolean equals = true;
 
-                return Property.prop(equals);
-            }
-        };
+                        return Property.prop(equals);
+                    }
+                };
 
         final Property and = Property.forall(intList, shrinkList, reversedTwiceEqualsOriginal).and(
                 Property.forall(intList, shrinkList, headEqualsLastOfReverse));

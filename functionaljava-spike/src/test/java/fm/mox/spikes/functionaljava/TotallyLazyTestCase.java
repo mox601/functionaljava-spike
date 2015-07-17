@@ -1,6 +1,5 @@
 package fm.mox.spikes.functionaljava;
 
-import com.googlecode.totallylazy.Function;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
 import org.slf4j.Logger;
@@ -17,15 +16,9 @@ public class TotallyLazyTestCase {
     @Test
     public void testName() throws Exception {
 
-        final Sequence<Integer> integers = Sequences.sequence(1, 2, 3, 4).take(2).forEach(
-                new Function<Integer, String>() {
-                    @Override
-                    public String call(Integer integer) throws Exception {
-
-                        return integer.toString();
-                    }
-                });
-        integers.forEach(integer -> LOGGER.info(integer.toString()));
+        final Sequence<String> integers = Sequences.sequence(1, 2, 3, 4).take(2).map(
+                Object::toString);
+        integers.forEach(LOGGER::info);
 
     }
 }

@@ -59,22 +59,17 @@ public class StateTestCase {
     @Test
     public void testGreeter() throws Exception {
 
-        final State<String, String> st1 = State.<String>init().flatMap(
-                new F<String, State<String, String>>() {
+        final State<String, String> st1 = State.<String>init().flatMap(s -> State.unit(
+                new F<String, P2<String, String>>() {
                     @Override
-                    public State<String, String> f(String s) {
+                    public P2<String, String> f(String s) {
 
-                        return State.unit(new F<String, P2<String, String>>() {
-                            @Override
-                            public P2<String, String> f(String s) {
-
-                                return P.p("Batman", "Hello " + s);
-                            }
-                        });
+                        return P.p("Batman", "Hello " + s);
                     }
-                });
-        assertEquals(st1.run("Robin")._1(), "Batman");
-        assertEquals(st1.run("Robin")._2(), "Hello Robin");
+                }));
+        final P2<String, String> robin = st1.run("Robin");
+        assertEquals(robin._1(), "Batman");
+        assertEquals(robin._2(), "Hello Robin");
 
     }
 
@@ -84,8 +79,9 @@ public class StateTestCase {
 
         final State<VendingMachine, VendingMachine> stateAfterSomeCoins = simulate(List.list(COIN,
                 TURN, TURN, COIN, COIN, TURN));
-        final VendingMachine vendingFive = new VendingMachine(true, 5, 0);
-        final VendingMachine vendingAfterFive = stateAfterSomeCoins.eval(vendingFive);
+        final VendingMachine vendingWithFiveThingsNoCoins = new VendingMachine(true, 5, 0);
+        final VendingMachine vendingAfterFive = stateAfterSomeCoins.eval(
+                vendingWithFiveThingsNoCoins);
         System.out.println(vendingAfterFive);
 
         final VendingMachine s1 = new VendingMachine(true, 5, 0);
@@ -98,7 +94,7 @@ public class StateTestCase {
 
     }
 
-    static State<VendingMachine, VendingMachine> simulate(List<Input> list) {
+    static State<VendingMachine, VendingMachine> simulate(final List<Input> list) {
 
         return list.foldLeft((vendingMachineVendingMachineState, input) -> {
 
