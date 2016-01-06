@@ -23,6 +23,7 @@
         <javac.version>1.8</javac.version>
 
         <easymock.version>3.2</easymock.version>
+        <functionaljava.version>4.4.1</functionaljava.version>
         <guava.version>18.0</guava.version>
         <joda-time.version>2.8.1</joda-time.version>
         <log4j.version>1.2.17</log4j.version>
@@ -76,13 +77,19 @@
         <dependency>
             <groupId>org.functionaljava</groupId>
             <artifactId>functionaljava</artifactId>
-            <version>4.4</version>
+            <version>${functionaljava.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.functionaljava</groupId>
+            <artifactId>functionaljava-java8</artifactId>
+            <version>${functionaljava.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.functionaljava</groupId>
             <artifactId>functionaljava-quickcheck</artifactId>
-            <version>4.4</version>
+            <version>${functionaljava.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
