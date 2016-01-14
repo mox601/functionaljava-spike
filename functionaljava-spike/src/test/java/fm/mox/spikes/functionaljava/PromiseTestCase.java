@@ -56,6 +56,7 @@ public class PromiseTestCase {
         System.out.println("Calculating Fibonacci sequence in parallel...");
         Promise.join(su, spi.parMap(fib, List.range(0, 46)).map(Promise.<Integer>sequence(su))).to(
                 out);
+        Thread.sleep(10_000L);
 
     }
 

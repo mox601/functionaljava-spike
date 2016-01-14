@@ -30,25 +30,22 @@ public class StateTestCase {
     @Test
     public void testUnit() throws Exception {
 
-        final State<Object, String> value = State.unit(new F<Object, P2<Object, String>>() {
-            @Override
-            public P2<Object, String> f(final Object o) {
+        final State<Object, String> value = State.unit(o -> {
 
-                //TUPLE
-                return new P2<Object, String>() {
-                    @Override
-                    public Object _1() {
+            //TUPLE
+            return new P2<Object, String>() {
+                @Override
+                public Object _1() {
 
-                        return o;
-                    }
+                    return o;
+                }
 
-                    @Override
-                    public String _2() {
+                @Override
+                public String _2() {
 
-                        return "value";
-                    }
-                };
-            }
+                    return "value";
+                }
+            };
         });
         final String eval = value.eval(null);
         assertEquals(eval, "value");

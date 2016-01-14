@@ -2,8 +2,16 @@ package fm.mox.spikes.functionaljava;
 
 import fj.F;
 import fj.P1;
+import fj.Try;
 import fj.data.Either;
+import fj.data.Validation;
+import fj.function.Try0;
 import org.testng.annotations.Test;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
@@ -29,7 +37,23 @@ public class EitherTestCase {
 
         //compose results and exceptions
 
+        //Try from http://danielwestheide.com/blog/2012/12/26/the-neophytes-guide-to-scala-part-6-error-handling-with-try.html
 
+
+        parseURL("");
+
+    }
+
+    private P1<Validation<MalformedURLException, URL>> parseURL(String s) {
+
+        return Try.f(() -> {
+            return new URL(s);
+        });
+    }
+
+    private P1<Validation<IOException, URLConnection>> openConnection(URL u) {
+
+        return Try.f((Try0<URLConnection, IOException>) u::openConnection);
     }
 
     @Test
