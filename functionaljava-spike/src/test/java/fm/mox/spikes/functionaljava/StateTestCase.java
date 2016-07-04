@@ -95,13 +95,8 @@ public class StateTestCase {
 
         return list.foldLeft((vendingMachineVendingMachineState, input) -> {
 
-            return vendingMachineVendingMachineState.map(new F<VendingMachine, VendingMachine>() {
-                @Override
-                public VendingMachine f(VendingMachine m) {
+            return vendingMachineVendingMachineState.map(m -> m.next(input));
 
-                    return m.next(input);
-                }
-            });
         }, State.<VendingMachine>init());
     }
 

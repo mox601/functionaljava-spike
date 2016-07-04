@@ -23,8 +23,9 @@
         <javac.version>1.8</javac.version>
 
         <easymock.version>3.4</easymock.version>
-        <functionaljava.version>4.4.1</functionaljava.version>
+        <functionaljava.version>4.6</functionaljava.version>
         <guava.version>19.0</guava.version>
+        <durian.version>3.4.0</durian.version>
         <joda-time.version>2.9.1</joda-time.version>
         <log4j.version>1.2.17</log4j.version>
         <slf4j-api.version>1.7.7</slf4j-api.version>
@@ -70,6 +71,11 @@
                 <artifactId>easymock</artifactId>
                 <version>${easymock.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.diffplug.durian</groupId>
+                <artifactId>durian</artifactId>
+                <version>${durian.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -95,7 +101,7 @@
         <dependency>
             <groupId>com.jason-goodwin</groupId>
             <artifactId>better-monads</artifactId>
-            <version>0.2.1</version>
+            <version>0.4.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -162,9 +168,14 @@
             <artifactId>easymock</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.diffplug.durian</groupId>
+            <artifactId>durian</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
+
         <testResources>
             <testResource>
                 <directory>src/test/resources</directory>
