@@ -1,12 +1,10 @@
 package fm.mox.spikes.functionaljava;
 
-import fj.F;
-import fj.F2;
 import fj.Semigroup;
 import fj.data.Validation;
+import lombok.Value;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 /**
@@ -14,7 +12,7 @@ import static org.testng.Assert.assertTrue;
  */
 public class ValidationTestCase {
 
-    @Test
+    @Test (expectedExceptions = Exception.class)
     public void testuser() throws Exception {
 
         final Validation<Exception, User> succeededValidation = makeUser("abc", 1);
@@ -28,43 +26,26 @@ public class ValidationTestCase {
 
         final Validation<Exception, User> bothFailed = makeUser("", 189);
         assertTrue(bothFailed.isFail());
-        assertNotNull(bothFailed.fail().getMessage());
-
+        throw bothFailed.fail();
     }
 
     private static Validation<Exception, User> makeUser(final String name, final int age) {
 
-        final Validation<Exception, String> validatedName = Validation.condition(
-                name != null && !name.equals(""), new Exception(
-                        "name must be not null and not empty"), name);
+        final Semigroup<Exception> exceptions = Semigroup
+                .semigroup((Exception e, Exception e2) -> new Exception(e.getMessage() + ", " + e2.getMessage()));
 
-        final Validation<Exception, Integer> validatedAge = Validation.condition(
-                age > 0 && age < 120, new Exception("age must be between 0 and 120"), age);
-
-        final Semigroup<Exception> exceptionsSemigroup = Semigroup.semigroup(
-                new F2<Exception, Exception, Exception>() {
-                    @Override
-                    public Exception f(Exception e, Exception e2) {
-
-                        return new Exception(e.getMessage() + ", " + e2.getMessage());
-                    }
-                });
-
-        final F<String, F<Integer, User>> userBuilderFunc = s -> integer -> new User(s, integer);
-
-        return validatedName.accumulate(exceptionsSemigroup, validatedAge, userBuilderFunc);
+        return Validation.condition(name != null && !name.equals(""), new Exception("name must be not null and not empty"), name)
+                .accumulate(
+                        exceptions,
+                        Validation.condition(age > 0 && age < 120, new Exception("age must be between 0 and 120"), age),
+                        (String s) -> integer -> new User(s, integer)
+                );
 
     }
 
+    @Value
     private static class User {
-
         private final String name;
         private final int age;
-
-        public User(String name, int age) {
-
-            this.name = name;
-            this.age = age;
-        }
     }
 }

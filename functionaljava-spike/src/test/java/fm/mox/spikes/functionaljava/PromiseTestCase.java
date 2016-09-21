@@ -8,8 +8,9 @@ import fj.control.parallel.Actor;
 import fj.control.parallel.Promise;
 import fj.control.parallel.Strategy;
 import fj.data.List;
-import fj.function.Effect1;
 import fj.function.Integers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
 import java.text.MessageFormat;
@@ -20,6 +21,8 @@ import java.util.concurrent.Executors;
  * @author Matteo Moci ( matteo (dot) moci (at) gmail (dot) com )
  */
 public class PromiseTestCase {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PromiseTestCase.class);
 
     private static int CUTOFF = 35;
 
@@ -32,15 +35,12 @@ public class PromiseTestCase {
         final Strategy<Promise<Integer>> spi = Strategy.executorStrategy(pool);
 
         // This actor performs output and detects the termination condition.
-        final Actor<List<Integer>> out = Actor.actor(su, new Effect1<List<Integer>>() {
-            @Override
-            public void f(final List<Integer> fs) {
+        final Actor<List<Integer>> out = Actor.actor(su, fs -> {
 
-                for (final P2<Integer, Integer> p : fs.zipIndex()) {
-                    System.out.println(MessageFormat.format("n={0} => {1}", p._2(), p._1()));
-                }
-                pool.shutdown();
+            for (final P2<Integer, Integer> p : fs.zipIndex()) {
+                LOGGER.info(MessageFormat.format("n={0} => {1}", p._2(), p._1()));
             }
+            pool.shutdown();
         });
 
         // A parallel recursive Fibonacci function
@@ -54,7 +54,7 @@ public class PromiseTestCase {
         };
 
         System.out.println("Calculating Fibonacci sequence in parallel...");
-        Promise.join(su, spi.parMap(fib, List.range(0, 46)).map(Promise.<Integer>sequence(su))).to(
+        Promise.join(su, spi.parMap(fib, List.range(0, 46)).map(Promise.sequence(su))).to(
                 out);
         Thread.sleep(10_000L);
 

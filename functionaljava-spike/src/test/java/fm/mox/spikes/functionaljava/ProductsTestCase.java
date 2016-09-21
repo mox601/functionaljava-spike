@@ -1,6 +1,5 @@
 package fm.mox.spikes.functionaljava;
 
-import fj.F;
 import fj.P;
 import fj.P1;
 import org.testng.annotations.Test;
@@ -19,13 +18,7 @@ public class ProductsTestCase {
 
         assertEquals(p._1(), "a string");
 
-        final P1<Integer> aSize = p.apply(new P1<F<String, Integer>>() {
-            @Override
-            public F<String, Integer> _1() {
-
-                return String::length;
-            }
-        });
+        final P1<Integer> aSize = p.apply(P.p(String::length));
 
         assertEquals(aSize._1().intValue(), 8);
 

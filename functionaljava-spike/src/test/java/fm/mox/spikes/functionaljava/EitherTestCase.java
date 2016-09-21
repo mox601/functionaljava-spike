@@ -4,6 +4,7 @@ import fj.F;
 import fj.P1;
 import fj.Try;
 import fj.data.Either;
+import fj.data.List;
 import fj.data.Validation;
 import fj.function.Try0;
 import org.testng.annotations.Test;
@@ -39,26 +40,20 @@ public class EitherTestCase {
 
         //Try from http://danielwestheide.com/blog/2012/12/26/the-neophytes-guide-to-scala-part-6-error-handling-with-try.html
 
-
         parseURL("");
 
     }
 
     private P1<Validation<MalformedURLException, URL>> parseURL(String s) {
-
-        return Try.f(() -> {
-            return new URL(s);
-        });
+        return Try.f(() -> new URL(s));
     }
 
     private P1<Validation<IOException, URLConnection>> openConnection(URL u) {
-
         return Try.f((Try0<URLConnection, IOException>) u::openConnection);
     }
 
     @Test
     public void catching_other_people_exceptions() {
-
         final Either<Exception, Integer> result = divide(4, 2);
         final Either<Exception, Integer> failure = divide(4, 0);
         assertEquals((long) 2, (long) result.right().value());
@@ -69,17 +64,17 @@ public class EitherTestCase {
     @Test
     public void testLiftLength() throws Exception {
 
-        final String b = "b";
-        final P1<Either<Exception, Integer>> lazyLengthOfB = new LazyStringLength(b);
-        final P1<Either<Exception, Integer>> lazyLengthOfNull = new LazyStringLength(null);
+        final F<String, Either<Exception, Integer>> stringEitherF =
+                new ExceptionWrapper<String, Integer>().f(String::length);
 
-        assertFalse(lazyLengthOfB._1().isLeft());
-        assertEquals((int) lazyLengthOfB._1().right().value(), 1);
+        final Either<Exception, Integer> bLength = stringEitherF.f("b");
 
-        assertTrue(lazyLengthOfNull._1().isLeft());
+        assertFalse(bLength.isLeft());
+        assertEquals((int) bLength.right().value(), 1);
+
+        assertTrue(stringEitherF.f(null).isLeft());
 
         final F<String, Either<Exception, Integer>> eagerLiftedLengthF = s -> {
-
             try {
                 return Either.right(length(s));
             } catch (Exception e) {
@@ -94,6 +89,12 @@ public class EitherTestCase {
         assertNotNull(anException.left().value());
         final Exception value = anException.left().value();
         assertTrue(value instanceof NullPointerException);
+
+        final List<Either<Exception, Integer>> eithers = List.arrayList("a", "b", null).map(stringEitherF);
+
+        final String s = eithers.map(Either::toString).foldLeft1((s1, s2) -> s1 + "," + s2);
+
+        System.out.println(s);
 
     }
 
@@ -113,65 +114,53 @@ public class EitherTestCase {
         Exposing Try in a public API has a similar effect as a checked exception, consider using exceptions instead.
     * */
 
-    @Test
-    public void testSomething() throws Exception {
-
-        assertTrue(true);
-
-    }
-
     private static Integer length(final String a) {
-
         return a.length();
     }
 
     private static Either<RuntimeException, Integer> doThis(int i) {
-
+        Either<RuntimeException, Integer> either;
         if (i % 2 == 0) {
-            return Either.right(1);
+            either = Either.right(1);
         } else {
-            return Either.left(new RuntimeException(""));
+            either = Either.left(new RuntimeException(""));
         }
-
+        return either;
     }
 
     public static Either<Exception, Integer> divide(int x, int y) {
-
+        Either<Exception, Integer> either;
         try {
-            return Either.right(x / y);
+            final int div = x / y;
+            either = Either.right(div);
         } catch (Exception e) {
-            return Either.left(e);
+            either = Either.left(e);
         }
+        return either;
     }
 
-    public static <A> Either<Exception, A> TryMethod(final A a) {
-
+    public static <A> Either<Exception, A> tryMethod(final A a) {
         try {
             return Either.right(a);
         } catch (Exception e) {
             return Either.left(e);
         }
-
     }
 
-    private static class LazyStringLength extends P1<Either<Exception, Integer>> {
-
-        private final String aString;
-
-        public LazyStringLength(final String aString) {
-
-            this.aString = aString;
-        }
+    private static class ExceptionWrapper<IN, OUT> implements F<F<IN, OUT>, F<IN, Either<Exception, OUT>>> {
 
         @Override
-        public Either<Exception, Integer> _1() {
-
-            try {
-                return Either.right(length(aString));
-            } catch (Exception e) { // for npe
-                return Either.left(e);
-            }
+        public F<IN, Either<Exception, OUT>> f(final F<IN, OUT> aFn) {
+            return in -> {
+                Either<Exception, OUT> outEither;
+                try {
+                    final OUT output = aFn.f(in);
+                    outEither = Either.right(output);
+                } catch (final Exception e) { // for npe
+                    outEither = Either.left(e);
+                }
+                return outEither;
+            };
         }
     }
-
 }
