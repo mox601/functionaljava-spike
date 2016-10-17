@@ -16,10 +16,7 @@ public class ShowTestCase {
 
     @Test
     public void testName() throws Exception {
-
         final Show<Integer> integerShow = Show.showS(Object::toString);
-
         assertEquals(integerShow.showS(1), "1");
-
     }
 }

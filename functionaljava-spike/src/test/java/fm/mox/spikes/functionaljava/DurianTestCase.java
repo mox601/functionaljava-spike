@@ -14,6 +14,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author Matteo Moci ( matteo (dot) moci (at) gmail (dot) com )
@@ -27,8 +29,8 @@ public class DurianTestCase {
     public void testLeft() {
 
         Either<TimeUnit, String> left = Either.createLeft(TimeUnit.DAYS);
-        Assert.assertTrue(left.isLeft());
-        Assert.assertFalse(left.isRight());
+        assertTrue(left.isLeft());
+        assertFalse(left.isRight());
         assertEquals(TimeUnit.DAYS, left.getLeft());
         assertEquals(Optional.of(TimeUnit.DAYS), left.asOptionalLeft());
         assertEquals(Optional.empty(), left.asOptionalRight());
@@ -50,8 +52,8 @@ public class DurianTestCase {
     public void testRight() {
 
         Either<TimeUnit, String> right = Either.createRight("word");
-        Assert.assertTrue(right.isRight());
-        Assert.assertFalse(right.isLeft());
+        assertTrue(right.isRight());
+        assertFalse(right.isLeft());
         assertEquals("word", right.getRight());
         assertEquals(Optional.of("word"), right.asOptionalRight());
         assertEquals(Optional.empty(), right.asOptionalLeft());

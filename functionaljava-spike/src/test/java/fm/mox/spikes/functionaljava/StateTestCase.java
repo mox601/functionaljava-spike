@@ -5,6 +5,8 @@ import fj.P2;
 import fj.data.List;
 import fj.data.State;
 import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.log4j.helpers.AbsoluteTimeDateFormat;
 import org.testng.annotations.Test;
 
 import static fm.mox.spikes.functionaljava.StateTestCase.Input.COIN;
@@ -16,60 +18,55 @@ import static org.testng.Assert.assertEquals;
  *
  * @author Matteo Moci ( matteo (dot) moci (at) gmail (dot) com )
  */
+@Slf4j
 public class StateTestCase {
 
     @Test
     public void testName() throws Exception {
-
         final State<Object, String> value = State.constant("value");
-        final String eval = value.eval(null);
-        assertEquals(eval, "value");
-
+        assertEquals(value.eval(null), "value");
+        assertEquals(value.eval(1), "value");
+        assertEquals(value.eval(1L), "value");
+        assertEquals(value.eval(new AbsoluteTimeDateFormat()), "value");
     }
 
     @Test
     public void testUnit() throws Exception {
-
         final State<Object, String> value = State.unit(o -> P.p(o, "value"));
         final String eval = value.eval(null);
         assertEquals(eval, "value");
-
     }
 
     // https://github.com/functionaljava/functionaljava/blob/master/demo/src/main/java/fj/demo/StateDemo_Greeter.java
     @Test
     public void testGreeter() throws Exception {
-
         final State<String, String> st1 = State.<String>init().flatMap(s -> State.unit(s1 -> P.p("Batman", "Hello " + s1)));
         final P2<String, String> robin = st1.run("Robin");
         assertEquals(robin._1(), "Batman");
         assertEquals(robin._2(), "Hello Robin");
-
     }
 
     // https://github.com/functionaljava/functionaljava/blob/master/demo/src/main/java/fj/demo/StateDemo_VendingMachine.java
     @Test
     public void testVendingMachine() throws Exception {
-
-        final State<VendingMachine, VendingMachine> stateAfterSomeCoins = simulate(List.list(COIN,
+        final State<VendingMachine, VendingMachine> stateAfterSomeCoins = simulate(State.init(), List.list(COIN,
                 TURN, TURN, COIN, COIN, TURN));
-        final VendingMachine vendingWithFiveThingsNoCoins = new VendingMachine(true, 5, 0);
-        final VendingMachine vendingAfterFive = stateAfterSomeCoins.eval(
-                vendingWithFiveThingsNoCoins);
-        System.out.println(vendingAfterFive);
+        final VendingMachine lockedWithFiveThingsNoCoins = new VendingMachine(true, 5, 0);
+        final VendingMachine vendingAfterFive = stateAfterSomeCoins.eval(lockedWithFiveThingsNoCoins);
+        log.info(vendingAfterFive.toString());
 
-        final VendingMachine s1 = new VendingMachine(true, 5, 0);
-        final P2<VendingMachine, VendingMachine> vendingMachineTuple = stateAfterSomeCoins.run(s1);
-        System.out.println(vendingMachineTuple);
+        final VendingMachine lockedWithFiveItemsNoCoins = new VendingMachine(true, 5, 0);
+        final P2<VendingMachine, VendingMachine> vendingMachineTuple = stateAfterSomeCoins.run(lockedWithFiveItemsNoCoins);
+        log.info(vendingMachineTuple.toString());
 
         final VendingMachine oracle = new VendingMachine(true, 3, 2);
-        System.out.printf("m1: %s, oracle: %s, equals: %b", vendingAfterFive, oracle,
+        log.info("m1: %s, oracle: %s, equals: %b", vendingAfterFive, oracle,
                 vendingAfterFive.equals(oracle));
-
     }
 
-    static State<VendingMachine, VendingMachine> simulate(final List<Input> list) {
-        return list.foldLeft((vendingMachineVendingMachineState, input) -> vendingMachineVendingMachineState.map(m -> m.next(input)), State.<VendingMachine>init());
+    static State<VendingMachine, VendingMachine> simulate(final State<VendingMachine, VendingMachine> beginningValue,
+                                                          final List<Input> list) {
+        return list.foldLeft((vendingMachineState, input) -> vendingMachineState.map(m -> m.next(input)), beginningValue);
     }
 
     public enum Input {COIN, TURN}
@@ -135,5 +132,4 @@ public class StateTestCase {
             return circuitInNewState;
         }
     }
-
 }

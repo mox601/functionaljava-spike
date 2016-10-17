@@ -15,10 +15,8 @@ public class TotallyLazyTestCase {
 
     @Test
     public void testName() throws Exception {
-
         final Sequence<String> integers = Sequences.sequence(1, 2, 3, 4).take(2).map(
                 Object::toString);
         integers.forEach(LOGGER::info);
-
     }
 }

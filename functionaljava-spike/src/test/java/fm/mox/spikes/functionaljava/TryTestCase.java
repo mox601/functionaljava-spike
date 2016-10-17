@@ -12,7 +12,6 @@ public class TryTestCase {
 
     @Test
     public void testTry() {
-
         Validation<Exception, Integer> v1 = getExternalValue(2);
         if (v1.isFail()) {
             System.out.println(v1.fail().getMessage());
@@ -22,7 +21,6 @@ public class TryTestCase {
     }
 
     private static Validation<Exception, Integer> getExternalValue(Integer i) {
-
         Try1<Integer, Integer, Exception> t = j -> {
             if (j == 0) {
                 throw new NullPointerException("npe");

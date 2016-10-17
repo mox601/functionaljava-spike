@@ -21,26 +21,21 @@ public class StreamTestCase {
 
     @Test
     public void testName() throws Exception {
-
         final Natural one = natural(1).some();
         final Stream<Natural> forever = forever(naturalEnumerator, one, 2);
-
         final F<Natural, Boolean> lessThan =
                 natural -> natural.intValue() < 100 ? Boolean.TRUE : Boolean.FALSE;
 
         unlineShow(naturalShow).println(forever.takeWhile(lessThan));
-
     }
 
     @Test
     public void testAStream() throws Exception {
-
         final Iterable<Integer> anIterable = List.range(1, 10);
         final Stream<String> fromList = iterableStream(anIterable)
                 .cons(100)
                 .intersperse(101)
                 .map(Object::toString);
         unlineShow(stringShow).println(fromList);
-
     }
 }

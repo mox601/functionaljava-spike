@@ -3,6 +3,7 @@ package fm.mox.spikes.functionaljava;
 import fj.F;
 import fj.F1Functions;
 import fj.F2;
+import lombok.Value;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;
@@ -84,24 +85,13 @@ public class LensTestCase {
 
     }
 
+    @Value
     private static class Address {
-
         private final String zipcode;
-
-        public Address(String zipcode) {
-
-            this.zipcode = zipcode;
-
-        }
     }
 
+    @Value
     private static class Person {
-
         private final Address address;
-
-        public Person(Address address) {
-
-            this.address = address;
-        }
     }
 }
