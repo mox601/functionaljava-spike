@@ -1,53 +1,56 @@
 package fm.mox.spikes.functionaljava;
 
 import fj.F;
-import fj.P;
 import fj.P1;
 import fj.data.List;
 import fj.data.Option;
-import fj.data.Stream;
 import fj.test.CheckResult;
 import fj.test.Gen;
 import fj.test.Property;
 import fj.test.Shrink;
 import lombok.Value;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.testng.annotations.Test;
 
+import static fj.P.p;
+import static fj.test.Arbitrary.arbCharacterBoundaries;
+import static fj.test.Arbitrary.arbList;
+import static fj.test.Arbitrary.arbString;
+import static fj.test.Gen.choose;
+import static fj.test.Gen.listOf;
+import static fj.test.Property.forall;
+import static fj.test.Property.prop;
+import static fj.test.Shrink.shrinkInteger;
+import static fj.test.Shrink.shrinkList;
+import static fj.test.Shrink.shrinkP2;
+import static fj.test.Shrink.shrinkString;
 import static org.testng.Assert.assertTrue;
 
 /**
  * @author Matteo Moci ( matteo (dot) moci (at) gmail (dot) com )
  */
+@Slf4j
 public class GenTestCase {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GenTestCase.class);
+    static Shrink<User> userShrink = shrinkP2(shrinkString, shrinkString).map(p2 -> new User(p2._1(), p2._2()), u -> p(u.getUsername(), u.getPassword()));
 
-    @Test(enabled = false)
+    static final Gen<String> arbStringBoundaries = arbList(arbCharacterBoundaries).map(List::asString);
+
+    static Gen<User> arbUser = arbStringBoundaries.filter((String s) -> s.length() > 0 && s.length() < 10)
+            .bind(arbString.filter(p -> p.length() > 2 && p.length() < 10), username -> password -> new User(username, password));
+
+    @Test
     public void givenGeneratedListAllItemsAreLtEq100() throws Exception {
-
         final F<List<Integer>, P1<Property>> allLtEq =
-                integers -> P.p(Property.prop(integers.forall(integer -> integer <= 100)));
-
-        final Shrink<List<Integer>> listShrink = Shrink.shrinkList(Shrink.shrinkInteger);
-
-        final Property forall = Property.forall(Gen.listOf(Gen.choose(0, 100)), listShrink, allLtEq);
-
+                integers -> p(prop(integers.forall(integer -> integer <= 100)));
+        final Property forall = forall(listOf(choose(0, 100)), shrinkList(shrinkInteger), allLtEq);
         assertTrue(forall.check().isPassed());
-
     }
 
-    @Test(enabled = false)
+    @Test
     public void testFPScala() throws Exception {
-
-        final Gen<List<Integer>> ints = Gen.listOf(Gen.choose(0, 100));
-
-        final Shrink<List<Integer>> shrinkListInts = Shrink.shrinkList(Shrink.shrinkInteger);
-
         final F<List<Integer>, P1<Property>> reversedTwiceEqualsOriginal =
-                integers -> P.p(Property.prop(integers.reverse().reverse().equals(integers)));
-
+                integers -> p(prop(integers.reverse().reverse().equals(integers)));
         final F<List<Integer>, P1<Property>> headEqualsLastOfReverse =
                 integers -> {
                     boolean isHeadEqualsToLastOfReverse = true;
@@ -57,52 +60,32 @@ public class GenTestCase {
                         final Integer lastOfReverse = integers.reverse().last();
                         isHeadEqualsToLastOfReverse = head.equals(lastOfReverse);
                     }
-                    return P.p(Property.prop(isHeadEqualsToLastOfReverse));
+                    return p(prop(isHeadEqualsToLastOfReverse));
                 };
-
-        final Property reversedTwiceProp = Property.forall(ints, shrinkListInts, reversedTwiceEqualsOriginal);
-        final Property oppositeEqualsProp = Property.forall(ints, shrinkListInts, headEqualsLastOfReverse);
-
-        final Property and = reversedTwiceProp.and(oppositeEqualsProp);
-
-        final CheckResult check = and.check();
-        LOGGER.info(check.exception().toString());
+        final Gen<Integer> choose = choose(0, 100);
+        final Property reversedTwiceProp = forall(listOf(choose), shrinkList(shrinkInteger), reversedTwiceEqualsOriginal);
+        final Property oppositeEqualsProp = forall(listOf(choose), shrinkList(shrinkInteger), headEqualsLastOfReverse);
+        final CheckResult check = reversedTwiceProp.and(oppositeEqualsProp).check(0, 100);
         assertTrue(check.isPassed());
-
     }
 
-    @Test(enabled = false)
+    //TODO how to test a FSM?
+    /* state, transitions, ... */
+
+    @Test
     public void testName() throws Exception {
-
-        final Gen<User> userGen = Gen.gen(integer -> rand -> {
-            final int nameLength = rand.choose(0, 20);
-            final StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < nameLength; i++) {
-                //TODO random character
-                final String str = "a";
-                sb.append(str);
-            }
-            final String name = sb.toString();
-            return new User(name);
-        });
-
-        final Shrink<User> shrinkUser = Shrink.shrink(Stream::single);
-
-        final F<User, P1<Property>> prp = user -> P.p(Property.prop(user.getName().length() < 10));
-
-        final Property oppositeEqualsProp = Property.forall(userGen, shrinkUser, prp);
-
-        final CheckResult check = oppositeEqualsProp.check();
-
+        final Property oppositeEqualsProp = forall(arbUser, userShrink, user -> p(prop(user.count() < 10)));
+        final CheckResult check = oppositeEqualsProp.check(100, 500, 4, 1000);
         assertTrue(check.isPassed());
-
     }
 
     @Value
     public static class User {
-        private final String name;
+        private final String username;
+        private final String password;
+
         public int count() {
-            return this.name.length();
+            return this.username.length();
         }
     }
 }

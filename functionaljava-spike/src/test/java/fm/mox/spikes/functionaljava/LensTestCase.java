@@ -15,29 +15,31 @@ public class LensTestCase {
 
     @Test
     public void testName() throws Exception {
+        final Lens<Person, Address> personAddress = personAddressLens();
+        final Lens<Address, String> addressZipcode = addressStringLens();
+        final Lens<Person, String> personZipCode = personAddress.then(addressZipcode);
 
         final String aZipcode = "00100";
         final Address anAddress = new Address(aZipcode);
         final Person raj = new Person(anAddress);
 
-        final F<Person, Address> addressGetter = person -> person.address;
-        final F2<Address, Person, Person> addressSetterPerson = (address, person) -> new Person(
-                address);
-        final Lens<Person, Address> lens = Lens.lens(addressGetter, addressSetterPerson);
-
-        final F<Address, String> getZipcode = address -> address.zipcode;
-        //input1, input2, output
-        final F2<String, Address, Address> setZipcode = (s, address) -> new Address(s);
-        final Lens<Address, String> addressZipcodeLens = Lens.lens(getZipcode, setZipcode);
-
-        final Lens<Person, String> composed = lens.then(addressZipcodeLens);
-
-        final Person updatedRaj = composed.set(composed.get(raj) + "1", raj);
+        final Person updatedRaj = personZipCode.set(personZipCode.get(raj) + "1", raj);
         assertEquals(updatedRaj.address.zipcode, aZipcode + "1");
 
-        final Person modified = lens.modify(raj, address -> new Address(address.zipcode + "1"));
+        final Person modified = personAddress.modify(raj, address -> new Address(address.zipcode + "1"));
         assertEquals(modified.address.zipcode, aZipcode + "1");
+    }
 
+    private static Lens<Address, String> addressStringLens() {
+        final F<Address, String> getZipcode = address -> address.zipcode;
+        final F2<String, Address, Address> setZipcode = (s, address) -> new Address(s);
+        return Lens.lens(getZipcode, setZipcode);
+    }
+
+    private static Lens<Person, Address> personAddressLens() {
+        final F<Person, Address> addressGetter = person -> person.address;
+        final F2<Address, Person, Person> addressSetterPerson = (address, person) -> new Person(address);
+        return Lens.lens(addressGetter, addressSetterPerson);
     }
 
     private static class Lens<A, B> {
