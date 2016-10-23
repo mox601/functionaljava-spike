@@ -3,8 +3,6 @@ package fm.mox.spikes.functionaljava;
 import fj.Monoid;
 import fj.P;
 import fj.Semigroup;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -15,7 +13,6 @@ import static org.testng.Assert.assertEquals;
  */
 public class MonoidTestCase {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MonoidTestCase.class);
     private Monoid<Integer> intSum;
     private Monoid<Integer> intProd;
     private Monoid<Boolean> disjunctionMonoid;

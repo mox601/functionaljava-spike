@@ -1,3 +1,3 @@
 # functionaljava-spike
 
-committing
+Some examples from several functional libraries in java. 

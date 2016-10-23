@@ -1,8 +1,7 @@
 package fm.mox.spikes.functionaljava;
 
 import fj.Show;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;
@@ -10,9 +9,8 @@ import static org.testng.Assert.assertEquals;
 /**
  * @author Matteo Moci ( matteo (dot) moci (at) gmail (dot) com )
  */
+@Slf4j
 public class ShowTestCase {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ShowTestCase.class);
 
     @Test
     public void testName() throws Exception {

@@ -60,8 +60,7 @@ public class StateTestCase {
         log.info(vendingMachineTuple.toString());
 
         final VendingMachine oracle = new VendingMachine(true, 3, 2);
-        log.info("m1: %s, oracle: %s, equals: %b", vendingAfterFive, oracle,
-                vendingAfterFive.equals(oracle));
+        log.info("m1: %s, oracle: %s, equals: %b", vendingAfterFive, oracle, vendingAfterFive.equals(oracle));
     }
 
     static State<VendingMachine, VendingMachine> simulate(final State<VendingMachine, VendingMachine> beginningValue,

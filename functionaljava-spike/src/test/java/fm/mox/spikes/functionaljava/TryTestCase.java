@@ -3,20 +3,22 @@ package fm.mox.spikes.functionaljava;
 import fj.Try;
 import fj.data.Validation;
 import fj.function.Try1;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 /**
  * @author Matteo Moci ( matteo (dot) moci (at) gmail (dot) com )
  */
+@Slf4j
 public class TryTestCase {
 
     @Test
     public void testTry() {
         Validation<Exception, Integer> v1 = getExternalValue(2);
         if (v1.isFail()) {
-            System.out.println(v1.fail().getMessage());
+            log.info(v1.fail().getMessage());
         } else {
-            System.out.println(v1.success());
+            log.info(v1.success().toString());
         }
     }
 

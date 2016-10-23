@@ -106,14 +106,7 @@ public class DurianTestCase {
 
     @Test
     public void testa() throws Exception {
-
-        Consumer<String> consumer = new Consumer<String>() {
-            @Override
-            public void accept(String s) {
-
-            }
-        };
-        StringPrinter stringPrinter = new StringPrinter(consumer);
-
+        Consumer<String> consumer = s -> {};
+        new StringPrinter(consumer);
     }
 }

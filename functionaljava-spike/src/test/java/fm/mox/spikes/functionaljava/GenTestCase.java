@@ -44,7 +44,7 @@ public class GenTestCase {
         final F<List<Integer>, P1<Property>> allLtEq =
                 integers -> p(prop(integers.forall(integer -> integer <= 100)));
         final Property forall = forall(listOf(choose(0, 100)), shrinkList(shrinkInteger), allLtEq);
-        assertTrue(forall.check().isPassed());
+        assertTrue(forall.check(0, 10).isPassed());
     }
 
     @Test
@@ -62,10 +62,10 @@ public class GenTestCase {
                     }
                     return p(prop(isHeadEqualsToLastOfReverse));
                 };
-        final Gen<Integer> choose = choose(0, 100);
+        final Gen<Integer> choose = choose(0, 10);
         final Property reversedTwiceProp = forall(listOf(choose), shrinkList(shrinkInteger), reversedTwiceEqualsOriginal);
         final Property oppositeEqualsProp = forall(listOf(choose), shrinkList(shrinkInteger), headEqualsLastOfReverse);
-        final CheckResult check = reversedTwiceProp.and(oppositeEqualsProp).check(0, 100);
+        final CheckResult check = reversedTwiceProp.and(oppositeEqualsProp).check(0, 10);
         assertTrue(check.isPassed());
     }
 
@@ -75,7 +75,7 @@ public class GenTestCase {
     @Test
     public void testName() throws Exception {
         final Property oppositeEqualsProp = forall(arbUser, userShrink, user -> p(prop(user.count() < 10)));
-        final CheckResult check = oppositeEqualsProp.check(100, 500, 4, 1000);
+        final CheckResult check = oppositeEqualsProp.check(10, 50, 4, 10);
         assertTrue(check.isPassed());
     }
 

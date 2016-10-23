@@ -24,19 +24,18 @@ public class PromiseTestCase {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PromiseTestCase.class);
 
-    private static int CUTOFF = 35;
+    private static int CUTOFF = 15;
 
     @Test
     public void fib() throws Exception {
 
-        final int threads = 2;
+        final int threads = Runtime.getRuntime().availableProcessors();
         final ExecutorService pool = Executors.newFixedThreadPool(threads);
         final Strategy<Unit> su = Strategy.executorStrategy(pool);
         final Strategy<Promise<Integer>> spi = Strategy.executorStrategy(pool);
 
         // This actor performs output and detects the termination condition.
         final Actor<List<Integer>> out = Actor.actor(su, fs -> {
-
             for (final P2<Integer, Integer> p : fs.zipIndex()) {
                 LOGGER.info(MessageFormat.format("n={0} => {1}", p._2(), p._1()));
             }
@@ -47,22 +46,16 @@ public class PromiseTestCase {
         final F<Integer, Promise<Integer>> fib = new F<Integer, Promise<Integer>>() {
             @Override
             public Promise<Integer> f(final Integer n) {
-
-                return n < CUTOFF ? Promise.promise(su, P.p(seqFib(n))) : f(n - 1).bind(f(n - 2),
-                        Integers.add);
+                return n < CUTOFF ? Promise.promise(su, P.p(seqFib(n))) : f(n - 1).bind(f(n - 2), Integers.add);
             }
         };
 
-        System.out.println("Calculating Fibonacci sequence in parallel...");
-        Promise.join(su, spi.parMap(fib, List.range(0, 46)).map(Promise.sequence(su))).to(
-                out);
-        Thread.sleep(10_000L);
-
+        LOGGER.info("Calculating Fibonacci sequence in parallel...");
+        Promise.join(su, spi.parMap(fib, List.range(0, 46)).map(Promise.sequence(su))).to(out);
+        Thread.sleep(1_000L);
     }
 
     public static int seqFib(final int n) {
-
         return n < 2 ? n : seqFib(n - 1) + seqFib(n - 2);
-
     }
 }
