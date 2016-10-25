@@ -1,6 +1,7 @@
 package fm.mox.spikes.functionaljava;
 
 import fj.F;
+import fj.F2;
 import fj.P1;
 import fj.data.List;
 import fj.data.Option;
@@ -24,6 +25,11 @@ import static fj.test.Shrink.shrinkInteger;
 import static fj.test.Shrink.shrinkList;
 import static fj.test.Shrink.shrinkP2;
 import static fj.test.Shrink.shrinkString;
+import static fm.mox.spikes.functionaljava.GenTestCase.Elevator.Button.DOWN;
+import static fm.mox.spikes.functionaljava.GenTestCase.Elevator.Button.UP;
+import static fm.mox.spikes.functionaljava.GenTestCase.Elevator.Floor.FIRST;
+import static fm.mox.spikes.functionaljava.GenTestCase.Elevator.Floor.GROUND;
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
 /**
@@ -71,6 +77,57 @@ public class GenTestCase {
 
     //TODO how to test a FSM?
     /* state, transitions, ... */
+
+    @Test
+    public void testFsm() throws Exception {
+        final F2<Elevator, Elevator.Button, Elevator> pressButton = Elevator::press;
+
+        assertEquals(pressButton.f(new Elevator(), DOWN).floor, GROUND);
+        assertEquals(pressButton.f(new Elevator(), UP).floor, FIRST);
+
+        assertEquals(pressButton.f(new Elevator(FIRST), UP).floor, FIRST);
+        assertEquals(pressButton.f(new Elevator(GROUND), DOWN).floor, GROUND);
+    }
+
+    @Value
+    public static class Elevator {
+        private final Floor floor;
+
+        private Elevator() {
+            this(GROUND);
+        }
+
+        private Elevator(final Floor floor) {
+            this.floor = floor;
+        }
+
+        public Elevator press(final Button button) {
+            Elevator afterPush = this;
+            switch (this.floor) {
+                case GROUND:
+                    if (button.equals(UP)) {
+                        afterPush = new Elevator(FIRST);
+                    }
+                    break;
+                case FIRST:
+                    if (button.equals(DOWN)) {
+                        afterPush = new Elevator(GROUND);
+                    }
+                    break;
+                default:
+                    throw new IllegalArgumentException("floor is not correct '" + this.floor + "'");
+            }
+            return afterPush;
+        }
+
+        public enum Floor {
+            GROUND, FIRST
+        }
+
+        public enum Button {
+            UP, DOWN
+        }
+    }
 
     @Test
     public void testName() throws Exception {

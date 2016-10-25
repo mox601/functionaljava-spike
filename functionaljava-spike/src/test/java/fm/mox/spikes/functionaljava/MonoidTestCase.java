@@ -19,9 +19,9 @@ public class MonoidTestCase {
 
     @BeforeMethod
     public void setUp() throws Exception {
-        intSum = Monoid.monoid(Semigroup.intAdditionSemigroup, 0);
-        intProd = Monoid.monoid(Semigroup.intMultiplicationSemigroup, 1);
-        disjunctionMonoid = Monoid.monoid(Semigroup.disjunctionSemigroup, Boolean.FALSE);
+        this.intSum = Monoid.monoid(Semigroup.intAdditionSemigroup, 0);
+        this.intProd = Monoid.monoid(Semigroup.intMultiplicationSemigroup, 1);
+        this.disjunctionMonoid = Monoid.monoid(Semigroup.disjunctionSemigroup, Boolean.FALSE);
     }
 
     @Test
@@ -46,5 +46,4 @@ public class MonoidTestCase {
         //e.g. Lenses, Memoization, Property testing,
         //see https://github.com/bodar/totallylazy
     }
-
 }
