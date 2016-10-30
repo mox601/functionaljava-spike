@@ -38,7 +38,7 @@ import static org.testng.Assert.assertTrue;
 @Slf4j
 public class GenTestCase {
 
-    static Shrink<User> userShrink = shrinkP2(shrinkString, shrinkString).map(p2 -> new User(p2._1(), p2._2()), u -> p(u.getUsername(), u.getPassword()));
+    static final Shrink<User> userShrink = shrinkP2(shrinkString, shrinkString).map(p2 -> new User(p2._1(), p2._2()), u -> p(u.getUsername(), u.getPassword()));
 
     static final Gen<String> arbStringBoundaries = arbList(arbCharacterBoundaries).map(List::asString);
 
@@ -79,14 +79,14 @@ public class GenTestCase {
     /* state, transitions, ... */
 
     @Test
-    public void testFsm() throws Exception {
-        final F2<Elevator, Elevator.Button, Elevator> pressButton = Elevator::press;
+    public void testElevatorFsm() throws Exception {
+        final F2<Elevator, Elevator.Button, Elevator> elevatorPressButton = Elevator::press;
 
-        assertEquals(pressButton.f(new Elevator(), DOWN).floor, GROUND);
-        assertEquals(pressButton.f(new Elevator(), UP).floor, FIRST);
+        assertEquals(elevatorPressButton.f(new Elevator(), DOWN).floor, GROUND);
+        assertEquals(elevatorPressButton.f(new Elevator(), UP).floor, FIRST);
 
-        assertEquals(pressButton.f(new Elevator(FIRST), UP).floor, FIRST);
-        assertEquals(pressButton.f(new Elevator(GROUND), DOWN).floor, GROUND);
+        assertEquals(elevatorPressButton.f(new Elevator(FIRST), DOWN).floor, GROUND);
+        assertEquals(elevatorPressButton.f(new Elevator(FIRST), UP).floor, FIRST);
     }
 
     @Value
@@ -102,22 +102,22 @@ public class GenTestCase {
         }
 
         public Elevator press(final Button button) {
-            Elevator afterPush = this;
+            Elevator afterPushing = this;
             switch (this.floor) {
                 case GROUND:
                     if (button.equals(UP)) {
-                        afterPush = new Elevator(FIRST);
+                        afterPushing = new Elevator(FIRST);
                     }
                     break;
                 case FIRST:
                     if (button.equals(DOWN)) {
-                        afterPush = new Elevator(GROUND);
+                        afterPushing = new Elevator(GROUND);
                     }
                     break;
                 default:
                     throw new IllegalArgumentException("floor is not correct '" + this.floor + "'");
             }
-            return afterPush;
+            return afterPushing;
         }
 
         public enum Floor {

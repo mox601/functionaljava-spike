@@ -28,12 +28,16 @@ public class LensTestCase {
 
         final Person modified = personAddress.modify(raj, address -> new Address(address.zipcode + "1"));
         assertEquals(modified.address.zipcode, aZipcode + "1");
+
+        final fj.data.optic.Lens<Address, String> lens = fj.data.optic.Lens.lens(GET_ZIPCODE, SET_ZIPCODE2);
+
     }
 
+    private static final fj.F<Address, String> GET_ZIPCODE = address -> address.zipcode;
+    private static final fj.F<String, F<Address, Address>> SET_ZIPCODE2 = (s) -> {return (F<Address, Address>) address -> new Address(s);};
+    private static final fj.F2<String, Address, Address> SET_ZIPCODE = (s, address) -> new Address(s);
     private static Lens<Address, String> addressStringLens() {
-        final F<Address, String> getZipcode = address -> address.zipcode;
-        final F2<String, Address, Address> setZipcode = (s, address) -> new Address(s);
-        return Lens.lens(getZipcode, setZipcode);
+        return Lens.lens(GET_ZIPCODE, SET_ZIPCODE);
     }
 
     private static Lens<Person, Address> personAddressLens() {
