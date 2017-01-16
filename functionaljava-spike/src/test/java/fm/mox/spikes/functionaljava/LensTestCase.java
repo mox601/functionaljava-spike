@@ -13,6 +13,12 @@ import static org.testng.Assert.assertEquals;
  */
 public class LensTestCase {
 
+    private static final fj.F<Address, String> GET_ZIPCODE = address -> address.zipcode;
+    private static final fj.F<String, F<Address, Address>> SET_ZIPCODE2 = (s) -> (F<Address, Address>) address -> new Address(s);
+
+    private static final fj.F2<String, Address, Address> SET_ZIPCODE = (s, address) -> new Address(s);
+    private static Lens<Address, String> addressStringLens() {return Lens.lens(GET_ZIPCODE, SET_ZIPCODE);}
+
     @Test
     public void testName() throws Exception {
         final Lens<Person, Address> personAddress = personAddressLens();
@@ -30,14 +36,6 @@ public class LensTestCase {
         assertEquals(modified.address.zipcode, aZipcode + "1");
 
         final fj.data.optic.Lens<Address, String> lens = fj.data.optic.Lens.lens(GET_ZIPCODE, SET_ZIPCODE2);
-
-    }
-
-    private static final fj.F<Address, String> GET_ZIPCODE = address -> address.zipcode;
-    private static final fj.F<String, F<Address, Address>> SET_ZIPCODE2 = (s) -> {return (F<Address, Address>) address -> new Address(s);};
-    private static final fj.F2<String, Address, Address> SET_ZIPCODE = (s, address) -> new Address(s);
-    private static Lens<Address, String> addressStringLens() {
-        return Lens.lens(GET_ZIPCODE, SET_ZIPCODE);
     }
 
     private static Lens<Person, Address> personAddressLens() {
@@ -46,49 +44,35 @@ public class LensTestCase {
         return Lens.lens(addressGetter, addressSetterPerson);
     }
 
+    @Value
     private static class Lens<A, B> {
 
         private final F<A, B> get;
-
         private final F2<B, A, A> set;
 
-        private Lens(F<A, B> get, F2<B, A, A> set) {
-
-            this.get = get;
-
-            this.set = set;
-        }
-
-        public static <A, B> Lens<A, B> lens(F<A, B> get, F2<B, A, A> set) {
-
+        public static <A, B> Lens<A, B> lens(final F<A, B> get, final F2<B, A, A> set) {
             return new Lens<>(get, set);
         }
 
-        public B get(A a) {
-
+        public B get(final A a) {
             return this.get.f(a);
         }
 
-        public A set(B b, A a) {
-
+        public A set(final B b, final A a) {
             return this.set.f(b, a);
         }
 
-        public A modify(A a, F<B, B> updateFunction) throws Exception {
-
+        public A modify(final A a, final F<B, B> updateFunction) throws Exception {
             return set(updateFunction.f(get(a)), a);
         }
 
-        public <C> Lens<A, C> then(Lens<B, C> other) {
-
+        public <C> Lens<A, C> then(final Lens<B, C> other) {
             return lens(F1Functions.andThen(this.get, other.get), setter(other));
         }
 
         private <C> F2<C, A, A> setter(final Lens<B, C> other) {
-
             return (c, a) -> set(other.set(c, get(a)), a);
         }
-
     }
 
     @Value

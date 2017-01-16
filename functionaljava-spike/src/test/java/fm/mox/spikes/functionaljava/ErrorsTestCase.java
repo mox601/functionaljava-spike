@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * @author Matteo Moci ( matteo (dot) moci (at) gmail (dot) com )
  */
-public class ErrorsTestCase {
+public class ErrorsTestCase implements Cloneable {
 
     /** Errors is a simple little class that makes ErrorHandling a lot easier. */
     public void whyItsGreat() throws Exception {

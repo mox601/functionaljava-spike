@@ -32,9 +32,7 @@ public class StateTestCase {
 
     @Test
     public void testUnit() throws Exception {
-        final State<Object, String> value = State.unit(o -> P.p(o, "value"));
-        final String eval = value.eval(null);
-        assertEquals(eval, "value");
+        assertEquals(State.unit(o -> P.p(o, "value")).eval(null), "value");
     }
 
     // https://github.com/functionaljava/functionaljava/blob/master/demo/src/main/java/fj/demo/StateDemo_Greeter.java
@@ -42,30 +40,29 @@ public class StateTestCase {
     public void testGreeter() throws Exception {
         final State<String, String> st1 = State.<String>init().flatMap(s -> State.unit(s1 -> P.p("Batman", "Hello " + s1)));
         final P2<String, String> robin = st1.run("Robin");
-        assertEquals(robin._1(), "Batman");
-        assertEquals(robin._2(), "Hello Robin");
+        assertEquals(robin, P.p("Batman", "Hello Robin"));
+    }
+
+    private static State<VendingMachine, VendingMachine> vendingMachineStateAfterInput() {
+        return simulate(List.list(COIN, TURN, TURN, COIN, COIN, TURN));
+    }
+
+    static State<VendingMachine, VendingMachine> simulate(final List<Input> list) {
+        return list.foldLeft((vendingMachineState, input) -> vendingMachineState.map(m -> m.next(input)), State.init());
     }
 
     // https://github.com/functionaljava/functionaljava/blob/master/demo/src/main/java/fj/demo/StateDemo_VendingMachine.java
     @Test
-    public void testVendingMachine() throws Exception {
-        final State<VendingMachine, VendingMachine> stateAfterSomeCoins = simulate(State.init(), List.list(COIN,
-                TURN, TURN, COIN, COIN, TURN));
-        final VendingMachine lockedWithFiveThingsNoCoins = new VendingMachine(true, 5, 0);
-        final VendingMachine vendingAfterFive = stateAfterSomeCoins.eval(lockedWithFiveThingsNoCoins);
+    public void testVendingMachineEval() throws Exception {
+        final VendingMachine vendingAfterFive = vendingMachineStateAfterInput().eval(new VendingMachine(true, 5, 0));
         log.info(vendingAfterFive.toString());
-
-        final VendingMachine lockedWithFiveItemsNoCoins = new VendingMachine(true, 5, 0);
-        final P2<VendingMachine, VendingMachine> vendingMachineTuple = stateAfterSomeCoins.run(lockedWithFiveItemsNoCoins);
-        log.info(vendingMachineTuple.toString());
-
         final VendingMachine oracle = new VendingMachine(true, 3, 2);
         log.info("m1: %s, oracle: %s, equals: %b", vendingAfterFive, oracle, vendingAfterFive.equals(oracle));
     }
 
-    static State<VendingMachine, VendingMachine> simulate(final State<VendingMachine, VendingMachine> beginningValue,
-                                                          final List<Input> list) {
-        return list.foldLeft((vendingMachineState, input) -> vendingMachineState.map(m -> m.next(input)), beginningValue);
+    @Test
+    public void testVendingMachineRun() throws Exception {
+        log.info(vendingMachineStateAfterInput().run(new VendingMachine(true, 5, 0)).toString());
     }
 
     public enum Input {COIN, TURN}
@@ -77,7 +74,7 @@ public class StateTestCase {
         private final int items;
         private final int coins;
 
-        VendingMachine next(Input i) {
+        VendingMachine next(final Input i) {
 
             if (items == 0) {
                 return this;
@@ -127,7 +124,6 @@ public class StateTestCase {
                 // return closed
                 circuitInNewState = new Circuit(Status.CLOSED);
             }
-
             return circuitInNewState;
         }
     }

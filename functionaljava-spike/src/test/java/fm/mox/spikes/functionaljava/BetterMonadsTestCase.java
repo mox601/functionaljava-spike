@@ -54,7 +54,6 @@ public class BetterMonadsTestCase {
         assertEquals("hey", t);
     }
 
-
     @Test
     public void itShouldReturnValueWhenRecoveringWithOnSuccess() throws Throwable {
         String t = Try.ofFailable(() -> "hey")
@@ -67,7 +66,6 @@ public class BetterMonadsTestCase {
     @Test
     public void itShouldOrElseTryOnSuccess() throws Throwable {
         Try<String> t = Try.ofFailable(() -> "hey").orElseTry(() -> "jude");
-
         assertEquals("hey", t.get());
     }
 
@@ -101,7 +99,6 @@ public class BetterMonadsTestCase {
         Try<String> t = Try.ofFailable(() -> {
             throw new Exception("e");
         }).flatMap((x) -> Try.ofFailable(() -> "hey"));
-
         assertFalse(t.isSuccess());
     }
 
@@ -110,7 +107,6 @@ public class BetterMonadsTestCase {
         String t = Try.<String>ofFailable(() -> {
             throw new IllegalArgumentException("e");
         }).orElse("jude");
-
         assertEquals("jude", t);
     }
 
@@ -119,7 +115,6 @@ public class BetterMonadsTestCase {
         Try<String> t = Try.<String>ofFailable(() -> {
             throw new IllegalArgumentException("e");
         }).orElseTry(() -> "jude");
-
         assertEquals("jude", t.get());
     }
 
@@ -132,7 +127,6 @@ public class BetterMonadsTestCase {
                 .recover((e) -> "jude");
         assertEquals("jude", t);
     }
-
 
     @Test
     public void itShouldReturnValueWhenRecoveringWithOnFailure() throws Throwable {
@@ -187,14 +181,12 @@ public class BetterMonadsTestCase {
     @Test
     public void isShouldReturnTryValueWrappedInOptionalIfNonNullSuccess() throws Throwable {
         Optional<String> opt1 = Try.ofFailable(() -> "yo mama").toOptional();
-
         assertTrue(opt1.isPresent());
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void itShouldThrowExceptionFromTryConsumerOnSuccessIfSuccess() throws Throwable {
         Try<String> t = Try.ofFailable(() -> "hey");
-
         t.onSuccess(s -> {
             throw new IllegalArgumentException("Should be thrown.");
         });
@@ -205,7 +197,6 @@ public class BetterMonadsTestCase {
         Try<String> t = Try.ofFailable(() -> {
             throw new IllegalArgumentException("Expected exception");
         });
-
         t.onSuccess(s -> {
             throw new IllegalArgumentException("Should NOT be thrown.");
         });
@@ -214,7 +205,6 @@ public class BetterMonadsTestCase {
     @Test
     public void itShouldNotThrowExceptionFromTryConsumerOnFailureIfSuccess() throws Throwable {
         Try<String> t = Try.ofFailable(() -> "hey");
-
         t.onFailure(s -> {
             throw new IllegalArgumentException("Should NOT be thrown.");
         });
@@ -225,7 +215,6 @@ public class BetterMonadsTestCase {
         Try<String> t = Try.ofFailable(() -> {
             throw new IllegalArgumentException("Expected exception");
         });
-
         t.onFailure(s -> {
             throw new IllegalArgumentException("Should be thrown.");
         });

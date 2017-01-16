@@ -12,14 +12,12 @@ public class OptionTestCase {
 
     @Test
     public void option_test_success() {
-        final Option<Double> result = divide(4.0, 2);
-        assertEquals(2.0, result.some(), 0.1);
+        assertEquals(2.0, divide(4.0, 2).some(), 0.1);
     }
 
     @Test
     public void option_test_failure() {
-        final Option<Double> result = divide(4.0, 0);
-        assertEquals(Option.none(), result);
+        assertEquals(Option.none(), divide(4.0, 0));
     }
 
     public static Option<Double> divide(double x, double y) {

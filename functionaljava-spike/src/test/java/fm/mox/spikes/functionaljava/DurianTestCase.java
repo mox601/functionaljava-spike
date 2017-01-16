@@ -74,12 +74,10 @@ public class DurianTestCase {
     private static String staticValue;
 
     private static String getStaticValue() {
-
         return staticValue;
     }
 
     private static void setStaticValue(String value) {
-
         staticValue = value;
     }
 
