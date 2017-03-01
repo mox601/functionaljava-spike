@@ -3,8 +3,11 @@ package fm.mox.spikes.functionaljava;
 import fj.Try;
 import fj.data.Validation;
 import fj.function.Try1;
+import fj.function.Try2;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Matteo Moci ( matteo (dot) moci (at) gmail (dot) com )
@@ -20,6 +23,25 @@ public class TryTestCase {
         } else {
             log.info(v1.success().toString());
         }
+    }
+
+    @Test (expected = ArithmeticException.class)
+    public void divide() throws Exception {
+        assertEquals(0, divide(1, 2));
+        assertEquals(0, divide(9, 0));
+    }
+
+    @Test
+    public void tryDivideTest() throws Exception {
+        Try2<Integer, Integer, Integer, ArithmeticException> a = tryDivide();
+    }
+
+    private static int divide(Integer n, Integer d) {
+        return n / d;
+    }
+
+    private static Try2<Integer, Integer, Integer, ArithmeticException> tryDivide() {
+        return (Integer n, Integer d) -> n / d;
     }
 
     private static Validation<Exception, Integer> getExternalValue(Integer i) {

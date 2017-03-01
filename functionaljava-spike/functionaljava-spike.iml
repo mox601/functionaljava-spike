@@ -11,6 +11,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.functionaljava:functionaljava-java-core:4.6" level="project" />
+    <orderEntry type="library" name="Maven: org.projectlombok:lombok:1.16.10" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.functionaljava:functionaljava:4.6" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.functionaljava:functionaljava-java8:4.6" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.functionaljava:functionaljava-quickcheck:4.6" level="project" />
