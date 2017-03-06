@@ -22,18 +22,20 @@
         <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
         <javac.version>1.8</javac.version>
 
+        <durian.version>3.4.0</durian.version>
         <easymock.version>3.4</easymock.version>
         <functionaljava.version>4.6</functionaljava.version>
-        <guava.version>19.0</guava.version>
-        <durian.version>3.4.0</durian.version>
+        <guava.version>21.0</guava.version>
+        <javaslang.version>2.0.5</javaslang.version>
         <joda-time.version>2.9.1</joda-time.version>
+        <junit.version>4.12</junit.version>
         <log4j.version>1.2.17</log4j.version>
+        <lombok.version>1.16.10</lombok.version>
         <slf4j-api.version>1.7.7</slf4j-api.version>
         <testng.version>6.9.10</testng.version>
+        <totallylazy.version>2.183</totallylazy.version>
 
         <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
-        <lombok.version>1.16.10</lombok.version>
-        <junit.version>4.12</junit.version>
     </properties>
 
     <dependencyManagement>
@@ -115,19 +117,19 @@
         <dependency>
             <groupId>io.javaslang</groupId>
             <artifactId>javaslang</artifactId>
-            <version>2.0.5</version>
+            <version>${javaslang.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.javaslang</groupId>
             <artifactId>javaslang-test</artifactId>
-            <version>2.0.5</version>
+            <version>${javaslang.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.googlecode.totallylazy</groupId>
             <artifactId>totallylazy</artifactId>
-            <version>2.183</version>
+            <version>${totallylazy.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
