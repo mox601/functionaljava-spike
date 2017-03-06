@@ -11,8 +11,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.functionaljava:functionaljava-java-core:4.6" level="project" />
-    <orderEntry type="library" name="Maven: org.projectlombok:lombok:1.16.10" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.functionaljava:functionaljava:4.6" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.functionaljava:functionaljava-java8:4.6" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.functionaljava:functionaljava-quickcheck:4.6" level="project" />
@@ -21,6 +19,9 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.functionaljava:functionaljava-java-core:4.6" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: com.jason-goodwin:better-monads:0.4.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.scala-lang:scala-library:2.10.4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: io.javaslang:javaslang:2.0.5" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: io.javaslang:javaslang-match:2.0.5" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: io.javaslang:javaslang-test:2.0.5" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: com.googlecode.totallylazy:totallylazy:2.183" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:19.0" level="project" />
     <orderEntry type="library" name="Maven: joda-time:joda-time:2.9.1" level="project" />
