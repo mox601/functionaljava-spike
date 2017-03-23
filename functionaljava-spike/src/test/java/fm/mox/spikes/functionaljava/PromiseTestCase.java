@@ -26,7 +26,7 @@ public class PromiseTestCase {
 
     private static int CUTOFF = 15;
 
-    @Test
+    @Test(enabled = false)
     public void fib() throws Exception {
 
         final int threads = Runtime.getRuntime().availableProcessors();
