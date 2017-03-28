@@ -1,14 +1,17 @@
 package fm.mox.spikes.functionaljava;
 
-import fj.F;
+import static org.testng.Assert.assertEquals;
+
+import org.testng.annotations.Test;
+
 import fj.Monoid;
+import fj.P;
+import fj.P2;
 import fj.data.Reader;
+import fj.data.State;
 import fj.data.Writer;
 import lombok.Value;
 import lombok.experimental.Tolerate;
-import org.testng.annotations.Test;
-
-import static org.testng.Assert.assertEquals;
 
 /**
  * Created by matteo (dot) moci (at) gmail (dot) com
@@ -64,7 +67,7 @@ public class ReaderTestCase {
     @Test
     public void testToStringWithReader() throws Exception {
 
-        User aUser = new User(2, " username");
+        User aUser = new User(2, "username");
 
         //to string example
 
@@ -73,7 +76,7 @@ public class ReaderTestCase {
 
         String asString = toStringReader.f(aUser);
 
-        assertEquals(asString, "2 bob's supervisor");
+        assertEquals(asString, "2 username");
 
     }
 
@@ -92,7 +95,17 @@ public class ReaderTestCase {
     @Test
     public void testToStringWithState() throws Exception {
 
+        State<String, String> st1 = State.<String>init()
+            .flatMap(s -> State.unit(s2 -> P.p("Batman", "Hello " + s)));
+        P2<String, String> robin = st1.run("Robin");
+        System.out.println(robin);
+        String aRobin = st1.eval("Robin");
+        System.out.println(aRobin);
+
+
         //TODO implement toString with state
+        State<User, StringBuilder> id = null;
+        State<User, StringBuilder> idAndUsername = null;
 
     }
 
