@@ -80,16 +80,17 @@ public class ReaderTestCase {
 
     }
 
+    //the Writer monad let us create and accumulate a log across multiple function calls
     @Test
-    public void testToStringWithWriter() throws Exception {
+    public void testLogWithWriter() throws Exception {
 
-        User aUser = new User(2, " username");
+        User aUser = new User(2, "makeSomethingElse");
 
-        Writer<String, User> toStringW = UserWriters
-                .id(aUser)
-                .flatMap(user -> UserWriters.username(aUser));
+        Writer<String, User> toStringW = LogWriters
+                .makeSomething(aUser)
+                .flatMap(user -> LogWriters.makeSomethingElse(aUser));
 
-        assertEquals(toStringW.log(), "2 username");
+        assertEquals(toStringW.log(), "did thisdid some other thing");
     }
 
     @Test
@@ -114,14 +115,15 @@ public class ReaderTestCase {
 
         User find(String username);
     }
-    public interface UserWriters {
 
-        static Writer<String, User> id(User user) {
-            return Writer.unit(user, user.getId() + "", Monoid.stringMonoid);
+    public interface LogWriters {
+
+        static Writer<String, User> makeSomething(User user) {
+            return Writer.unit(user, "did this", Monoid.stringMonoid);
         }
 
-        static Writer<String, User> username(User user) {
-            return Writer.unit(user, user.getUsername(), Monoid.stringMonoid);
+        static Writer<String, User> makeSomethingElse(User user) {
+            return Writer.unit(user, "did some other thing", Monoid.stringMonoid);
         }
     }
 
