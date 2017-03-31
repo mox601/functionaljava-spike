@@ -64,7 +64,7 @@ public class ReaderTestCase {
     @Test
     public void testToStringWithReader() throws Exception {
 
-        User aUser = new User(2, " username");
+        User aUser = new User(2, "username");
 
         //to string example
 
@@ -73,7 +73,7 @@ public class ReaderTestCase {
 
         String asString = toStringReader.f(aUser);
 
-        assertEquals(asString, "2 bob's supervisor");
+        assertEquals(asString, "2 username");
 
     }
 
@@ -101,8 +101,8 @@ public class ReaderTestCase {
 
         User find(String username);
     }
-    public interface UserWriters {
 
+    public interface UserWriters {
         static Writer<String, User> id(User user) {
             return Writer.unit(user, user.getId() + "", Monoid.stringMonoid);
         }
@@ -113,7 +113,6 @@ public class ReaderTestCase {
     }
 
     public interface UserReaders {
-
         static Reader<UserRepository, User> getUser(int id) {
             return Reader.unit((UserRepository userRepository) -> userRepository.get(id));
         }
@@ -137,11 +136,6 @@ public class ReaderTestCase {
         private final int id;
         private final String username;
         private final User supervisor;
-
-        @Tolerate
-        private User() {
-            this(-1, "");
-        }
 
         @Tolerate
         private User(final int id, final String username) {

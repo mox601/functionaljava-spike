@@ -2,6 +2,7 @@ package fm.mox.spikes.functionaljava;
 
 import javaslang.Function1;
 import javaslang.Function2;
+import javaslang.Predicates;
 import javaslang.collection.CharSeq;
 import javaslang.collection.List;
 import javaslang.control.Option;
@@ -12,6 +13,10 @@ import javaslang.test.Property;
 import lombok.Value;
 import org.junit.Test;
 
+import static javaslang.API.$;
+import static javaslang.API.Case;
+import static javaslang.API.Match;
+import static javaslang.Predicates.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -119,6 +124,37 @@ public class JavaslangTest {
         Function1<Integer, Integer> add2 = sum.curried().apply(2);
 
         assertEquals(6, add2.apply(4).intValue());
+
+    }
+
+    @Test
+    public void testMatch() throws Exception {
+        String s = Match(1).of(
+                Case($(1), "one"),
+                Case($(2), "two"),
+                Case($(), "?")
+        );
+        assertEquals("one", s);
+
+        Option<String> v = Match(1).option(
+                Case($(0), "zero")
+        );
+        assertEquals(Option.<String>none(), v);
+
+        String x = Match(1).of(
+                Case(is(1), "one"),
+                Case(is(2), "two"),
+                Case($(), "?")
+        );
+        assertEquals("one", x);
+
+        Number obj = 8;
+        Number plusOne = Match(obj).of(
+                Case(instanceOf(Integer.class), i -> i + 1),
+                Case(instanceOf(Double.class), d -> d + 1),
+                Case($(), o -> { throw new NumberFormatException(); })
+        );
+        assertEquals(9, plusOne);
 
     }
 
