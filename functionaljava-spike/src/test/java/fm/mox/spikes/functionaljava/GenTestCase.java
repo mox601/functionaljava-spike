@@ -1,18 +1,5 @@
 package fm.mox.spikes.functionaljava;
 
-import fj.F;
-import fj.F2;
-import fj.P1;
-import fj.data.List;
-import fj.data.Option;
-import fj.test.CheckResult;
-import fj.test.Gen;
-import fj.test.Property;
-import fj.test.Shrink;
-import lombok.Value;
-import lombok.extern.slf4j.Slf4j;
-import org.testng.annotations.Test;
-
 import static fj.P.p;
 import static fj.test.Arbitrary.arbCharacterBoundaries;
 import static fj.test.Arbitrary.arbList;
@@ -32,6 +19,20 @@ import static fm.mox.spikes.functionaljava.GenTestCase.Elevator.Floor.GROUND;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
+import org.testng.annotations.Test;
+
+import fj.F;
+import fj.F2;
+import fj.P1;
+import fj.data.List;
+import fj.data.Option;
+import fj.test.CheckResult;
+import fj.test.Gen;
+import fj.test.Property;
+import fj.test.Shrink;
+import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author Matteo Moci ( matteo (dot) moci (at) gmail (dot) com )
  */
@@ -45,6 +46,8 @@ public class GenTestCase {
     static final Gen<User> ARB_USER = ARB_STRING_BOUNDARIES
             .filter((String s) -> s.length() > 0 && s.length() < 10)
             .bind(arbString.filter(p -> p.length() > 2 && p.length() < 10), username -> password -> new User(username, password));
+
+    static final Gen<Elevator.Button> BUTTONS = Gen.elements(Elevator.Button.DOWN, Elevator.Button.UP);
 
     @Test
     public void givenGeneratedListAllItemsAreLtEq100() throws Exception {
@@ -88,6 +91,8 @@ public class GenTestCase {
 
         assertEquals(elevatorPressButton.f(new Elevator(FIRST), DOWN).floor, GROUND);
         assertEquals(elevatorPressButton.f(new Elevator(FIRST), UP).floor, FIRST);
+        //generator of Buttons
+//        TODO BUTTON_GEN
     }
 
     @Value
@@ -115,6 +120,7 @@ public class GenTestCase {
                     if (button.equals(DOWN)) {
                         afterPushing = new Elevator(GROUND);
                     }
+                    //TODO introduce a bug here and use a property checker to test
                     break;
                 default:
                     throw new IllegalArgumentException("floor is not correct '" + this.floor + "'");
