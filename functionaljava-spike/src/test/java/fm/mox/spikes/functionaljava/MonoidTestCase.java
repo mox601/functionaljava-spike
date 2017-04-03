@@ -2,6 +2,7 @@ package fm.mox.spikes.functionaljava;
 
 import fj.Monoid;
 import fj.P;
+import fj.P2;
 import fj.Semigroup;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -13,35 +14,28 @@ import static org.testng.Assert.assertEquals;
  */
 public class MonoidTestCase {
 
-    private Monoid<Integer> intSum;
-    private Monoid<Integer> intProd;
-    private Monoid<Boolean> disjunctionMonoid;
-
-    @BeforeMethod
-    public void setUp() throws Exception {
-        this.intSum = Monoid.monoid(Semigroup.intAdditionSemigroup, 0);
-        this.intProd = Monoid.monoid(Semigroup.intMultiplicationSemigroup, 1);
-        this.disjunctionMonoid = Monoid.monoid(Semigroup.disjunctionSemigroup, Boolean.FALSE);
-    }
-
     @Test
     public void testSum() throws Exception {
-        assertEquals(intSum.sum(2, 3).intValue(), 5);
+        assertEquals(Monoid.intAdditionMonoid.sum(2, 3).intValue(), 5);
     }
 
     @Test
     public void testProd() throws Exception {
-        assertEquals(intProd.sum(2, 3).intValue(), 6);
+        assertEquals(Monoid.intMultiplicationMonoid.sum(2, 3).intValue(), 6);
     }
 
     @Test
     public void testDisj() throws Exception {
-        assertEquals(disjunctionMonoid.sum(Boolean.FALSE, Boolean.TRUE), Boolean.TRUE);
+        assertEquals(Monoid.disjunctionMonoid.sum(Boolean.FALSE, Boolean.TRUE), Boolean.TRUE);
     }
 
     @Test
     public void testMonadComposition() throws Exception {
-        assertEquals(intProd.compose(intSum).sum(P.p(1, 2)).f(P.p(3, 4)), P.p(3, 6));
+        P2<Integer, Integer> expected = P.p(6, 6);
+        Monoid<P2<Integer, Integer>> composed = Monoid.intMultiplicationMonoid
+                .compose(Monoid.intAdditionMonoid);
+        P2<Integer, Integer> actual = composed.sum(P.p(3, 2)).f(P.p(2, 4));
+        assertEquals(actual, expected);
         //TODO get inspiration from fpinscala, scalaz to re-implement and use same things in functionaljava
         //e.g. Lenses, Memoization, Property testing,
         //see https://github.com/bodar/totallylazy

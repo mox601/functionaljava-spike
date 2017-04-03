@@ -38,11 +38,12 @@ import static org.testng.Assert.assertTrue;
 @Slf4j
 public class GenTestCase {
 
-    static final Shrink<User> userShrink = shrinkP2(shrinkString, shrinkString).map(p2 -> new User(p2._1(), p2._2()), u -> p(u.getUsername(), u.getPassword()));
+    static final Shrink<User> USER_SHRINK = shrinkP2(shrinkString, shrinkString).map(p2 -> new User(p2._1(), p2._2()), u -> p(u.getUsername(), u.getPassword()));
 
-    static final Gen<String> arbStringBoundaries = arbList(arbCharacterBoundaries).map(List::asString);
+    static final Gen<String> ARB_STRING_BOUNDARIES = arbList(arbCharacterBoundaries).map(List::asString);
 
-    static Gen<User> arbUser = arbStringBoundaries.filter((String s) -> s.length() > 0 && s.length() < 10)
+    static final Gen<User> ARB_USER = ARB_STRING_BOUNDARIES
+            .filter((String s) -> s.length() > 0 && s.length() < 10)
             .bind(arbString.filter(p -> p.length() > 2 && p.length() < 10), username -> password -> new User(username, password));
 
     @Test
@@ -91,6 +92,7 @@ public class GenTestCase {
 
     @Value
     public static class Elevator {
+
         private final Floor floor;
 
         private Elevator() {
@@ -131,7 +133,7 @@ public class GenTestCase {
 
     @Test
     public void testName() throws Exception {
-        final Property oppositeEqualsProp = forall(arbUser, userShrink, user -> p(prop(user.count() < 10)));
+        final Property oppositeEqualsProp = forall(ARB_USER, USER_SHRINK, user -> p(prop(user.count() < 10)));
         final CheckResult check = oppositeEqualsProp.check(10, 50, 4, 10);
         assertTrue(check.isPassed());
     }

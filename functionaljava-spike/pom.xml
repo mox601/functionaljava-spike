@@ -24,7 +24,7 @@
 
         <durian.version>3.4.0</durian.version>
         <easymock.version>3.4</easymock.version>
-        <functionaljava.version>4.6</functionaljava.version>
+        <functionaljava.version>4.7</functionaljava.version>
         <guava.version>21.0</guava.version>
         <javaslang.version>2.0.5</javaslang.version>
         <joda-time.version>2.9.1</joda-time.version>
@@ -86,7 +86,7 @@
     <dependencies>
         <dependency>
             <groupId>org.functionaljava</groupId>
-            <artifactId>functionaljava</artifactId>
+            <artifactId>functionaljava_1.8</artifactId>
             <version>${functionaljava.version}</version>
             <scope>test</scope>
         </dependency>
