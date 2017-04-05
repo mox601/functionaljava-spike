@@ -22,16 +22,17 @@
         <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
         <javac.version>1.8</javac.version>
 
+        <cyclops-react.version>2.0.0-MI4</cyclops-react.version>
         <durian.version>3.4.0</durian.version>
         <easymock.version>3.4</easymock.version>
         <functionaljava.version>4.7</functionaljava.version>
         <guava.version>21.0</guava.version>
         <javaslang.version>2.0.5</javaslang.version>
-        <joda-time.version>2.9.1</joda-time.version>
+        <joda-time.version>2.9.9</joda-time.version>
         <junit.version>4.12</junit.version>
         <log4j.version>1.2.17</log4j.version>
-        <lombok.version>1.16.10</lombok.version>
-        <slf4j-api.version>1.7.7</slf4j-api.version>
+        <lombok.version>1.16.16</lombok.version>
+        <slf4j-api.version>1.7.25</slf4j-api.version>
         <testng.version>6.9.10</testng.version>
         <totallylazy.version>2.183</totallylazy.version>
 
@@ -111,7 +112,7 @@
         <dependency>
             <groupId>com.jason-goodwin</groupId>
             <artifactId>better-monads</artifactId>
-            <version>0.4.0</version>
+            <version>0.4.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -202,7 +203,7 @@
         <dependency>
             <groupId>com.aol.simplereact</groupId>
             <artifactId>cyclops-react</artifactId>
-            <version>2.0.0-MI4</version>
+            <version>${cyclops-react.version}</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>

@@ -1,5 +1,21 @@
 package fm.mox.spikes.functionaljava;
 
+import fj.F;
+import fj.F2;
+import fj.P;
+import fj.P1;
+import fj.data.List;
+import fj.data.Option;
+import fj.data.Stream;
+import fj.test.CheckResult;
+import fj.test.Gen;
+import fj.test.Property;
+import fj.test.Rand;
+import fj.test.Shrink;
+import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
+import org.testng.annotations.Test;
+
 import static fj.P.p;
 import static fj.test.Arbitrary.arbCharacterBoundaries;
 import static fj.test.Arbitrary.arbList;
@@ -19,20 +35,6 @@ import static fm.mox.spikes.functionaljava.GenTestCase.Elevator.Floor.GROUND;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import org.testng.annotations.Test;
-
-import fj.F;
-import fj.F2;
-import fj.P1;
-import fj.data.List;
-import fj.data.Option;
-import fj.test.CheckResult;
-import fj.test.Gen;
-import fj.test.Property;
-import fj.test.Shrink;
-import lombok.Value;
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * @author Matteo Moci ( matteo (dot) moci (at) gmail (dot) com )
  */
@@ -47,7 +49,6 @@ public class GenTestCase {
             .filter((String s) -> s.length() > 0 && s.length() < 10)
             .bind(arbString.filter(p -> p.length() > 2 && p.length() < 10), username -> password -> new User(username, password));
 
-    static final Gen<Elevator.Button> BUTTONS = Gen.elements(Elevator.Button.DOWN, Elevator.Button.UP);
 
     @Test
     public void givenGeneratedListAllItemsAreLtEq100() throws Exception {
@@ -90,9 +91,44 @@ public class GenTestCase {
         assertEquals(elevatorPressButton.f(new Elevator(), UP).floor, FIRST);
 
         assertEquals(elevatorPressButton.f(new Elevator(FIRST), DOWN).floor, GROUND);
-        assertEquals(elevatorPressButton.f(new Elevator(FIRST), UP).floor, FIRST);
-        //generator of Buttons
+//        assertEquals(elevatorPressButton.f(new Elevator(FIRST), UP).floor, FIRST);
+
+        //generator of sequences of Buttons
 //        TODO BUTTON_GEN
+
+        Gen<Elevator.Button> buttons = Gen.elements(Elevator.Button.DOWN, Elevator.Button.UP);
+
+        Gen<List<Elevator.Button>> listOfButtons = Gen.listOf(buttons);
+
+        int amount = 100;
+
+        for (int i = 0; i < amount; i++) {
+            List<Elevator.Button> gen = listOfButtons.gen(i, Rand.standard);
+            log.info(gen + "");
+        }
+
+        Shrink<Elevator.Button> objectShrink = Shrink.shrinkBoolean.map(b -> b ? DOWN : UP, button -> button.equals(DOWN));
+
+        F<List<Elevator.Button>, P1<Property>> propWithResults = pressedButtons -> {
+
+            Elevator elevator = new Elevator();
+
+            for (final Elevator.Button button : pressedButtons) {
+                elevator = elevator.press(button);
+            }
+
+            Elevator.Floor floor = elevator.getFloor();
+
+            boolean isFirstOrGround = floor.equals(FIRST) || floor.equals(GROUND);
+
+            return p(prop(isFirstOrGround));
+        };
+
+        final Property aProperty = forall(listOfButtons, shrinkList(objectShrink), propWithResults);
+
+        final CheckResult check = aProperty.check(0, 10);
+
+        assertTrue(check.isPassed());
     }
 
     @Value
@@ -120,7 +156,10 @@ public class GenTestCase {
                     if (button.equals(DOWN)) {
                         afterPushing = new Elevator(GROUND);
                     }
-                    //TODO introduce a bug here and use a property checker to test
+                    // introduce a bug here:use a property checker to discover it
+                    if (button.equals(UP)) {
+                        afterPushing = new Elevator(GROUND);
+                    }
                     break;
                 default:
                     throw new IllegalArgumentException("floor is not correct '" + this.floor + "'");
