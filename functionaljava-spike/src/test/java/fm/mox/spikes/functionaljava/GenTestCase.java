@@ -1,5 +1,19 @@
 package fm.mox.spikes.functionaljava;
 
+import fj.F;
+import fj.F2;
+import fj.P1;
+import fj.data.List;
+import fj.data.Option;
+import fj.test.CheckResult;
+import fj.test.Gen;
+import fj.test.Property;
+import fj.test.Rand;
+import fj.test.Shrink;
+import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
+import org.testng.annotations.Test;
+
 import static fj.P.p;
 import static fj.test.Arbitrary.arbCharacterBoundaries;
 import static fj.test.Arbitrary.arbList;
@@ -18,21 +32,6 @@ import static fm.mox.spikes.functionaljava.GenTestCase.Elevator.Floor.FIRST;
 import static fm.mox.spikes.functionaljava.GenTestCase.Elevator.Floor.GROUND;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
-
-import org.testng.annotations.Test;
-
-import fj.F;
-import fj.F2;
-import fj.P1;
-import fj.data.List;
-import fj.data.Option;
-import fj.test.CheckResult;
-import fj.test.Gen;
-import fj.test.Property;
-import fj.test.Rand;
-import fj.test.Shrink;
-import lombok.Value;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Matteo Moci ( matteo (dot) moci (at) gmail (dot) com )
@@ -79,6 +78,14 @@ public class GenTestCase {
         assertTrue(check.isPassed());
     }
 
+    //  TODO  "I would generate arbitrary functions and then map over that to produce
+    // arbitrary states (using the existing State class)"
+
+    @Test
+    public void testArb() throws Exception {
+
+    }
+
     //TODO how to test a FSM?
     /* state, transitions, ... */
 
@@ -93,8 +100,6 @@ public class GenTestCase {
 //        assertEquals(elevatorPressButton.f(new Elevator(FIRST), UP).floor, FIRST);
 
         //generator of sequences of Buttons
-//        TODO BUTTON_GEN
-
         Gen<Elevator.Button> buttons = Gen.elements(Elevator.Button.DOWN, Elevator.Button.UP);
 
         Gen<List<Elevator.Button>> listOfButtons = Gen.listOf(buttons);
@@ -106,7 +111,7 @@ public class GenTestCase {
             log.info(gen + "");
         }
 
-        Shrink<Elevator.Button> objectShrink = Shrink.shrinkBoolean.map(b -> b ? DOWN : UP, button -> button.equals(DOWN));
+        Shrink<Elevator.Button> buttonShrink = Shrink.shrinkBoolean.map(b -> b ? DOWN : UP, button -> button.equals(DOWN));
 
         F<List<Elevator.Button>, P1<Property>> propWithResults = pressedButtons -> {
 
@@ -123,7 +128,7 @@ public class GenTestCase {
             return p(prop(isFirstOrGround));
         };
 
-        final Property aProperty = forall(listOfButtons, shrinkList(objectShrink), propWithResults);
+        final Property aProperty = forall(listOfButtons, shrinkList(buttonShrink), propWithResults);
 
         final CheckResult check = aProperty.check(0, 10);
 
@@ -155,7 +160,7 @@ public class GenTestCase {
                     if (button.equals(DOWN)) {
                         afterPushing = new Elevator(GROUND);
                     }
-                    // introduce a bug here:use a property checker to discover it
+                    // introduced a bug here:use a property checker to discover it
                     if (button.equals(UP)) {
                         afterPushing = new Elevator(GROUND);
                     }
@@ -191,4 +196,52 @@ public class GenTestCase {
             return this.username.length();
         }
     }
+
+
+    //    implement this http://www.scalacheck.org/files/scaladays2014/index.html#12
+    @Test
+    public void testCounter() throws Exception {
+
+    }
+
+    public static class Counter {
+        private int n;
+
+        public Counter(int n) {
+            this.n = n;
+        }
+
+        public int increment() {
+            this.n = n + 1;
+            return this.n;
+        }
+
+        public int get() {
+            return this.n;
+        }
+    }
+
+    public interface Command {
+        boolean run(State state);
+    }
+
+    public static class State {
+        private long state;
+    }
+
+    public static class Increment implements Command {
+
+        private final Counter counter;
+
+        public Increment(Counter counter) {
+            this.counter = counter;
+        }
+
+        @Override
+        public boolean run(State state) {
+            return this.counter.increment() == state.state + 1;
+        }
+    }
+
+
 }
