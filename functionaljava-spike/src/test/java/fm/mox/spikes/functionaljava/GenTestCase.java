@@ -78,13 +78,13 @@ public class GenTestCase {
         assertTrue(check.isPassed());
     }
 
-    //  TODO  "I would generate arbitrary functions and then map over that to produce
-    // arbitrary states (using the existing State class)"
-
     @Test
     public void testArb() throws Exception {
 
     }
+
+    //  TODO  "I would generate arbitrary functions and then map over that to produce
+    // arbitrary states (using the existing State class)"
 
     //TODO how to test a FSM?
     /* state, transitions, ... */

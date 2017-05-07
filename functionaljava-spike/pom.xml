@@ -27,13 +27,12 @@
         <easymock.version>3.4</easymock.version>
         <functionaljava.version>4.7</functionaljava.version>
         <guava.version>21.0</guava.version>
-        <javaslang.version>2.0.5</javaslang.version>
+        <javaslang.version>2.0.6</javaslang.version>
         <joda-time.version>2.9.9</joda-time.version>
-        <junit.version>4.12</junit.version>
-        <log4j.version>1.2.17</log4j.version>
+        <log4j.version>1.2.25</log4j.version>
         <lombok.version>1.16.16</lombok.version>
         <slf4j-api.version>1.7.25</slf4j-api.version>
-        <testng.version>6.9.10</testng.version>
+        <testng.version>6.11</testng.version>
         <totallylazy.version>2.183</totallylazy.version>
 
         <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
@@ -211,6 +210,12 @@
                     <artifactId>slf4j-simple</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.spotify</groupId>
+            <artifactId>docker-client</artifactId>
+            <version>8.4.0</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

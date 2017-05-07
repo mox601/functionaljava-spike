@@ -5,7 +5,7 @@ import fj.data.Validation;
 import fj.function.Try1;
 import fj.function.Try2;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -25,7 +25,7 @@ public class TryTestCase {
         }
     }
 
-    @Test (expected = ArithmeticException.class)
+    @Test (expectedExceptions = ArithmeticException.class)
     public void divide() throws Exception {
         assertEquals(0, divide(1, 2));
         assertEquals(0, divide(9, 0));

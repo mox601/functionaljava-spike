@@ -2,7 +2,6 @@ package fm.mox.spikes.functionaljava;
 
 import javaslang.Function1;
 import javaslang.Function2;
-import javaslang.Predicates;
 import javaslang.collection.CharSeq;
 import javaslang.collection.List;
 import javaslang.control.Option;
@@ -11,7 +10,7 @@ import javaslang.control.Validation;
 import javaslang.test.Arbitrary;
 import javaslang.test.Property;
 import lombok.Value;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 import static javaslang.API.$;
 import static javaslang.API.Case;
@@ -29,7 +28,7 @@ public class JavaslangTest {
     // In terms of an Option, this means that calling .map on a Some will result in a Some,
     // and calling .map on a None will result in a None. In the Java Optional example above,
     // that context changed from a Some to a None.
-    @Test(expected = NullPointerException.class)
+    @Test(expectedExceptions = NullPointerException.class)
     public void npe() throws Exception {
 
         Option<String> maybeFoo = Option.of("foo");

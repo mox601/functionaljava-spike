@@ -5,8 +5,8 @@ import com.diffplug.common.base.Either;
 import com.diffplug.common.base.StringPrinter;
 import com.diffplug.common.base.Unhandled;
 import lombok.Data;
-import org.junit.Test;
 import org.testng.Assert;
+import org.testng.annotations.Test;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
