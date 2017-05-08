@@ -7,8 +7,10 @@ import fj.data.List;
 import fj.data.State;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.log4j.helpers.AbsoluteTimeDateFormat;
 import org.testng.annotations.Test;
+
+import java.io.ByteArrayInputStream;
+import java.util.function.Function;
 
 import static fm.mox.spikes.functionaljava.StateTestCase.Input.COIN;
 import static fm.mox.spikes.functionaljava.StateTestCase.Input.TURN;
@@ -22,13 +24,55 @@ import static org.testng.Assert.assertEquals;
 @Slf4j
 public class StateTestCase {
 
+
+    //State monad is just an abstraction for a function
+    // that takes a state and returns an intermediate value and some new state value.
+
+
+    /*
+    * -- look at our counter and return "foo" or "bar"
+-- along with the incremented counter:
+fromStoAandS :: Int -> (String,Int)
+fromStoAandS c | c `mod` 5 == 0 = ("foo",c+1)
+               | otherwise = ("bar",c+1)
+    * */
+
+//    http://brandon.si/code/the-state-monad-a-tutorial-for-the-confused/
+    @Test
+    public void testNamea() throws Exception {
+
+        //input, pair(output, state)
+        F<Integer, P2<Integer, String>> fromStoAandS = c -> {
+            P2<Integer, String> result;
+            if (c % 5 == 0) {
+                result = P.p(c + 1, "foo");
+            } else {
+                result = P.p(c + 1, "bar");
+            }
+            return result;
+        };
+
+        State<Integer, String> stateIntString = State.unit(fromStoAandS);
+
+        P2<Integer, String> afterRun = stateIntString.run(1);
+
+        String resultStatus = stateIntString.eval(1);
+        Integer resultOutput = stateIntString.exec(1);
+
+        log.info(resultStatus);
+        log.info(resultOutput + "");
+        log.info(afterRun + "");
+
+    }
+
     @Test
     public void testName() throws Exception {
         final State<Object, String> value = State.constant("value");
         assertEquals(value.eval(null), "value");
         assertEquals(value.eval(1), "value");
         assertEquals(value.eval(1L), "value");
-        assertEquals(value.eval(new AbsoluteTimeDateFormat()), "value");
+        byte[] bytes = new byte[0];
+        assertEquals(value.eval(new ByteArrayInputStream(bytes)), "value");
     }
 
     @Test

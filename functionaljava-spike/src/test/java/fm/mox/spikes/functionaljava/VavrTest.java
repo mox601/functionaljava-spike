@@ -22,7 +22,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * Created by matteo (dot) moci (at) gmail (dot) com
  */
-public class JavaslangTest {
+public class VavrTest {
 
     //    it adheres to the requirement of a monad to maintain computational context when calling .map.
     // In terms of an Option, this means that calling .map on a Some will result in a Some,
@@ -126,6 +126,7 @@ public class JavaslangTest {
 
     }
 
+    //TODO https://koziolekweb.pl/2016/06/18/pattern-matching-w-javie-z-javaslang-ii/
     @Test
     public void testMatch() throws Exception {
         String s = Match(1).of(
