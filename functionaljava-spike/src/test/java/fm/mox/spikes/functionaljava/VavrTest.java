@@ -1,21 +1,24 @@
 package fm.mox.spikes.functionaljava;
 
-import javaslang.Function1;
-import javaslang.Function2;
-import javaslang.collection.CharSeq;
-import javaslang.collection.List;
-import javaslang.control.Option;
-import javaslang.control.Try;
-import javaslang.control.Validation;
-import javaslang.test.Arbitrary;
-import javaslang.test.Property;
+import io.vavr.Function1;
+import io.vavr.Function2;
+import io.vavr.Patterns;
+import io.vavr.Predicates;
+import io.vavr.collection.CharSeq;
+import io.vavr.collection.List;
+import io.vavr.collection.Seq;
+import io.vavr.control.Option;
+import io.vavr.control.Try;
+import io.vavr.control.Validation;
+import io.vavr.test.Arbitrary;
+import io.vavr.test.Property;
 import lombok.Value;
 import org.testng.annotations.Test;
 
-import static javaslang.API.$;
-import static javaslang.API.Case;
-import static javaslang.API.Match;
-import static javaslang.Predicates.*;
+import static io.vavr.API.$;
+import static io.vavr.API.Case;
+import static io.vavr.API.Match;
+import static io.vavr.Predicates.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -141,13 +144,14 @@ public class VavrTest {
         );
         assertEquals(Option.<String>none(), v);
 
-        String x = Match(1).of(
+        /*String x = Match(1).of(
                 Case(is(1), "one"),
                 Case(is(2), "two"),
                 Case($(), "?")
         );
         assertEquals("one", x);
 
+        Patterns.$Valid()
         Number obj = 8;
         Number plusOne = Match(obj).of(
                 Case(instanceOf(Integer.class), i -> i + 1),
@@ -155,6 +159,7 @@ public class VavrTest {
                 Case($(), o -> { throw new NumberFormatException(); })
         );
         assertEquals(9, plusOne);
+        */
 
     }
 
@@ -162,11 +167,11 @@ public class VavrTest {
     public void validator() throws Exception {
 
         // Valid(Person(John Doe, 30))
-        Validation<List<String>, Person> valid = PersonValidator.validatePerson("John Doe", 30);
+        Validation<Seq<String>, Person> valid = PersonValidator.validatePerson("John Doe", 30);
         assertEquals(new Person("John Doe", 30), valid.get());
 
         // Invalid(List(Name contains invalid characters: '!4?', Age must be greater than 0))
-        Validation<List<String>, Person> invalid = PersonValidator.validatePerson("John? Doe!4", -1);
+        Validation<Seq<String>, Person> invalid = PersonValidator.validatePerson("John? Doe!4", -1);
         assertEquals(List.of("Name contains invalid characters: '!4?'", "Age must be at least 0"), invalid.getError());
 
     }
@@ -176,7 +181,7 @@ public class VavrTest {
         private static final String VALID_NAME_CHARS = "[a-zA-Z ]";
         private static final int MIN_AGE = 0;
 
-        static Validation<List<String>, Person> validatePerson(String name, int age) {
+        static Validation<Seq<String>, Person> validatePerson(String name, int age) {
             return Validation.combine(validateName(name), validateAge(age)).ap(Person::new);
         }
 

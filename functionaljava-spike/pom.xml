@@ -27,7 +27,7 @@
         <easymock.version>3.4</easymock.version>
         <functionaljava.version>4.7</functionaljava.version>
         <guava.version>21.0</guava.version>
-        <javaslang.version>2.0.5</javaslang.version>
+        <vavr.version>0.9.0</vavr.version>
         <joda-time.version>2.9.9</joda-time.version>
         <junit.version>4.12</junit.version>
         <log4j.version>1.2.17</log4j.version>
@@ -116,15 +116,21 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>io.javaslang</groupId>
-            <artifactId>javaslang</artifactId>
-            <version>${javaslang.version}</version>
+            <groupId>io.vavr</groupId>
+            <artifactId>vavr</artifactId>
+            <version>${vavr.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>io.javaslang</groupId>
-            <artifactId>javaslang-test</artifactId>
-            <version>${javaslang.version}</version>
+            <groupId>io.vavr</groupId>
+            <artifactId>vavr-match</artifactId>
+            <version>${vavr.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.vavr</groupId>
+            <artifactId>vavr-test</artifactId>
+            <version>${vavr.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

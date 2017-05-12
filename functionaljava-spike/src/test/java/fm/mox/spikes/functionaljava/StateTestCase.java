@@ -84,15 +84,11 @@ fromStoAandS c | c `mod` 5 == 0 = ("foo",c+1)
     @Test
     public void testGreeter() throws Exception {
         final State<String, String> init = State.init();
-        final State<String, String> st1 = init.flatMap(s -> {
-            return State.unit(s1 -> {
-                return P.p("Batman", "Hello " + s1);
-            });
-        });
+        final State<String, String> st1 =
+                init.flatMap(s -> State.unit(s1 -> P.p("Batman", "Hello " + s1)));
         final P2<String, String> robin = st1.run("Robin");
 
         assertEquals(robin, P.p("Batman", "Hello Robin"));
-
     }
 
     @Test
