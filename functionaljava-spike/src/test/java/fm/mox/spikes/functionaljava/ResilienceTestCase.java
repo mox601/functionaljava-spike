@@ -7,6 +7,7 @@ import io.vavr.control.Try;
 import org.testng.annotations.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.testng.Assert.assertEquals;
 
 /**
  * Created by matteo (dot) moci (at) gmail (dot) com
@@ -20,7 +21,6 @@ public class ResilienceTestCase {
         // Get a CircuitBreaker from the CircuitBreakerRegistry with the global default configuration
         CircuitBreaker circuitBreaker = circuitBreakerRegistry.circuitBreaker("otherName");
 
-
         // When I decorate my function
         CheckedFunction0<String> decoratedSupplier = CircuitBreaker
                 .decorateCheckedSupplier(circuitBreaker, () -> "This can be any method which returns: 'Hello");
@@ -31,5 +31,6 @@ public class ResilienceTestCase {
 
         // Then the Try Monad returns a Success<String>, if all functions ran successfully.
 
+        assertEquals(result.get(), "This can be any method which returns: 'Hello world'");
     }
 }
