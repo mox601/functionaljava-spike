@@ -29,6 +29,13 @@ public class StateTestCase {
     // that takes a state and returns an intermediate value and some new state value.
 
 
+    /*The flatMap method takes a function from A (a value) to StateMonad<S, B>
+        and return a new StateMonad<S, B>. (In our case, A is the same as B.)
+        The new type contains the new value and the new state that result
+        from the application of the function.*/
+
+    //        This class holds a function from a state to a tuple (value, state)
+
     /*
     * -- look at our counter and return "foo" or "bar"
 -- along with the incremented counter:
@@ -37,11 +44,11 @@ fromStoAandS c | c `mod` 5 == 0 = ("foo",c+1)
                | otherwise = ("bar",c+1)
     * */
 
-//    http://brandon.si/code/the-state-monad-a-tutorial-for-the-confused/
+    //    http://brandon.si/code/the-state-monad-a-tutorial-for-the-confused/
     @Test
     public void testNamea() throws Exception {
 
-        //input, pair(output, state)
+        //state, pair(written state, output)
         F<Integer, P2<Integer, String>> fromStoAandS = c -> {
             P2<Integer, String> result;
             if (c % 5 == 0) {
@@ -79,6 +86,12 @@ fromStoAandS c | c `mod` 5 == 0 = ("foo",c+1)
     public void testUnit() throws Exception {
         assertEquals(State.unit(o -> P.p(o, "value")).eval(null), "value");
     }
+
+    /*
+    * http://www.smartjava.org/content/scalaz-features-everyday-usage-part-3-state-monad-writer-monad-and-lenses
+    With the (Reader monad) we already saw how you could inject some context into a function. That context, however, wasn't changeable. With the state monad, we're provided with a nice pattern we can use to pass a mutable context around in a safe and pure manner.*/
+
+//    https://github.com/Muzietto/BeckmanStateMonad/blob/master/test/net/faustinelli/monad/state/beckman/MonadicLabeling.java
 
     // https://github.com/functionaljava/functionaljava/blob/master/demo/src/main/java/fj/demo/StateDemo_Greeter.java
     @Test
@@ -152,5 +165,34 @@ fromStoAandS c | c `mod` 5 == 0 = ("foo",c+1)
                 return this;
             }
         }
+    }
+
+
+    //    http://www.smartjava.org/content/scalaz-features-everyday-usage-part-3-state-monad-writer-monad-and-lenses
+    @Test
+    public void testGetFromState() throws Exception {
+
+        P2<LeftOver, Integer> run = addToState(20)
+                .flatMap(i -> getFromState(5))
+                .flatMap(i -> getFromState(5))
+                .flatMap(i -> getFromState(5))
+//                .withs(leftOver -> new LeftOver(9000))
+//                .flatMap(i -> getFromState(10))
+                .run(new LeftOver(10));
+
+        log.info(run + "");
+    }
+
+    @Value
+    private static class LeftOver {
+        private final Integer size;
+    }
+
+    State<LeftOver, Integer> getFromState(Integer a) {
+        return State.unit(x -> P.p(new LeftOver(x.size - a), a));
+    }
+
+    State<LeftOver, Integer> addToState(Integer a) {
+        return State.unit(x -> P.p(new LeftOver(x.size + a), a));
     }
 }

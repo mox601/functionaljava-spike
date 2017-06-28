@@ -13,6 +13,8 @@ import static org.testng.Assert.assertEquals;
  * Created by matteo (dot) moci (at) gmail (dot) com
  */
 public class ResilienceTestCase {
+
+    //http://resilience4j.github.io/resilience4j/
     @Test
     public void testName() throws Exception {
 
