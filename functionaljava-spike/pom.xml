@@ -32,11 +32,13 @@
         <junit.version>4.12</junit.version>
         <log4j.version>1.2.17</log4j.version>
         <lombok.version>1.16.16</lombok.version>
+        <resilience4j.version>0.9.0</resilience4j.version>
         <slf4j-api.version>1.7.25</slf4j-api.version>
         <testng.version>6.9.10</testng.version>
         <totallylazy.version>2.183</totallylazy.version>
 
         <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
+
     </properties>
 
     <dependencyManagement>
@@ -222,6 +224,37 @@
             <groupId>com.spotify</groupId>
             <artifactId>docker-client</artifactId>
             <version>8.4.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.resilience4j</groupId>
+            <artifactId>resilience4j-circuitbreaker</artifactId>
+            <version>${resilience4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.github.resilience4j</groupId>
+            <artifactId>resilience4j-ratelimiter</artifactId>
+            <version>${resilience4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.github.resilience4j</groupId>
+            <artifactId>resilience4j-retry</artifactId>
+            <version>${resilience4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.github.resilience4j</groupId>
+            <artifactId>resilience4j-bulkhead</artifactId>
+            <version>${resilience4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.github.resilience4j</groupId>
+            <artifactId>resilience4j-cache</artifactId>
+            <version>${resilience4j.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
