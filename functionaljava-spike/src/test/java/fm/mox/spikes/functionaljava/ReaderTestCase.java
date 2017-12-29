@@ -1,6 +1,8 @@
 package fm.mox.spikes.functionaljava;
 
 import fj.F;
+import fj.F1Functions;
+import fj.F2Functions;
 import fj.Monoid;
 import fj.P;
 import fj.P2;
@@ -9,6 +11,7 @@ import fj.data.State;
 import fj.data.Writer;
 import lombok.Value;
 import lombok.experimental.Tolerate;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.math.BigInteger;
@@ -33,12 +36,14 @@ public class ReaderTestCase {
     //
     //
 
-    @Test
-    public void testR() throws Exception {
+    private UserRepository userRepository;
+    private User bobSupervisor;
 
-        final User bobSupervisor = new User(2, "bob's supervisor");
+    @BeforeMethod
+    public void setUp() throws Exception {
+        this.bobSupervisor = new User(2, "bob's supervisor");
 
-        UserRepository userRepository = new UserRepository() {
+        this.userRepository = new UserRepository() {
             @Override
             public User get(int id) {
                 return new User(1, "Bob", bobSupervisor);
@@ -53,6 +58,10 @@ public class ReaderTestCase {
                 }
             }
         };
+    }
+
+    @Test
+    public void testR() throws Exception {
 
         // http://www.davesquared.net/2012/08/reader-monad.html
 
@@ -63,10 +72,51 @@ public class ReaderTestCase {
 
         User bobSupervisorRead = readingBobSupervisor.f(userRepository);
 
-        assertEquals(bobSupervisorRead, bobSupervisor);
-
+        assertEquals(bobSupervisorRead, this.bobSupervisor);
 
         //TODO implement toString with  writer and state monad
+    }
+
+    @Test
+    public void testEnv() throws Exception {
+        IEnv anEnvWithMockUserRepository = () -> () -> userRepository;
+        String oneUsername = UserService.getUsername(1).f(anEnvWithMockUserRepository);
+
+        assertEquals(oneUsername, "Bob");
+    }
+
+    public interface IEnv {
+        IRepositories repositories();
+    }
+
+    public interface IRepositories {
+        UserRepository userRepository();
+    }
+
+    //Reader for dependency injection https://www.youtube.com/watch?v=xPlsVVaMoB0&t=1659s
+    public static class Env {
+        static final Reader<IEnv, IEnv> ENV_READER =
+                Reader.unit((F<IEnv, IEnv>) r -> r);
+        static final Reader<IEnv, IRepositories> REPOSITORIES_READER =
+                ENV_READER.map(IEnv::repositories);
+
+    }
+
+    public static class Repositories {
+        static final Reader<IEnv, UserRepository> USER_REPOSITORY =
+                Env.REPOSITORIES_READER.map(IRepositories::userRepository);
+    }
+
+    public static class UserRepo {
+        static Reader<IEnv, User> get(int id) {
+            return Repositories.USER_REPOSITORY.map(userRepository -> userRepository.get(id));
+        }
+    }
+
+    public static class UserService {
+        static Reader<IEnv, String> getUsername(int userId) {
+            return UserRepo.get(userId).map(User::getUsername);
+        }
     }
 
     @Test
@@ -114,34 +164,40 @@ public class ReaderTestCase {
 
     }
 
+    @Value
+    private static class User {
+        int id;
+        String username;
+        User supervisor;
+        @Tolerate
+        private User(final int id, final String username) {
+            this(id, username, null);
+        }
+    }
+
     public interface UserRepository {
         User get(int id);
-
         User find(String username);
     }
 
-    public interface LogWriters {
-
-        static Writer<String, User> makeSomething(User user) {
-            return Writer.unit(user, "did this", Monoid.stringMonoid);
-        }
-
-        static Writer<String, User> makeSomethingElse(User user) {
-            return Writer.unit(user, "did some other thing", Monoid.stringMonoid);
-        }
-    }
-
     public interface UserReaders {
+
+        //unit
+        Reader<UserRepository, UserRepository> USER_REPOSITORY_READER =
+                Reader.unit(userRepository -> userRepository);
+
+        //read user from UserRepository
         static Reader<UserRepository, User> getUser(int id) {
-            return Reader.unit((UserRepository userRepository) -> userRepository.get(id));
+            return USER_REPOSITORY_READER.map((UserRepository userRepository) -> userRepository.get(id));
         }
 
         static Reader<UserRepository, User> findUser(String username) {
-            return Reader.unit((UserRepository userRepository) -> userRepository.find(username));
+            return USER_REPOSITORY_READER.map(((UserRepository userRepository) -> userRepository.find(username)));
         }
 
-        static Reader<User, String> id() {
-            return Reader.unit(user -> user.getId() + "");
+        //read attributes from User aka getters
+        static Reader<User, Integer> id() {
+            return Reader.unit(User::getId);
         }
 
         static Reader<User, String> username() {
@@ -149,18 +205,15 @@ public class ReaderTestCase {
         }
     }
 
-    @Value
-    private static class User {
-
-        private final int id;
-        private final String username;
-        private final User supervisor;
-
-        @Tolerate
-        private User(final int id, final String username) {
-            this(id, username, null);
+    public interface LogWriters {
+        static Writer<String, User> makeSomething(User user) {
+            return Writer.unit(user, "did this", Monoid.stringMonoid);
+        }
+        static Writer<String, User> makeSomethingElse(User user) {
+            return Writer.unit(user, "did some other thing", Monoid.stringMonoid);
         }
     }
+
 
     @Test
     public void testFib() throws Exception {

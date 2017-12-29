@@ -146,9 +146,9 @@ fromStoAandS c | c `mod` 5 == 0 = ("foo",c+1)
     @Value
     public static class VendingMachine {
 
-        private final boolean locked;
-        private final int items;
-        private final int coins;
+        boolean locked;
+        int items;
+        int coins;
 
         VendingMachine next(final Input i) {
             if (items == 0) {
@@ -166,7 +166,6 @@ fromStoAandS c | c `mod` 5 == 0 = ("foo",c+1)
             }
         }
     }
-
 
     //    http://www.smartjava.org/content/scalaz-features-everyday-usage-part-3-state-monad-writer-monad-and-lenses
     @Test
@@ -189,10 +188,16 @@ fromStoAandS c | c `mod` 5 == 0 = ("foo",c+1)
     }
 
     State<LeftOver, Integer> getFromState(Integer a) {
-        return State.unit(x -> P.p(new LeftOver(x.size - a), a));
+        return State.unit(x -> {
+            log.info(x.toString());
+            return P.p(new LeftOver(x.size - a), a);
+        });
     }
 
     State<LeftOver, Integer> addToState(Integer a) {
-        return State.unit(x -> P.p(new LeftOver(x.size + a), a));
+        return State.unit(x -> {
+            log.info(x.toString());
+            return P.p(new LeftOver(x.size + a), a);
+        });
     }
 }
