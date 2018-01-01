@@ -1,10 +1,12 @@
 package fm.mox.spikes.functionaljava;
 
-import io.reactivex.Flowable;
+import io.reactivex.Single;
 import io.reactivex.functions.Function;
 import lombok.extern.slf4j.Slf4j;
-import org.reactivestreams.Publisher;
 import org.testng.annotations.Test;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.testng.Assert.assertEquals;
 
@@ -15,27 +17,21 @@ import static org.testng.Assert.assertEquals;
 public class RxTestCase {
 
     @Test
-    public void testName() throws Exception {
-        Flowable<String> hw = Flowable.just("Hello world");
-        Flowable<String> concatenatedResponse = getStringFlowable(hw);
-        assertEquals(concatenatedResponse.blockingSingle(), "Hello world 1");
-    }
-
-    private Flowable<String> getStringFlowable(Flowable<String> input) {
-        Flowable<String> fetched = input
-                .flatMap((Function<String, Publisher<String>>) s -> {
-                    //fetch from repository by input
-                    return fetchById(input);
-                });
-        Flowable<Integer> inputRank = fetched.map(this::fetchRankById);
-        return inputRank.zipWith(input, (integer, s) -> s + " " + integer);
-    }
-
-    private Flowable<String> fetchById(Flowable<String> input) {
-        return Flowable.just("this");
-    }
-
-    private Integer fetchRankById(String input) {
-        return 1;
+    public void testSingle() throws Exception {
+        Single<String> spaceSeparated = Single
+                .concat(Arrays.asList(Single.just("one"), Single.just("two")))
+                .doOnNext(m -> log.info(m + ""))
+                .toList()
+                .flatMap((Function<List<String>, Single<String>>) aList -> {
+                    StringBuilder sb = new StringBuilder();
+                    String aSeparator = "";
+                    for (String anItem : aList) {
+                        sb.append(aSeparator).append(anItem);
+                        aSeparator = " ";
+                    }
+                    return Single.just(sb.toString());
+                })
+                .doOnEvent((s, throwable) -> log.info(s));
+        assertEquals(spaceSeparated.blockingGet(), "one two");
     }
 }
