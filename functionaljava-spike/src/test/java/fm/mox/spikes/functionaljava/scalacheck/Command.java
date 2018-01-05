@@ -15,7 +15,15 @@ public interface Command<SUT, STATE, RESULT> {
     Property postCondition(STATE state, Try0<RESULT, Exception> result);
 
     default P2<Try0<String, Exception>, F<STATE, Property>> runPC(SUT sut) {
-        //
+        //TODO
+
+        /*
+        *
+        * import Prop.BooleanOperators
+      val r = Try(run(sut))
+      (r.map(_.toString), s => preCondition(s) ==> postCondition(s,r))
+
+        * */
 
         return null;
     }

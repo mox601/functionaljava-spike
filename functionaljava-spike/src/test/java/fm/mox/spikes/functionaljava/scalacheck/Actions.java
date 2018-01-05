@@ -7,8 +7,8 @@ import lombok.Value;
  * Created by matteo (dot) moci (at) gmail (dot) com
  */
 @Value
-public class Actions {
-    Long s;
-    List<Command> seqCmds;
-    List<List<Command>> parCmds;
+public class Actions<SUT, STATE, RESULT> {
+    STATE s;
+    List<Command<SUT, STATE, RESULT>> seqCmds;
+    List<List<Command<SUT, STATE, RESULT>>> parCmds;
 }

@@ -1,37 +1,5 @@
 package fm.mox.spikes.functionaljava;
 
-import fj.F;
-import fj.F2;
-import fj.P;
-import fj.P1;
-import fj.P2;
-import fj.Try;
-import fj.data.List;
-import fj.data.Option;
-import fj.data.Validation;
-import fj.function.Try0;
-import fj.test.Arbitrary;
-import fj.test.CheckResult;
-import fj.test.Gen;
-import fj.test.Property;
-import fj.test.Rand;
-import fj.test.Shrink;
-import fm.mox.spikes.functionaljava.scalacheck.Actions;
-import fm.mox.spikes.functionaljava.scalacheck.Command;
-import fm.mox.spikes.functionaljava.scalacheck.Commands;
-import lombok.Getter;
-import lombok.Value;
-import lombok.extern.slf4j.Slf4j;
-import org.testng.annotations.Test;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
 import static fj.P.p;
 import static fj.test.Arbitrary.arbCharacterBoundaries;
 import static fj.test.Arbitrary.arbList;
@@ -50,6 +18,21 @@ import static fm.mox.spikes.functionaljava.GenTestCase.Elevator.Floor.FIRST;
 import static fm.mox.spikes.functionaljava.GenTestCase.Elevator.Floor.GROUND;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
+
+import org.testng.annotations.Test;
+
+import fj.F;
+import fj.F2;
+import fj.P1;
+import fj.data.List;
+import fj.data.Option;
+import fj.test.CheckResult;
+import fj.test.Gen;
+import fj.test.Property;
+import fj.test.Rand;
+import fj.test.Shrink;
+import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Matteo Moci ( matteo (dot) moci (at) gmail (dot) com )
@@ -139,7 +122,7 @@ public class GenTestCase {
                 elevator = elevator.press(button);
             }
 
-            Elevator.Floor floor = elevator.getFloor();
+            Elevator.Floor floor = elevator.floor;
 
             boolean isFirstOrGround = floor.equals(FIRST) || floor.equals(GROUND);
 
@@ -153,7 +136,6 @@ public class GenTestCase {
         assertTrue(check.isPassed());
     }
 
-    @Value
     public static class Elevator {
 
         Floor floor;
@@ -209,240 +191,9 @@ public class GenTestCase {
     public static class User {
         String username;
         String password;
-
         public int count() {
             return this.username.length();
         }
     }
 
-
-    //    implement this http://www.scalacheck.org/files/scaladays2014/index.html#12
-    //    https://github.com/rickynils/scalacheck/blob/master/src/main/scala/org/scalacheck/commands/Commands.scala
-    @Test
-    public void testCounter() throws Exception {
-
-    }
-
-    //in test code
-    public static class CounterCommands implements Commands<Counter, Long> {
-        @Override
-        public Counter newSut(Long state) {
-            return new Counter(state.intValue());
-        }
-        @Override
-        public void destroySut(Counter counter) {
-        }
-
-        @Override
-        public boolean initialPreCondition(Long state) {
-            return true;
-        }
-
-        @Override
-        public Gen<Long> genInitialState() {
-            return Arbitrary.arbLong;
-        }
-        @Override
-        public Gen<Command> genCommand(Long state) {
-            Gen<Command> incrGen = null;
-            Gen<Command> getGen = null;
-            List<Gen<Command>> commands = List.list(incrGen, getGen);
-            return Gen.oneOf(commands);
-        }
-
-
-        /** [[Actions]] generator */
-        /*private def actions(threadCount: Int, maxParComb: Int): Gen[Actions] = {
-    import Gen.{const, listOfN, sized}
-
-            def sizedCmds(s: State)(sz: Int): Gen[(State,Commands)] = {
-                val l: List[Unit] = List.fill(sz)(())
-                l.foldLeft(const((s,Nil:Commands))) { case (g,()) =>
-                    for {
-                    (s0,cs) <- g
-                    c <- genCommand(s0) suchThat (_.preCondition(s0))
-                } yield (c.nextState(s0), cs :+ c)
-                }
-            }*/
-
-        Gen<Actions> actions() {
-
-            Gen<Long> s0 = genInitialState();
-
-            Gen<Actions> g = null;
-            g.filter(new F<Actions, Boolean>() {
-                         @Override
-                         public Boolean f(Actions as) {
-
-                             /*
-                             as.parCmds.length != 1
-                             && as.parCmds.forall(_.nonEmpty)
-                             && initialPreCondition(as.s)
-                             && (cmdsPrecond(as.s, as.seqCmds) match {
-                                 case (s,true) => as.parCmds.forall(cmdsPrecond(s,_)._2)
-                                 case _ => false
-                             */
-
-                             boolean b1 = as.getParCmds().length() != 1;
-                             boolean forall = as.getParCmds().forall(List::isNotEmpty);
-                             boolean b = initialPreCondition(as.getS());
-
-                             P2<Long, Boolean> p = cmdsPrecond(as.getS(), as.getSeqCmds());
-
-                             if (p._2()) {
-                                 as.getParCmds().forall(new F<List<Command>, Boolean>() {
-                                     @Override
-                                     public Boolean f(List<Command> commands) {
-                                         return cmdsPrecond(as.getS(), as.getSeqCmds())._2();
-                                     }
-                                 });
-                             }
-
-                             return null;
-                         }
-                     }
-            );
-
-            return null;
-        }
-
-        private P2<Long, Boolean> cmdsPrecond(Long s, List<Command> seqCmds) {
-            return null;
-        }
-
-        public static Property property() {
-
-            //val suts = collection.mutable.Map.empty[AnyRef,(State,Option[Sut])]
-            Map<Object, P2<Long, Option<Counter>>> suts = new HashMap<>();
-
-            /*
-            val sutId = suts.synchronized {
-            val initSuts = for((state,None) <- suts.values) yield state
-            val runningSuts = for((_,Some(sut)) <- suts.values) yield sut
-            if (canCreateNewSut(as.s, initSuts, runningSuts)) {
-                    val sutId = new AnyRef
-                    suts += (sutId -> (as.s -> None))
-                    Some(sutId)
-                } else None
-            }
-            */
-
-            //synchronized
-            Collection<P2<Long, Option<Counter>>> values = suts.values();
-
-            Option<Object> optSutId = sutId(suts, values);
-
-            if (optSutId.isSome()) {
-                //Some
-
-                /*val sut = newSut(as.s)
-                def removeSut():Unit = {
-                        suts.synchronized {
-                    suts -= id
-                    destroySut(sut)
-                }*/
-
-
-
-
-            } else {
-                //None
-            }
-
-
-            //verify all properties
-            Increment increment = new Increment();
-            Get get = new Get();
-            return null;
-        }
-
-        private static Option<Object> sutId(Map<Object, P2<Long, Option<Counter>>> suts,
-                                            Collection<P2<Long, Option<Counter>>> values) {
-            Object sutId = null;
-            // valuesWithNoneCounter
-            java.util.List<Long> initSuts = values
-                    .stream()
-                    .filter(longOptionP2 -> longOptionP2._2().isNone())
-                    .map(P2::_1)
-                    .collect(Collectors.toList());
-
-            java.util.List<Counter> runningSuts = values
-                    .stream()
-                    .filter(longOptionP2 -> longOptionP2._2().isSome())
-                    .map(P2::_2)
-                    .map(counters -> counters.some())
-                    .collect(Collectors.toList());
-
-            if (canCreateNewSut(null, initSuts, runningSuts)) {
-                P2<Long, Option<Counter>> tuple = P.p(null, Option.none());
-                sutId = new Object();
-                suts.put(sutId, tuple);
-            }
-
-            return Option.fromNull(sutId);
-        }
-
-        // If you want to allow only one [[Sut]] instance to exist at any given time
-        //   *  (a singleton [[Sut]]), implement this method the following way:
-        static boolean canCreateNewSut(Long state, Collection<Long> initSuts, Collection<Counter> runningSuts) {
-            return initSuts.isEmpty() && runningSuts.isEmpty();
-        }
-    }
-
-    // Counter, aka System Under Test
-    @Getter
-    public static class Counter {
-        private int n;
-        public Counter(int n) {
-            this.n = n;
-        }
-        public Integer increment() {
-            this.n = n + 1;
-            return this.n;
-        }
-    }
-
-    @Value
-    public static class Increment implements Command<Counter, Long, Integer> {
-        @Override
-        public Integer run(Counter sut) {
-            return sut.increment();
-        }
-        @Override
-        public Long nextState(Long previous) {
-            return previous + 1;
-        }
-        @Override
-        public boolean preCondition(Long state) {
-            return true;
-        }
-        @Override
-        public Property postCondition(Long state, Try0<Integer, Exception> result) {
-            P1<Validation<Exception, Integer>> f = Try.f(result);
-            Validation<Exception, Integer> integers = f._1();
-            Property resultEqualToStateProp = Property.prop(integers.success().equals(state.intValue()));
-            return Property.prop(integers.isSuccess()).and(resultEqualToStateProp);
-        }
-    }
-
-    @Value
-    public static class Get implements Command<Counter, Long, Integer> {
-        @Override
-        public Integer run(Counter sut) {
-            return sut.getN();
-        }
-        @Override
-        public Long nextState(Long previous) {
-            return previous;
-        }
-        @Override
-        public boolean preCondition(Long state) {
-            return true;
-        }
-        @Override
-        public Property postCondition(Long state, Try0<Integer, Exception> result) {
-            //TODO
-            return null;
-        }
-    }
 }
