@@ -16,6 +16,9 @@ import fj.test.Gen;
 import fj.test.Property;
 import fj.test.Rand;
 import fj.test.Shrink;
+import fm.mox.spikes.functionaljava.scalacheck.Actions;
+import fm.mox.spikes.functionaljava.scalacheck.Command;
+import fm.mox.spikes.functionaljava.scalacheck.Commands;
 import lombok.Getter;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
@@ -220,16 +223,8 @@ public class GenTestCase {
 
     }
 
-    //
-    public interface Commands {
-        Counter newSut(Long state);
-        void destroySut(Counter counter);
-        boolean initialPreCondition(Long state);
-        Gen<Long> genInitialState();
-        Gen<Command> genCommand(Long state);
-    }
-
-    public static class CounterCommands implements Commands {
+    //in test code
+    public static class CounterCommands implements Commands<Counter, Long> {
         @Override
         public Counter newSut(Long state) {
             return new Counter(state.intValue());
@@ -270,13 +265,6 @@ public class GenTestCase {
                 }
             }*/
 
-        @Value
-        public static class Actions {
-            Long s;
-            List<Command> seqCmds;
-            List<List<Command>> parCmds;
-        }
-
         Gen<Actions> actions() {
 
             Gen<Long> s0 = genInitialState();
@@ -295,17 +283,17 @@ public class GenTestCase {
                                  case _ => false
                              */
 
-                             boolean b1 = as.parCmds.length() != 1;
-                             boolean forall = as.parCmds.forall(List::isNotEmpty);
-                             boolean b = initialPreCondition(as.s);
+                             boolean b1 = as.getParCmds().length() != 1;
+                             boolean forall = as.getParCmds().forall(List::isNotEmpty);
+                             boolean b = initialPreCondition(as.getS());
 
-                             P2<Long, Boolean> p = cmdsPrecond(as.s, as.seqCmds);
+                             P2<Long, Boolean> p = cmdsPrecond(as.getS(), as.getSeqCmds());
 
-                             if (p._2().booleanValue()) {
-                                 as.parCmds.forall(new F<List<Command>, Boolean>() {
+                             if (p._2()) {
+                                 as.getParCmds().forall(new F<List<Command>, Boolean>() {
                                      @Override
                                      public Boolean f(List<Command> commands) {
-                                         return cmdsPrecond(as.s, as.seqCmds)._2();
+                                         return cmdsPrecond(as.getS(), as.getSeqCmds())._2();
                                      }
                                  });
                              }
@@ -414,15 +402,8 @@ public class GenTestCase {
         }
     }
 
-    public interface Command {
-        Integer run(Counter sut);
-        Long nextState(Long previous);
-        boolean preCondition(Long state);
-        Property postCondition(Long state, Try0<Integer, Exception> result);
-    }
-
     @Value
-    public static class Increment implements Command {
+    public static class Increment implements Command<Counter, Long, Integer> {
         @Override
         public Integer run(Counter sut) {
             return sut.increment();
@@ -445,7 +426,7 @@ public class GenTestCase {
     }
 
     @Value
-    public static class Get implements Command {
+    public static class Get implements Command<Counter, Long, Integer> {
         @Override
         public Integer run(Counter sut) {
             return sut.getN();
