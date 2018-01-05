@@ -1,8 +1,6 @@
 package fm.mox.spikes.functionaljava;
 
 import fj.F;
-import fj.F1Functions;
-import fj.F2Functions;
 import fj.Monoid;
 import fj.P;
 import fj.P2;

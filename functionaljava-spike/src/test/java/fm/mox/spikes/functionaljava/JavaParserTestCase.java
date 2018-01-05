@@ -17,7 +17,7 @@ import java.io.PrintWriter;
  */
 @Log
 public class JavaParserTestCase {
-    @Test
+    @Test(enabled = false)
     public void testName() throws Exception {
         CompilationUnit a = JavaParser.parse(
                 "package fm.mox.classes; class A implements Serializable { public int sum(int a, B b) { return a; } }");

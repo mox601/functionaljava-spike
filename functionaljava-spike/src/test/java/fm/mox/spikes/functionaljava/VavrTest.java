@@ -2,8 +2,6 @@ package fm.mox.spikes.functionaljava;
 
 import io.vavr.Function1;
 import io.vavr.Function2;
-import io.vavr.Patterns;
-import io.vavr.Predicates;
 import io.vavr.collection.CharSeq;
 import io.vavr.collection.List;
 import io.vavr.collection.Seq;
@@ -13,25 +11,23 @@ import io.vavr.control.Validation;
 import io.vavr.test.Arbitrary;
 import io.vavr.test.Property;
 import lombok.Value;
-import org.testng.annotations.Test;
 
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
 import static io.vavr.API.Match;
-import static io.vavr.Predicates.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
  * Created by matteo (dot) moci (at) gmail (dot) com
  */
-public class VavrTest {
+    public class VavrTest {
 
     //    it adheres to the requirement of a monad to maintain computational context when calling .map.
     // In terms of an Option, this means that calling .map on a Some will result in a Some,
     // and calling .map on a None will result in a None. In the Java Optional example above,
     // that context changed from a Some to a None.
-    @Test(expectedExceptions = NullPointerException.class)
+//    @Test(expectedExceptions = NullPointerException.class)
     public void npe() throws Exception {
 
         Option<String> maybeFoo = Option.of("foo");
@@ -46,7 +42,7 @@ public class VavrTest {
     //    This may seem to make Option useless, but it actually forces you to pay attention to possible
     // occurrences of null and deal with them accordingly instead of unknowingly accepting them.
     // The correct way to deal with occurrences of null is to use flatMap.
-    @Test
+//    @Test
     public void carefully() throws Exception {
 
         Option<String> maybeFoo = Option.of("foo");
@@ -61,7 +57,7 @@ public class VavrTest {
     }
 
     //    http://blog.javaslang.io/the-agonizing-death-of-an-astronaut/
-    @Test
+//    @Test
     public void alternative() throws Exception {
         Option<String> maybeFoo = Option.of("foo");
 
@@ -74,7 +70,7 @@ public class VavrTest {
 
     }
 
-    @Test
+//    @Test
     public void name() throws Exception {
 
         Option<String> maybeFoo = Option.of("foo");
@@ -86,7 +82,7 @@ public class VavrTest {
 
     }
 
-    @Test
+//    @Test
     public void trya() throws Exception {
         assertEquals(1, divide(1, 0).getOrElse(() -> 1).intValue());
     }
@@ -96,7 +92,7 @@ public class VavrTest {
         return Try.of(() -> dividend / divisor);
     }
 
-    @Test
+//    @Test(enabled = false)
     public void prop() throws Exception {
 
         Arbitrary<Integer> ints = Arbitrary.integer();
@@ -107,10 +103,9 @@ public class VavrTest {
                 .suchThat(i -> i * i >= 0)
                 .check()
                 .assertIsSatisfied();
-
     }
 
-    @Test
+//    @Test
     public void lifting() throws Exception {
 
         Function2<Integer, Integer, Integer> divide = (a, b) -> a / b;
@@ -130,7 +125,7 @@ public class VavrTest {
     }
 
     //TODO https://koziolekweb.pl/2016/06/18/pattern-matching-w-javie-z-javaslang-ii/
-    @Test
+//    @Test
     public void testMatch() throws Exception {
         String s = Match(1).of(
                 Case($(1), "one"),
@@ -163,7 +158,7 @@ public class VavrTest {
 
     }
 
-    @Test
+//    @Test
     public void validator() throws Exception {
 
         // Valid(Person(John Doe, 30))
@@ -198,7 +193,7 @@ public class VavrTest {
 
     @Value
     public static class Person {
-        public final String name;
-        public final int age;
+        String name;
+        int age;
     }
 }

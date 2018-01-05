@@ -47,8 +47,8 @@ public class LensTestCase {
     @Value
     private static class Lens<A, B> {
 
-        private final F<A, B> get;
-        private final F2<B, A, A> set;
+        F<A, B> get;
+        F2<B, A, A> set;
 
         public static <A, B> Lens<A, B> lens(final F<A, B> get, final F2<B, A, A> set) {
             return new Lens<>(get, set);
@@ -77,11 +77,11 @@ public class LensTestCase {
 
     @Value
     private static class Address {
-        private final String zipcode;
+        String zipcode;
     }
 
     @Value
     private static class Person {
-        private final Address address;
+        Address address;
     }
 }

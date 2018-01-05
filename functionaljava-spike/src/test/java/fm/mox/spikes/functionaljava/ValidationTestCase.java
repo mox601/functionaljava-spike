@@ -69,7 +69,7 @@ public class ValidationTestCase {
 
     @Value
     private static class User {
-        private final String name;
-        private final int age;
+        String name;
+        int age;
     }
 }

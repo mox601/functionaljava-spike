@@ -19,7 +19,7 @@ import static fj.data.Stream.iterableStream;
  */
 public class StreamTestCase {
 
-    @Test
+    @Test(enabled = false)
     public void testName() throws Exception {
         final Natural one = natural(1).some();
         final Stream<Natural> forever = forever(naturalEnumerator, one, 2);
