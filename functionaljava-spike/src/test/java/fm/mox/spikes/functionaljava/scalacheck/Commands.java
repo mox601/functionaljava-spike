@@ -106,10 +106,10 @@ public interface Commands<SUT, STATE, RESULT> {
         });
 
         F<List<List<Command<SUT, STATE, RESULT>>>, F<STATE, F<P2<STATE, List<Command<SUT, STATE, RESULT>>>, F<List<List<Command<SUT, STATE, RESULT>>>, Actions<SUT, STATE,
-            RESULT>>>>> listFF = lists -> state -> stateListP2 -> (F<List<List<Command<SUT, STATE, RESULT>>>, Actions<SUT, STATE, RESULT>>) lists1 -> new Actions<>(state,
+            RESULT>>>>> f = lists -> state -> stateListP2 -> (F<List<List<Command<SUT, STATE, RESULT>>>, Actions<SUT, STATE, RESULT>>) lists1 -> new Actions<>(state,
             stateListP2._2(), lists1);
 
-        return parCmdsGen.bind(stateGen, stateSeqCommandsTupleGen, parCmdsGen, listFF);
+        return parCmdsGen.bind(stateGen, stateSeqCommandsTupleGen, parCmdsGen, f);
     }
 
     default F<Integer, Gen<P2<STATE, List<Command<SUT, STATE, RESULT>>>>> sizedCmdsCurry(STATE aState) {

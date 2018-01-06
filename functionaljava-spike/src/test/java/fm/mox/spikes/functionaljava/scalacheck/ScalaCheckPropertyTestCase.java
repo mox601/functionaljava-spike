@@ -14,6 +14,4 @@ public class ScalaCheckPropertyTestCase {
 
     }
 
-    // Counter, aka System Under Test
-
 }

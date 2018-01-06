@@ -3,6 +3,7 @@ package fm.mox.spikes.functionaljava.scalacheck.sut;
 import lombok.Getter;
 
 /**
+ * Counter, aka System Under Test
  * @author mmoci (mmoci at expedia dot com).
  */
 @Getter
