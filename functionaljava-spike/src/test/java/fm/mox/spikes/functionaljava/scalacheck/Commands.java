@@ -35,21 +35,23 @@ public interface Commands<SUT, STATE, RESULT> {
 
     // If you want to allow only one [[Sut]] instance to exist at any given time
     //   *  (a singleton [[Sut]]), implement this method the following way:
-    boolean canCreateNewSut(Long state, Collection<Long> initSuts, Collection<Counter> runningSuts);
+    boolean canCreateNewSut(STATE state,
+                            Collection<STATE> initSuts,
+                            Collection<SUT> runningSuts);
 
     default Property property(Integer threadCount, Integer maxParComb) {
 
         //val suts = collection.mutable.Map.empty[AnyRef,(State,Option[Sut])]
-        Map<Object, P2<Long, Option<Counter>>> suts = new HashMap<>();
+        Map<Object, P2<STATE, Option<SUT>>> suts = new HashMap<>();
 
-        Gen<Actions<SUT, STATE, RESULT>> actions = null;
-        Shrink<Actions<SUT, STATE, RESULT>> shrink = null;
+        Gen<Actions<SUT, STATE, RESULT>> actions = actions(threadCount, maxParComb);
+        Shrink<Actions<SUT, STATE, RESULT>> shrinkActions = shrinkActions(null);
         F<Actions<SUT, STATE, RESULT>, P1<Property>> f = null;
 
-        Property.forall(actions, shrink, f);
+        Property.forall(actions, shrinkActions, f);
 
         //synchronized?
-        Collection<P2<Long, Option<Counter>>> values = suts.values();
+        Collection<P2<STATE, Option<SUT>>> values = suts.values();
 
         Option<Object> optSutId = sutId(suts, values);
 
@@ -73,26 +75,31 @@ public interface Commands<SUT, STATE, RESULT> {
         return null;
     }
 
+    default Shrink<Actions<SUT,STATE,RESULT>> shrinkActions(Actions<SUT,STATE,RESULT> as) {
+
+        /*val shrinkedCmds: Stream[Actions] =
+                Shrink.shrink(as.seqCmds).map(cs => as.copy(seqCmds = cs)) append
+        Shrink.shrink(as.parCmds).map(cs => as.copy(parCmds = cs))
+
+        Shrink.shrinkWithOrig[State](as.s)(shrinkState) flatMap { state =>
+            shrinkedCmds.map(_.copy(s = state))
+        }*/
+
+//        Shrink.shrink(as).map();
+
+
+        Shrink<Actions<SUT, STATE, RESULT>> actionsShrink = null;
+
+        return actionsShrink;
+
+    }
+
     default Gen<Actions<SUT, STATE, RESULT>> actions(Integer threadCount, Integer maxParComb) {
 
-        /*
-        *
-        * val parSz = {
-      // Nbr of combinations
-      def seqs(n: Long, m: Long): Long =
-        if(n == 1) 1 else math.round(math.pow(n.toDouble, m.toDouble)) * seqs(n-1,m)
-
-      if (threadCount < 2) 0 else {
-        var parSz = 1
-        while (seqs(threadCount.toLong, parSz.toLong) < maxParComb) parSz += 1
-        parSz
-      }
-    }
-        * */
-
-        int parSz = 0;
+        int parSz = Seqs.parSz(threadCount, maxParComb);
 
         Gen<STATE> stateGen = genInitialState();
+
         Gen<P2<STATE, List<Command<SUT, STATE, RESULT>>>> stateSeqCommandsTupleGen = stateGen
             .bind(state -> Gen.sized(sizedCmdsCurry(state)));
 
@@ -136,17 +143,17 @@ public interface Commands<SUT, STATE, RESULT> {
         return null;
     }
 
-    default Option<Object> sutId(Map<Object, P2<Long, Option<Counter>>> suts,
-                                 Collection<P2<Long, Option<Counter>>> values) {
+    default Option<Object> sutId(Map<Object, P2<STATE, Option<SUT>>> suts,
+                                 Collection<P2<STATE, Option<SUT>>> values) {
         Object sutId = null;
         // valuesWithNoneCounter
-        java.util.List<Long> initSuts = values
+        java.util.List<STATE> initSuts = values
             .stream()
             .filter(longOptionP2 -> longOptionP2._2().isNone())
             .map(P2::_1)
             .collect(Collectors.toList());
 
-        java.util.List<Counter> runningSuts = values
+        java.util.List<SUT> runningSuts = values
             .stream()
             .filter(longOptionP2 -> longOptionP2._2().isSome())
             .map(P2::_2)
@@ -154,7 +161,7 @@ public interface Commands<SUT, STATE, RESULT> {
             .collect(Collectors.toList());
 
         if (canCreateNewSut(null, initSuts, runningSuts)) {
-            P2<Long, Option<Counter>> tuple = P.p(null, Option.none());
+            P2<STATE, Option<SUT>> tuple = P.p(null, Option.none());
             sutId = new Object();
             suts.put(sutId, tuple);
         }
