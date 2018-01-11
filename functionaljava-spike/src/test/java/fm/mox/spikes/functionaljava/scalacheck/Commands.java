@@ -112,9 +112,18 @@ public interface Commands<SUT, STATE, RESULT> {
             return listGen;
         });
 
-        F<List<List<Command<SUT, STATE, RESULT>>>, F<STATE, F<P2<STATE, List<Command<SUT, STATE, RESULT>>>, F<List<List<Command<SUT, STATE, RESULT>>>, Actions<SUT, STATE,
-            RESULT>>>>> f = lists -> state -> stateListP2 -> (F<List<List<Command<SUT, STATE, RESULT>>>, Actions<SUT, STATE, RESULT>>) lists1 -> new Actions<>(state,
-            stateListP2._2(), lists1);
+        F<
+                List<List<Command<SUT, STATE, RESULT>>>,
+                F<
+                        STATE, F<
+                                P2<STATE, List<Command<SUT, STATE, RESULT>>>,
+                                F<
+                                        List<List<Command<SUT, STATE, RESULT>>>,
+                                        Actions<SUT, STATE, RESULT>>
+                                >
+                >
+         > f =
+                lists -> state -> stateListP2 -> (F<List<List<Command<SUT, STATE, RESULT>>>, Actions<SUT, STATE, RESULT>>) lists1 -> new Actions<>(state, stateListP2._2(), lists1);
 
         return parCmdsGen.bind(stateGen, stateSeqCommandsTupleGen, parCmdsGen, f);
     }
