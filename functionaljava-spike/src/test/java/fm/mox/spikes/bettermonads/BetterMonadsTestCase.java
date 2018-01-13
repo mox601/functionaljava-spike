@@ -1,8 +1,7 @@
-package fm.mox.spikes.functionaljava;
+package fm.mox.spikes.bettermonads;
 
 import com.jasongoodwin.monads.Try;
 import com.jasongoodwin.monads.TryConsumer;
-import com.jasongoodwin.monads.TryMapFunction;
 import lombok.extern.slf4j.Slf4j;
 import org.testng.annotations.Test;
 

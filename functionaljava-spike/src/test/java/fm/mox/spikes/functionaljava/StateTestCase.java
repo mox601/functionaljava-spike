@@ -89,7 +89,10 @@ fromStoAandS c | c `mod` 5 == 0 = ("foo",c+1)
 
     /*
     * http://www.smartjava.org/content/scalaz-features-everyday-usage-part-3-state-monad-writer-monad-and-lenses
-    With the (Reader monad) we already saw how you could inject some context into a function. That context, however, wasn't changeable. With the state monad, we're provided with a nice pattern we can use to pass a mutable context around in a safe and pure manner.*/
+    With the (Reader monad) we already saw how you could inject some context into a function.
+    That context, however, wasn't changeable. With the state monad,
+    we're provided with a nice pattern we can use to pass a mutable context around
+    in a safe and pure manner.*/
 
 //    https://github.com/Muzietto/BeckmanStateMonad/blob/master/test/net/faustinelli/monad/state/beckman/MonadicLabeling.java
 
@@ -184,7 +187,7 @@ fromStoAandS c | c `mod` 5 == 0 = ("foo",c+1)
 
     @Value
     private static class LeftOver {
-        private final Integer size;
+        Integer size;
     }
 
     State<LeftOver, Integer> getFromState(Integer a) {

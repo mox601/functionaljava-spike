@@ -1,4 +1,4 @@
-package fm.mox.spikes.functionaljava;
+package fm.mox.spikes.cyclops;
 
 import cyclops.stream.ReactiveSeq;
 import lombok.extern.slf4j.Slf4j;

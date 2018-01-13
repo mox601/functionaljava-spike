@@ -1,4 +1,4 @@
-package fm.mox.spikes.functionaljava;
+package fm.mox.spikes.resilience4j;
 
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
@@ -6,7 +6,6 @@ import io.vavr.CheckedFunction0;
 import io.vavr.control.Try;
 import org.testng.annotations.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.testng.Assert.assertEquals;
 
 /**

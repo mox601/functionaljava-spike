@@ -1,4 +1,4 @@
-package fm.mox.spikes.functionaljava;
+package fm.mox.spikes.durian;
 
 import com.diffplug.common.base.Box;
 import com.diffplug.common.base.Either;

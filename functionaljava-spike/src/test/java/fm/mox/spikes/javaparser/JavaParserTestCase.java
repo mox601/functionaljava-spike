@@ -1,4 +1,4 @@
-package fm.mox.spikes.functionaljava;
+package fm.mox.spikes.javaparser;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;

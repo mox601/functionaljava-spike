@@ -97,7 +97,6 @@ public class ReaderTestCase {
                 Reader.unit((F<IEnv, IEnv>) r -> r);
         static final Reader<IEnv, IRepositories> REPOSITORIES_READER =
                 ENV_READER.map(IEnv::repositories);
-
     }
 
     public static class Repositories {
@@ -119,36 +118,19 @@ public class ReaderTestCase {
 
     @Test
     public void testToStringWithReader() throws Exception {
-
         User aUser = new User(2, "username");
-
         //to string example
-
         Reader<User, String> toStringReader = UserReaders.id()
                 .flatMap(id -> UserReaders.username().map(username -> id + " " + username));
-
         String asString = toStringReader.f(aUser);
 
         assertEquals(asString, "2 username");
-
     }
 
-    //the Writer monad let us create and accumulate a log across multiple function calls
-    @Test
-    public void testLogWithWriter() throws Exception {
 
-        User aUser = new User(2, "makeSomethingElse");
-
-        Writer<String, User> toStringW = LogWriters
-                .makeSomething(aUser)
-                .flatMap(user -> LogWriters.makeSomethingElse(aUser));
-
-        assertEquals(toStringW.log(), "did thisdid some other thing");
-    }
 
     @Test
     public void testToStringWithState() throws Exception {
-
         State<String, String> st1 = State.<String>init()
                 .flatMap(s -> State.unit(s2 -> P.p("Batman", "Hello " + s)));
         P2<String, String> robin = st1.run("Robin");
@@ -159,7 +141,6 @@ public class ReaderTestCase {
         //TODO implement toString with state
         State<User, StringBuilder> id = null;
         State<User, StringBuilder> idAndUsername = null;
-
     }
 
     @Value
@@ -179,7 +160,6 @@ public class ReaderTestCase {
     }
 
     public interface UserReaders {
-
         //unit
         Reader<UserRepository, UserRepository> USER_REPOSITORY_READER =
                 Reader.unit(userRepository -> userRepository);
@@ -202,16 +182,6 @@ public class ReaderTestCase {
             return Reader.unit(User::getUsername);
         }
     }
-
-    public interface LogWriters {
-        static Writer<String, User> makeSomething(User user) {
-            return Writer.unit(user, "did this", Monoid.stringMonoid);
-        }
-        static Writer<String, User> makeSomethingElse(User user) {
-            return Writer.unit(user, "did some other thing", Monoid.stringMonoid);
-        }
-    }
-
 
     @Test
     public void testFib() throws Exception {

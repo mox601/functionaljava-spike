@@ -1,4 +1,4 @@
-package fm.mox.spikes.functionaljava;
+package fm.mox.spikes.vavr;
 
 import io.vavr.Function1;
 import io.vavr.Function2;

@@ -1,4 +1,4 @@
-package fm.mox.spikes.functionaljava;
+package fm.mox.spikes.totallylazy;
 
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;

@@ -1,21 +1,14 @@
-package fm.mox.spikes.functionaljava;
+package fm.mox.spikes.rxjava;
 
 import io.reactivex.Flowable;
-import io.reactivex.FlowableEmitter;
-import io.reactivex.FlowableOnSubscribe;
-import io.reactivex.Scheduler;
 import io.reactivex.Single;
-import io.reactivex.functions.Action;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subjects.PublishSubject;
 import lombok.extern.slf4j.Slf4j;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.function.Consumer;
 
 import static org.testng.Assert.assertEquals;
 
