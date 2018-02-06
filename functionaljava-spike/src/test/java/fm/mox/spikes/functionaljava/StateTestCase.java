@@ -1,5 +1,13 @@
 package fm.mox.spikes.functionaljava;
 
+import static fm.mox.spikes.functionaljava.StateTestCase.Input.COIN;
+import static fm.mox.spikes.functionaljava.StateTestCase.Input.TURN;
+import static org.testng.Assert.assertEquals;
+
+import java.io.ByteArrayInputStream;
+
+import org.testng.annotations.Test;
+
 import fj.F;
 import fj.P;
 import fj.P2;
@@ -7,14 +15,6 @@ import fj.data.List;
 import fj.data.State;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
-import org.testng.annotations.Test;
-
-import java.io.ByteArrayInputStream;
-import java.util.function.Function;
-
-import static fm.mox.spikes.functionaljava.StateTestCase.Input.COIN;
-import static fm.mox.spikes.functionaljava.StateTestCase.Input.TURN;
-import static org.testng.Assert.assertEquals;
 
 /**
  * take examples from https://github.com/functionaljava/functionaljava/tree/master/demo/src/main/java/fj/demo
@@ -176,13 +176,14 @@ fromStoAandS c | c `mod` 5 == 0 = ("foo",c+1)
 
         P2<LeftOver, Integer> run = addToState(20)
                 .flatMap(i -> getFromState(5))
-                .flatMap(i -> getFromState(5))
-                .flatMap(i -> getFromState(5))
+                .flatMap(i -> getFromState(6))
+                .flatMap(i -> getFromState(7))
 //                .withs(leftOver -> new LeftOver(9000))
 //                .flatMap(i -> getFromState(10))
                 .run(new LeftOver(10));
 
         log.info(run + "");
+        assertEquals(run, P.p(new LeftOver(12), 7));
     }
 
     @Value
