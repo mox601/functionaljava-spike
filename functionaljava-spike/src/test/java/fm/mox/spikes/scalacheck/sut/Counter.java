@@ -1,4 +1,4 @@
-package fm.mox.spikes.functionaljava.scalacheck.sut;
+package fm.mox.spikes.scalacheck.sut;
 
 import lombok.Getter;
 

@@ -1,4 +1,4 @@
-package fm.mox.spikes.functionaljava.scalacheck;
+package fm.mox.spikes.scalacheck;
 
 /**
  * Created by matteo (dot) moci (at) gmail (dot) com

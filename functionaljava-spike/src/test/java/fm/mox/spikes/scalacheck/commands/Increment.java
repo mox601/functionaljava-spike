@@ -1,12 +1,12 @@
-package fm.mox.spikes.functionaljava.scalacheck.commands;
+package fm.mox.spikes.scalacheck.commands;
 
 import fj.P1;
 import fj.Try;
 import fj.data.Validation;
 import fj.function.Try0;
 import fj.test.Property;
-import fm.mox.spikes.functionaljava.scalacheck.Command;
-import fm.mox.spikes.functionaljava.scalacheck.sut.Counter;
+import fm.mox.spikes.scalacheck.Command;
+import fm.mox.spikes.scalacheck.sut.Counter;
 
 /**
  * @author mmoci (mmoci at expedia dot com).

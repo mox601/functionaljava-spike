@@ -1,4 +1,4 @@
-package fm.mox.spikes.functionaljava.scalacheck;
+package fm.mox.spikes.scalacheck;
 
 import fj.F;
 import fj.P2;

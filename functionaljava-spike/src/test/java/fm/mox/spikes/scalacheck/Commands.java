@@ -1,4 +1,4 @@
-package fm.mox.spikes.functionaljava.scalacheck;
+package fm.mox.spikes.scalacheck;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -14,9 +14,8 @@ import fj.data.Option;
 import fj.test.Gen;
 import fj.test.Property;
 import fj.test.Shrink;
-import fm.mox.spikes.functionaljava.scalacheck.commands.Get;
-import fm.mox.spikes.functionaljava.scalacheck.commands.Increment;
-import fm.mox.spikes.functionaljava.scalacheck.sut.Counter;
+import fm.mox.spikes.scalacheck.commands.Get;
+import fm.mox.spikes.scalacheck.commands.Increment;
 
 /**
  * Created by matteo (dot) moci (at) gmail (dot) com
