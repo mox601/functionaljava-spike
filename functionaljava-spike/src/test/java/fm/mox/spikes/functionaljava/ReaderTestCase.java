@@ -127,8 +127,6 @@ public class ReaderTestCase {
         assertEquals(asString, "2 username");
     }
 
-
-
     @Test
     public void testToStringWithState() throws Exception {
         State<String, String> st1 = State.<String>init()
@@ -180,6 +178,10 @@ public class ReaderTestCase {
 
         static Reader<User, String> username() {
             return Reader.unit(User::getUsername);
+        }
+
+        static Reader<User, User> supervisor() {
+            return Reader.unit(User::getSupervisor);
         }
     }
 
