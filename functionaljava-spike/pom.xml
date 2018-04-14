@@ -24,6 +24,7 @@
         <kotlin.version>1.2.31</kotlin.version>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
 
+        <arrow-core.version>0.7.0</arrow-core.version>
         <cyclops-react.version>2.1.1</cyclops-react.version>
         <docker-client.version>8.10.0</docker-client.version>
         <durian.version>3.4.0</durian.version>
@@ -41,8 +42,7 @@
         <vavr.version>0.9.2</vavr.version>
 
         <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
-
-        <arrow-core.version>0.7.0</arrow-core.version>
+        
     </properties>
 
     <dependencyManagement>
