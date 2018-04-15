@@ -15,7 +15,6 @@ import java.util.function.Supplier;
  */
 public class CompletableTestCase {
 
-
     // number of threads used in executor
     static final int NOTHREADS = 3;
 
@@ -94,12 +93,12 @@ public class CompletableTestCase {
 
     // task to brew some coffee
     static class Brew implements BiFunction<Void, Void, Void> {
+
         private final Map<String, String> aMap;
 
         public Brew(Map<String, String> aMap) {
             this.aMap = aMap;
         }
-
 
         @Override
         public Void apply(Void g, Void h) {
@@ -114,6 +113,7 @@ public class CompletableTestCase {
 
     // task to combine brewed coffee and milk
     static class Combine implements BiFunction<Void, Void, Void> {
+
         private final Map<String, String> aMap;
 
         public Combine(Map<String, String> aMap) {

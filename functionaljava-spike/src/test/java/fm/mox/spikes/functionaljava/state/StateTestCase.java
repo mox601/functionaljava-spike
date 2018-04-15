@@ -1,24 +1,18 @@
-package fm.mox.spikes.functionaljava;
-
-import static fm.mox.spikes.functionaljava.StateTestCase.Input.COIN;
-import static fm.mox.spikes.functionaljava.StateTestCase.Input.TURN;
-import static org.testng.Assert.assertEquals;
-
-import java.io.ByteArrayInputStream;
-import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Optional;
-import java.util.function.Function;
-
-import org.testng.annotations.Test;
+package fm.mox.spikes.functionaljava.state;
 
 import fj.F;
 import fj.P;
 import fj.P2;
-import fj.data.List;
 import fj.data.State;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.testng.annotations.Test;
+
+import java.io.ByteArrayInputStream;
+import java.math.BigInteger;
+import java.util.Optional;
+import java.util.function.Function;
+
+import static org.testng.Assert.assertEquals;
 
 /**
  * take examples from https://github.com/functionaljava/functionaljava/tree/master/demo/src/main/java/fj/demo
@@ -73,7 +67,6 @@ fromStoAandS c | c `mod` 5 == 0 = ("foo",c+1)
         log.info(resultStatus);
         log.info(resultOutput + "");
         log.info(afterRun + "");
-
     }
 
     @Test
@@ -111,69 +104,6 @@ fromStoAandS c | c `mod` 5 == 0 = ("foo",c+1)
         assertEquals(robin, P.p("Batman", "Hello Robin"));
     }
 
-    @Test
-    public void testVending() throws Exception {
-
-        final State<VendingMachine, VendingMachine> init = State.init();
-        final State<VendingMachine, VendingMachine> afterOneCoin =
-                init.map(vendingMachine -> vendingMachine.next(COIN));
-
-        VendingMachine s = new VendingMachine(true, 10, 0);
-        VendingMachine s1 = new VendingMachine(true, 10, 0);
-
-        assertEquals(afterOneCoin.run(s)._1(), s1);
-//        assertEquals(afterOneCoin.run(s)._2(), s1);
-    }
-
-    private static State<VendingMachine, VendingMachine> vendingMachineStateAfterInput() {
-        return simulate(List.list(COIN, TURN, TURN, COIN, COIN, TURN));
-    }
-
-    static State<VendingMachine, VendingMachine> simulate(final List<Input> list) {
-        final State<VendingMachine, VendingMachine> beginningValue = State.init();
-        return list.foldLeft((vendingMachineState, input) -> vendingMachineState.map(m -> m.next(input)), beginningValue);
-    }
-
-    // https://github.com/functionaljava/functionaljava/blob/master/demo/src/main/java/fj/demo/StateDemo_VendingMachine.java
-    @Test
-    public void testVendingMachineEval() throws Exception {
-        final VendingMachine vendingAfterFive = vendingMachineStateAfterInput().eval(new VendingMachine(true, 5, 0));
-        log.info(vendingAfterFive.toString());
-        final VendingMachine oracle = new VendingMachine(true, 3, 2);
-        log.info("m1: %s, oracle: %s, equals: %b", vendingAfterFive, oracle, vendingAfterFive.equals(oracle));
-    }
-
-    @Test
-    public void testVendingMachineRun() throws Exception {
-        log.info(vendingMachineStateAfterInput().run(new VendingMachine(true, 5, 0)).toString());
-    }
-
-    public enum Input {COIN, TURN}
-
-    @Value
-    public static class VendingMachine {
-
-        boolean locked;
-        int items;
-        int coins;
-
-        VendingMachine next(final Input i) {
-            if (items == 0) {
-                return this;
-            } else if (i == COIN && !locked) {
-                return this;
-            } else if (i == TURN && locked) {
-                return this;
-            } else if (i == COIN && locked) {
-                return new VendingMachine(false, items, coins + 1);
-            } else if (i == TURN && !locked) {
-                return new VendingMachine(true, items - 1, coins);
-            } else {
-                return this;
-            }
-        }
-    }
-
     //    http://www.smartjava.org/content/scalaz-features-everyday-usage-part-3-state-monad-writer-monad-and-lenses
     @Test
     public void testGetFromState() throws Exception {
@@ -190,22 +120,17 @@ fromStoAandS c | c `mod` 5 == 0 = ("foo",c+1)
         assertEquals(run, P.p(new LeftOver(12), 7));
     }
 
-    @Value
-    private static class LeftOver {
-        Integer size;
-    }
-
     State<LeftOver, Integer> getFromState(Integer a) {
         return State.unit(x -> {
             log.info(x.toString());
-            return P.p(new LeftOver(x.size - a), a);
+            return P.p(new LeftOver(x.getSize() - a), a);
         });
     }
 
     State<LeftOver, Integer> addToState(Integer a) {
         return State.unit(x -> {
             log.info(x.toString());
-            return P.p(new LeftOver(x.size + a), a);
+            return P.p(new LeftOver(x.getSize() + a), a);
         });
     }
 
@@ -262,17 +187,5 @@ fromStoAandS c | c `mod` 5 == 0 = ("foo",c+1)
             BigInteger x = minusOne._1().add(minusTwo._1());
             return P.p(x, memo.addEntry(n, x));
         });
-    }
-
-    public static class Memo extends HashMap<BigInteger, BigInteger> {
-
-        public Optional<BigInteger> retrieve(BigInteger key) {
-            return Optional.ofNullable(super.get(key));
-        }
-
-        public Memo addEntry(BigInteger key, BigInteger value) {
-            super.put(key, value);
-            return this;
-        }
     }
 }
