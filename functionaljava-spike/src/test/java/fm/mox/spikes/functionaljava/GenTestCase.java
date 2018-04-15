@@ -105,13 +105,6 @@ public class GenTestCase {
 
         Gen<List<Elevator.Button>> listOfButtons = Gen.listOf(buttons);
 
-        int amount = 100;
-
-        for (int i = 0; i < amount; i++) {
-            List<Elevator.Button> gen = listOfButtons.gen(i, Rand.standard);
-            log.info(gen + "");
-        }
-
         Shrink<Elevator.Button> buttonShrink = Shrink.shrinkBoolean.map(b -> b ? DOWN : UP, button -> button.equals(DOWN));
 
         F<List<Elevator.Button>, P1<Property>> propWithResults = pressedButtons -> {
