@@ -27,6 +27,5 @@ public class VendingMachine {
         }
     }
 
-    public enum Input {COIN, TURN}
 
 }

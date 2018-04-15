@@ -1,5 +1,6 @@
 package fm.mox.spikes.functionaljava.state;
 
+import fj.F2;
 import fj.data.List;
 import fj.data.State;
 import lombok.extern.slf4j.Slf4j;
@@ -18,9 +19,9 @@ public class VendingMachineTest {
 
         final State<VendingMachine, VendingMachine> init = State.init();
         final State<VendingMachine, VendingMachine> afterOneCoin =
-                init.map(vendingMachine -> vendingMachine.next(VendingMachine.Input.COIN));
+                init.map(vendingMachine -> vendingMachine.next(Input.COIN));
 
-        VendingMachine s = new VendingMachine(true, 10, 0);
+        VendingMachine s  = new VendingMachine(true, 10, 0);
         VendingMachine s1 = new VendingMachine(true, 10, 0);
 
         assertEquals(afterOneCoin.run(s)._1(), s1);
@@ -42,13 +43,16 @@ public class VendingMachineTest {
     }
 
     private static State<VendingMachine, VendingMachine> vendingMachineStateAfterInput() {
-        return simulate(List.list(VendingMachine.Input.COIN, VendingMachine.Input.TURN,
-                VendingMachine.Input.TURN, VendingMachine.Input.COIN,
-                VendingMachine.Input.COIN, VendingMachine.Input.TURN));
+        return simulate(List.list(
+                Input.COIN, Input.TURN,
+                Input.TURN, Input.COIN,
+                Input.COIN, Input.TURN));
     }
 
-    static State<VendingMachine, VendingMachine> simulate(final List<VendingMachine.Input> list) {
+    static State<VendingMachine, VendingMachine> simulate(final List<Input> list) {
         final State<VendingMachine, VendingMachine> beginningValue = State.init();
-        return list.foldLeft((vendingMachineState, input) -> vendingMachineState.map(m -> m.next(input)), beginningValue);
+        F2<State<VendingMachine, VendingMachine>, Input, State<VendingMachine, VendingMachine>> fToApplyEach
+                = (vendingMachineState, input) -> vendingMachineState.map(m -> m.next(input));
+        return list.foldLeft(fToApplyEach, beginningValue);
     }
 }
