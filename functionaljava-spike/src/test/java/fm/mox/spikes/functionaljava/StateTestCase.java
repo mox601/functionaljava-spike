@@ -5,6 +5,10 @@ import static fm.mox.spikes.functionaljava.StateTestCase.Input.TURN;
 import static org.testng.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Optional;
+import java.util.function.Function;
 
 import org.testng.annotations.Test;
 
@@ -203,5 +207,72 @@ fromStoAandS c | c `mod` 5 == 0 = ("foo",c+1)
             log.info(x.toString());
             return P.p(new LeftOver(x.size + a), a);
         });
+    }
+
+    @Test
+    public void testFib() throws Exception {
+        assertEquals(fibMemo1(BigInteger.TEN), BigInteger.valueOf(55L));
+    }
+
+    @Test
+    public void testFib2() throws Exception {
+        assertEquals(fibMemo2(BigInteger.valueOf(55L)), BigInteger.valueOf(139583862445L));
+    }
+
+    static BigInteger fibMemo2(BigInteger n) {
+        Memo initialized = new Memo()
+                .addEntry(BigInteger.ZERO, BigInteger.ZERO)
+                .addEntry(BigInteger.ONE, BigInteger.ONE);
+        return fibMemo(n).eval(initialized);
+    }
+
+    static State<Memo, BigInteger> fibMemo(BigInteger n) {
+
+        F<Memo, Optional<BigInteger>> retrieveIfPresent = (Memo m) -> m.retrieve(n);
+
+        State<Memo, Optional<BigInteger>> initialState = State.gets(retrieveIfPresent);
+
+        Function<BigInteger, State<Memo, BigInteger>> stateFromValue = State::constant;
+
+        F<Optional<BigInteger>, State<Memo, BigInteger>> computeValueIfAbsentFromMap = u -> {
+
+            State<Memo, BigInteger> computedValue =
+                    fibMemo(n.subtract(BigInteger.ONE))
+                            .flatMap(x -> fibMemo(n.subtract(BigInteger.ONE).subtract(BigInteger.ONE))
+                                    .map(x::add)
+                                    .flatMap(z -> State.unit(memo -> P.p(memo.addEntry(n, z), z))));
+
+            return u.map(stateFromValue).orElse(computedValue);
+        };
+
+        return initialState.flatMap(computeValueIfAbsentFromMap);
+    }
+
+    static BigInteger fibMemo1(BigInteger n) {
+        Memo initializedMemo = new Memo()
+                .addEntry(BigInteger.ZERO, BigInteger.ZERO)
+                .addEntry(BigInteger.ONE, BigInteger.ONE);
+        return fibMemo(n, initializedMemo)._1();
+    }
+
+    static P2<BigInteger, Memo> fibMemo(BigInteger n, Memo memo) {
+        return memo.retrieve(n).map(x -> P.p(x, memo)).orElseGet(() -> {
+            P2<BigInteger, Memo> minusOne = fibMemo(n.subtract(BigInteger.ONE), memo);
+            P2<BigInteger, Memo> minusTwo = fibMemo(n.subtract(BigInteger.ONE).subtract(BigInteger.ONE), memo);
+            BigInteger x = minusOne._1().add(minusTwo._1());
+            return P.p(x, memo.addEntry(n, x));
+        });
+    }
+
+    public static class Memo extends HashMap<BigInteger, BigInteger> {
+
+        public Optional<BigInteger> retrieve(BigInteger key) {
+            return Optional.ofNullable(super.get(key));
+        }
+
+        public Memo addEntry(BigInteger key, BigInteger value) {
+            super.put(key, value);
+            return this;
+        }
     }
 }

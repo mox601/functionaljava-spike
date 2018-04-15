@@ -42,7 +42,7 @@
         <vavr.version>0.9.2</vavr.version>
 
         <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
-        
+
     </properties>
 
     <dependencyManagement>
