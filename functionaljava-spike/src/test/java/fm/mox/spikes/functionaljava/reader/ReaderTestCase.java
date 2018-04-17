@@ -110,18 +110,4 @@ public class ReaderTestCase {
             return UserRepo.get(userId).map(User::getSupervisor);
         }
     }
-
-    @Test
-    public void testToStringWithState() throws Exception {
-        State<String, String> st1 = State.<String>init()
-                .flatMap(s -> State.unit(s2 -> P.p("Batman", "Hello " + s)));
-        P2<String, String> robin = st1.run("Robin");
-        System.out.println(robin);
-        String aRobin = st1.eval("Robin");
-        System.out.println(aRobin);
-
-        //TODO implement toString with state
-        State<User, StringBuilder> id = null;
-        State<User, StringBuilder> idAndUsername = null;
-    }
 }

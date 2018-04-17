@@ -4,6 +4,7 @@ import fj.F;
 import fj.P;
 import fj.P2;
 import fj.data.State;
+import fm.mox.spikes.functionaljava.reader.User;
 import lombok.extern.slf4j.Slf4j;
 import org.testng.annotations.Test;
 
@@ -187,5 +188,19 @@ fromStoAandS c | c `mod` 5 == 0 = ("foo",c+1)
             BigInteger x = minusOne._1().add(minusTwo._1());
             return P.p(x, memo.addEntry(n, x));
         });
+    }
+
+    @Test
+    public void testToStringWithState() throws Exception {
+        State<String, String> st1 = State.<String>init()
+                .flatMap(s -> State.unit(s2 -> P.p("Batman", "Hello " + s)));
+        P2<String, String> robin = st1.run("Robin");
+        System.out.println(robin);
+        String aRobin = st1.eval("Robin");
+        System.out.println(aRobin);
+
+        //TODO implement toString with state
+        State<User, StringBuilder> id = null;
+        State<User, StringBuilder> idAndUsername = null;
     }
 }
