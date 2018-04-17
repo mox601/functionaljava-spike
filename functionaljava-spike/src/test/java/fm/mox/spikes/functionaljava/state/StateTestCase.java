@@ -5,6 +5,7 @@ import fj.P;
 import fj.P2;
 import fj.data.State;
 import fm.mox.spikes.functionaljava.reader.User;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.testng.annotations.Test;
 
@@ -109,29 +110,30 @@ fromStoAandS c | c `mod` 5 == 0 = ("foo",c+1)
     @Test
     public void testGetFromState() throws Exception {
 
-        P2<LeftOver, Integer> run = addToState(20)
-                .flatMap(i -> getFromState(5))
-                .flatMap(i -> getFromState(6))
-                .flatMap(i -> getFromState(7))
+        LeftOver initialState = new LeftOver(10);
+        P2<LeftOver, Integer> run = add(20)
+                .flatMap(i -> subtract(5))
+                .flatMap(i -> subtract(6))
+                .flatMap(i -> subtract(7))
 //                .withs(leftOver -> new LeftOver(9000))
-//                .flatMap(i -> getFromState(10))
-                .run(new LeftOver(10));
+//                .flatMap(i -> subtract(10))
+                .run(initialState);
 
         log.info(run + "");
         assertEquals(run, P.p(new LeftOver(12), 7));
     }
 
-    State<LeftOver, Integer> getFromState(Integer a) {
-        return State.unit(x -> {
-            log.info(x.toString());
-            return P.p(new LeftOver(x.getSize() - a), a);
+    State<LeftOver, Integer> subtract(Integer amount) {
+        return State.unit(current -> {
+            log.info("subtracting " + amount + " to " + current.toString());
+            return P.p(new LeftOver(current.getSize() - amount), amount);
         });
     }
 
-    State<LeftOver, Integer> addToState(Integer a) {
-        return State.unit(x -> {
-            log.info(x.toString());
-            return P.p(new LeftOver(x.getSize() + a), a);
+    State<LeftOver, Integer> add(Integer amount) {
+        return State.unit(current -> {
+            log.info("adding " + amount + " to " + current.toString());
+            return P.p(new LeftOver(current.getSize() + amount), amount);
         });
     }
 

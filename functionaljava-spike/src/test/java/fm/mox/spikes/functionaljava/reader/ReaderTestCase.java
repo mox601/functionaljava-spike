@@ -8,6 +8,10 @@ import fj.data.State;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.awt.image.ReplicateScaleFilter;
+
+import static fm.mox.spikes.functionaljava.reader.ReaderTestCase.Env.ENV_READER;
+import static fm.mox.spikes.functionaljava.reader.ReaderTestCase.Env.REPOSITORIES_READER;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -92,7 +96,7 @@ public class ReaderTestCase {
 
     public static class Repositories {
         static final Reader<IEnv, UserRepository> USER_REPOSITORY =
-                Env.REPOSITORIES_READER.map(IRepositories::userRepository);
+                REPOSITORIES_READER.map(IRepositories::userRepository);
     }
 
     public static class UserRepo {
