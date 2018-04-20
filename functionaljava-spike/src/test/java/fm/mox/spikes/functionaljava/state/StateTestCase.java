@@ -5,7 +5,6 @@ import fj.P;
 import fj.P2;
 import fj.data.State;
 import fm.mox.spikes.functionaljava.reader.User;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.testng.annotations.Test;
 
