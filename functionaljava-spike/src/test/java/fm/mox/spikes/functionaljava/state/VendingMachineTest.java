@@ -34,7 +34,7 @@ public class VendingMachineTest {
         final VendingMachine vendingAfterFive = vendingMachineStateAfterInput().eval(new VendingMachine(true, 5, 0));
         log.info(vendingAfterFive.toString());
         final VendingMachine oracle = new VendingMachine(true, 3, 2);
-        log.info("m1: %s, oracle: %s, equals: %b", vendingAfterFive, oracle, vendingAfterFive.equals(oracle));
+        log.info("m1: {}, oracle: {}, equals: {}", vendingAfterFive, oracle, vendingAfterFive.equals(oracle));
     }
 
     @Test
