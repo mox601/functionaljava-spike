@@ -4,10 +4,12 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import fj.Unit;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Created by matteo (dot) moci (at) gmail (dot) com
  */
+@Slf4j
 public class StateMachine<I, S> {
 
     /**

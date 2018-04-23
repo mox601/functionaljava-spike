@@ -41,6 +41,15 @@ public class StateMonad<S, A> {
         return new StateMonad<>(s -> new StateTuple<>(f.apply(s), value));
     }
 
+    /**
+     *
+     * Switched to foldLeft to change order.
+     *
+     * @param fs
+     * @param <S>
+     * @param <A>
+     * @return
+     */
     public static <S, A> StateMonad<S, List<A>> compose(List<StateMonad<S, A>> fs) {
         return fs.foldRight(
                 StateMonad.unit(List.empty()),

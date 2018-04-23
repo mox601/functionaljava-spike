@@ -39,6 +39,14 @@ public class List<T> {
         return result;
     }
 
+    public <U> U foldLeft(U seed, Function<T, Function<U, U>> f) {
+        U result = seed;
+        for (int i = 0; i < list.size(); i++) {
+            result = f.apply(list.get(i)).apply(result);
+        }
+        return result;
+    }
+
     public <U> List<U> map(Function<T, U> f) {
         List<U> result = new List<>();
         for (T t : list) {
@@ -66,9 +74,11 @@ public class List<T> {
     @Override
     public String toString() {
         StringBuilder s = new StringBuilder("[");
+        String separator = "";
         for (T t : list) {
-            s.append(t).append(", ");
+            s.append(separator).append(t);
+            separator = ", ";
         }
-        return s.append("NIL]").toString();
+        return s.append("]").toString();
     }
 }
