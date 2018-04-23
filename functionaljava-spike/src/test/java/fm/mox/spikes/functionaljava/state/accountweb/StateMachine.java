@@ -3,6 +3,8 @@ package fm.mox.spikes.functionaljava.state.accountweb;
 import java.util.Optional;
 import java.util.function.Function;
 
+import fj.Unit;
+
 /**
  * Created by matteo (dot) moci (at) gmail (dot) com
  */
@@ -11,11 +13,11 @@ public class StateMachine<I, S> {
     /**
      * flipped StateTuple a,s to s,a to match fjava order
      * use either from fj
-     *
+     * use unit instead of Nothing
      */
 
 
-    Function<I, StateMonad<S, Nothing>> function;
+    Function<I, StateMonad<S, Unit>> function;
 
     public StateMachine(List<Tuple<Condition<I, S>, Transition<I, S>>> transitions) {
         function = value -> StateMonad.transition(state ->
@@ -37,8 +39,8 @@ public class StateMachine<I, S> {
     }
 
     public StateMonad<S, S> process(List<I> inputs) {
-        List<StateMonad<S, Nothing>> a = inputs.map(function);
-        StateMonad<S, List<Nothing>> b = StateMonad.compose(a);
+        List<StateMonad<S, Unit>> a = inputs.map(function);
+        StateMonad<S, List<Unit>> b = StateMonad.compose(a);
         return b.flatMap(x -> StateMonad.get());
     }
 }

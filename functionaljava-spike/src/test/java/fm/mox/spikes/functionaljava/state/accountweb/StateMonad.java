@@ -2,6 +2,8 @@ package fm.mox.spikes.functionaljava.state.accountweb;
 
 import java.util.function.Function;
 
+import fj.Unit;
+
 /**
  * Created by matteo (dot) moci (at) gmail (dot) com
  */
@@ -26,8 +28,8 @@ public class StateMonad<S, A> {
         return new StateMonad<>(s -> new StateTuple<>(s, f.apply(s)));
     }
 
-    public static <S> StateMonad<S, Nothing> transition(Function<S, S> f) {
-        return transition(f, Nothing.instance);
+    public static <S> StateMonad<S, Unit> transition(Function<S, S> f) {
+        return transition(f, Unit.unit());
         //return new StateMonad<>(s -> new StateTuple<>(Nothing.instance, f.apply(s)));
     }
 
