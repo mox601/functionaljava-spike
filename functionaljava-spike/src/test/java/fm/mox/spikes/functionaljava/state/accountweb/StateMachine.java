@@ -28,13 +28,13 @@ public class StateMachine<I, S> {
             Optional<StateTuple<S, I>> optStateTuple = Optional.of(stateTuple);
             Function<StateTuple<S, I>, Optional<S>> stateTupleToOptional = (StateTuple<S, I> st) ->
             {
-                Optional<Tuple<Condition<I, S>, Transition<I, S>>> first = transitions
+                Optional<Tuple<Condition<I, S>, Transition<I, S>>> firstApplicableTransition = transitions
                         .filter((Tuple<Condition<I, S>, Transition<I, S>> x) -> x._1.test(st))
                         .findFirst();
 
                 Function<Tuple<Condition<I, S>, Transition<I, S>>, S> tupleToS = (Tuple<Condition<I, S>, Transition<I, S>> y) -> y._2.apply(st);
 
-                return first.map(tupleToS);
+                return firstApplicableTransition.map(tupleToS);
             };
             return optStateTuple.flatMap(stateTupleToOptional).get();
         });
