@@ -3,6 +3,7 @@ package fm.mox.spikes.functionaljava.state.accountweb;
 /**
  * Created by matteo (dot) moci (at) gmail (dot) com
  */
+@Deprecated
 public class Tuple<A, B> {
 
     public final A _1;
