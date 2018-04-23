@@ -9,12 +9,15 @@ import fj.Unit;
  */
 public class StateMonad<S, A> {
 
+    /* from a state S,
+    *  returns a StateTuple with state S and value A */
     public final Function<S, StateTuple<S, A>> runState;
 
     public StateMonad(Function<S, StateTuple<S, A>> runState) {
         this.runState = runState;
     }
 
+    //running the state doesn't change the state, only returns the A
     public static <S, A> StateMonad<S, A> unit(A a) {
         return new StateMonad<>(s -> new StateTuple<>(s, a));
     }
@@ -28,6 +31,7 @@ public class StateMonad<S, A> {
         return new StateMonad<>(s -> new StateTuple<>(s, f.apply(s)));
     }
 
+    //= fjava State.modify
     public static <S> StateMonad<S, Unit> transition(Function<S, S> f) {
         return transition(f, Unit.unit());
         //return new StateMonad<>(s -> new StateTuple<>(Nothing.instance, f.apply(s)));
@@ -37,6 +41,7 @@ public class StateMonad<S, A> {
     // and returns a new StateMonad holding the value and the state
     // resulting from the application of the function.
     // In other words, it allows changing the state without changing the value.
+    // = State.unit
     public static <S, A> StateMonad<S, A> transition(Function<S, S> f, A value) {
         return new StateMonad<>(s -> new StateTuple<>(f.apply(s), value));
     }
@@ -50,6 +55,7 @@ public class StateMonad<S, A> {
      * @param <A>
      * @return
      */
+    // =State.sequence?
     public static <S, A> StateMonad<S, List<A>> compose(List<StateMonad<S, A>> fs) {
         return fs.foldRight(
                 StateMonad.unit(List.empty()),

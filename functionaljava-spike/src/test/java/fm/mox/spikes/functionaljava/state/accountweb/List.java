@@ -1,10 +1,9 @@
 package fm.mox.spikes.functionaljava.state.accountweb;
 
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 /**
  * Created by matteo (dot) moci (at) gmail (dot) com
@@ -14,13 +13,14 @@ public class List<T> {
     private java.util.List<T> list = new ArrayList<>();
 
     public static <T> List<T> empty() {
-        return new List<>();
+        return new List<T>();
     }
 
     @SafeVarargs
     public static <T> List<T> apply(T... ta) {
         List<T> result = new List<>();
-        result.list.addAll(Arrays.asList(ta));
+        for (T t : ta)
+            result.list.add(t);
         return result;
     }
 
@@ -55,10 +55,10 @@ public class List<T> {
         return result;
     }
 
-    public List<T> filter(Predicate<T> f) {
+    public List<T> filter(Function<T, Boolean> f) {
         List<T> result = new List<>();
         for (T t : list) {
-            if (f.test(t)) {
+            if (f.apply(t)) {
                 result.list.add(t);
             }
         }
@@ -68,7 +68,7 @@ public class List<T> {
     public Optional<T> findFirst() {
         return list.size() == 0
                 ? Optional.empty()
-                : Optional.of(list.get(0));
+                : Optional.ofNullable(list.get(0));
     }
 
     @Override
