@@ -22,7 +22,7 @@ public class AccTest {
         StateMonad<Outcome, Outcome> state = Account.createMachine().process(inputs);
         Outcome outcome = state.eval(new Outcome(0, List.empty()));
 
-        //it shows in the opposite way
+        //it shows in the reverse order due to List.cons
         log.info(outcome.toString());
     }
 }
