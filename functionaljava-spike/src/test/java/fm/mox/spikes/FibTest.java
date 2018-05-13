@@ -1,10 +1,7 @@
 package fm.mox.spikes;
 
-import fj.F;
 import fj.P;
-import fj.P1;
 import fj.P2;
-import fj.Unit;
 import fj.control.Trampoline;
 import org.testng.annotations.Test;
 
@@ -70,10 +67,10 @@ public class FibTest {
     private static class TrampolineFib implements Fib {
         @Override
         public BigInteger fib(long position) {
-            return int_fib(P.p(ZERO, ONE), position).run();
+            return internalFib(P.p(ZERO, ONE), position).run();
         }
 
-        private Trampoline<BigInteger> int_fib(P2<BigInteger, BigInteger> currentAndNext, long position) {
+        private Trampoline<BigInteger> internalFib(P2<BigInteger, BigInteger> currentAndNext, long position) {
             Trampoline<BigInteger> t = null;
             if (position == 0L) {
                 t = Trampoline.pure(ONE);
@@ -86,7 +83,7 @@ public class FibTest {
                         P.lazy(unit -> {
                             BigInteger next = currentAndNext._2();
                             BigInteger sum = currentAndNext._1().add(currentAndNext._2());
-                            return int_fib(P.p(next, sum), position - 1);
+                            return internalFib(P.p(next, sum), position - 1);
                         }));
             }
             return t;
