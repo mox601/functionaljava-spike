@@ -82,7 +82,7 @@ public class FibTest {
                 t = Trampoline.pure(sum);
             } else {
                 t = Trampoline.suspend(
-                        //lazy tuple to not blow the stack
+                        //lazy tuple so that recursion does not blow the stack
                         P.lazy(unit -> {
                             BigInteger next = currentAndNext._2();
                             BigInteger sum = currentAndNext._1().add(currentAndNext._2());
