@@ -40,6 +40,46 @@ public class StateMachine<I, S> {
         });
     }
 
+
+    /*
+    by ivano pagano
+    *
+It will help you to revisit the definition of a State[S, A] which has the shape of a function
+
+type State[S,A] = S => (A, S)
+
+which in our exmaple means
+
+Machine => ((Int, Int), Machine)
+
+that is: you give it the starting (bootstrap) value of the Machine,
+and the function gives you back the final Machine state,
+tupled with the result value (candy, coins)
+
+To be more exact, the book creates a class wrapping the function so we have
+
+case class State[S,A]( run: S => (A,S) )
+
+where the function "run" has the above signature Machine => ((Int, Int), Machine)
+
+Executing the machine means providing the needed inputs to your simulation and call "run"
+
+val startMachine: Machine = ??? //choose an initial state
+val inputs: List[Input] = ??? // decide what operations are applied to the machine
+
+//run it
+val finalState: ((Int, Int), Machine) = simulateMachine(inputs).run(startMachine)
+
+you can pattern match to extract the tuple elements like
+
+val ((candies, coins), finalMachine) : ((Int, Int), Machine) = simulateMachine(inputs).run(startMachine)
+
+The simulateMachine function is only describing a sequence of mutations
+on a starting machine state based on inputs you give.
+To have results, you need to actually pass specific inputs and then run the State
+(which will thread all the modifications from one state to the next for you)
+
+    * */
     public StateMonad<S, S> process(List<I> inputs) {
         List<StateMonad<S, Unit>> a = inputs.map(function);
         StateMonad<S, List<Unit>> b = StateMonad.compose(a);
