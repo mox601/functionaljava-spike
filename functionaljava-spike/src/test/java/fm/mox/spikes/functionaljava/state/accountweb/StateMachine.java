@@ -48,7 +48,7 @@ It will help you to revisit the definition of a State[S, A] which has the shape 
 
 type State[S,A] = S => (A, S)
 
-which in our exmaple means
+which in our example means
 
 Machine => ((Int, Int), Machine)
 
