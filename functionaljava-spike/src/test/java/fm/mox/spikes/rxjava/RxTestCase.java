@@ -1,14 +1,23 @@
 package fm.mox.spikes.rxjava;
 
+import cyclops.companion.Streams;
+import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
+import io.reactivex.internal.util.ArrayListSupplier;
 import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.PublishSubject;
 import lombok.extern.slf4j.Slf4j;
+import org.reactivestreams.Publisher;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.StringJoiner;
+import java.util.concurrent.TimeUnit;
 
 import static org.testng.Assert.assertEquals;
 
@@ -24,15 +33,7 @@ public class RxTestCase {
                 .concat(Arrays.asList(Single.just("one"), Single.just("two")))
                 .doOnNext(m -> log.info(m + ""))
                 .toList()
-                .flatMap((Function<List<String>, Single<String>>) aList -> {
-                    StringBuilder sb = new StringBuilder();
-                    String aSeparator = "";
-                    for (String anItem : aList) {
-                        sb.append(aSeparator).append(anItem);
-                        aSeparator = " ";
-                    }
-                    return Single.just(sb.toString());
-                })
+                .flatMap((Function<List<String>, Single<String>>) aList -> Single.just(Streams.join( aList.stream(), " ")))
                 .doOnEvent((s, throwable) -> log.info(s));
         assertEquals(spaceSeparated.blockingGet(), "one two");
     }
@@ -41,7 +42,7 @@ public class RxTestCase {
     public void testParallelSubscription() throws Exception {
         Single<String> stringSingle = Single.fromCallable(() -> {
             log.info("sleeping");
-            Thread.sleep(1000L);
+            silentlySleep(1_000L);
             log.info("returning");
             return "a";
         });
@@ -62,12 +63,66 @@ public class RxTestCase {
 
     @Test
     public void testPagination() {
+        PublishSubject<String> objectPublishSubject = PublishSubject.create();
 
-        List<String> firstPage = Arrays.asList("1", "2");
-        List<String> secondPage = Arrays.asList("3", "4");
-        Flowable<List<String>> lists = Flowable.fromArray(firstPage, secondPage);
+        //TODO configure backpressure
+        Flowable<String> items = objectPublishSubject.toFlowable(BackpressureStrategy.DROP);
 
+        Flowable<List<String>> buffer = items
+                .observeOn(Schedulers.io())
+                .doOnNext(item -> log.info("item " + item))
+                //.buffer(100L, TimeUnit.MILLISECONDS, Schedulers.io(), 2)
+                //buffer removing duplicates
+                .buffer(100L, TimeUnit.MILLISECONDS, Schedulers.io(), 3, HashSetSupplier.asCallable(), false)
+                .filter(page -> !page.isEmpty())
+                .doOnNext(strings -> log.info("buffer " + strings.toString()))
+                .flatMap((Function<Set<String>, Publisher<String>>) Flowable::fromIterable)
+                .buffer(100L, TimeUnit.MILLISECONDS, Schedulers.io(), 2)
+                .filter(page -> !page.isEmpty())
+                .doOnNext(strings -> log.info("re-buffer " + strings.toString()));
+        Disposable subscribe = buffer.subscribe(this::publish);
 
+        //publish from different threads
+        twoThreadsPublishSleeping(objectPublishSubject, 10L);
 
+        silentlySleep(1_000L);
+    }
+
+    private void twoThreadsPublishSleeping(PublishSubject<String> stringPublishSubject,
+                                           long millis) {
+        Thread one = new Thread(() -> {
+            stringPublishSubject.onNext("1");
+            silentlySleep(millis);
+            stringPublishSubject.onNext("2");
+            silentlySleep(millis);
+            stringPublishSubject.onNext("3");
+            silentlySleep(millis);
+        });
+
+        Thread two = new Thread(() -> {
+            stringPublishSubject.onNext("1");
+            silentlySleep(millis);
+            stringPublishSubject.onNext("4");
+            silentlySleep(millis);
+            stringPublishSubject.onNext("5");
+            silentlySleep(millis);
+        });
+
+        one.start();
+        two.start();
+    }
+
+    private static void silentlySleep(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            //nop
+        }
+    }
+
+    private String publish(List<String> aList) {
+        log.info("publishing " + aList);
+        silentlySleep(200L);
+        return "published " + aList;
     }
 }
