@@ -5,7 +5,10 @@ import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
+import io.reactivex.internal.functions.Functions;
 import io.reactivex.internal.util.ArrayListSupplier;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
@@ -18,6 +21,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.testng.Assert.assertEquals;
 
@@ -68,6 +73,8 @@ public class RxTestCase {
         //TODO configure backpressure
         Flowable<String> items = objectPublishSubject.toFlowable(BackpressureStrategy.DROP);
 
+        AtomicBoolean shouldThrow = new AtomicBoolean(false);
+
         Flowable<List<String>> buffer = items
                 .observeOn(Schedulers.io())
                 .doOnNext(item -> log.info("item " + item))
@@ -80,7 +87,9 @@ public class RxTestCase {
                 .buffer(100L, TimeUnit.MILLISECONDS, Schedulers.io(), 2)
                 .filter(page -> !page.isEmpty())
                 .doOnNext(strings -> log.info("re-buffer " + strings.toString()));
-        Disposable subscribe = buffer.subscribe(this::publish);
+
+        //TODO handle publishing errors
+        Disposable subscribe = buffer.subscribe(strings -> publish(strings, shouldThrow));
 
         //publish from different threads
         twoThreadsPublishSleeping(objectPublishSubject, 10L);
@@ -120,9 +129,13 @@ public class RxTestCase {
         }
     }
 
-    private String publish(List<String> aList) {
+    private String publish(List<String> aList, AtomicBoolean shouldThrow) {
         log.info("publishing " + aList);
         silentlySleep(200L);
-        return "published " + aList;
+        String theString = "published " + aList;
+        if (shouldThrow.get()) {
+            throw new RuntimeException("exception while publishing!");
+        }
+        return theString;
     }
 }
