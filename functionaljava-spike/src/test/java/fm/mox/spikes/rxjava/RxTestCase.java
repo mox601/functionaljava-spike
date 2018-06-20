@@ -75,7 +75,7 @@ public class RxTestCase {
 
         AtomicBoolean shouldThrow = new AtomicBoolean(false);
 
-        Flowable<List<String>> buffer = items
+        Flowable<Boolean> buffer = items
                 .observeOn(Schedulers.io())
                 .doOnNext(item -> log.info("item " + item))
                 //.buffer(100L, TimeUnit.MILLISECONDS, Schedulers.io(), 2)
@@ -86,10 +86,11 @@ public class RxTestCase {
                 .flatMap((Function<Set<String>, Publisher<String>>) Flowable::fromIterable)
                 .buffer(100L, TimeUnit.MILLISECONDS, Schedulers.io(), 2)
                 .filter(page -> !page.isEmpty())
-                .doOnNext(strings -> log.info("re-buffer " + strings.toString()));
+                .doOnNext(strings -> log.info("re-buffer " + strings.toString()))
+                .map(strings -> publish(strings, shouldThrow));
 
         //TODO handle publishing errors
-        Disposable subscribe = buffer.subscribe(strings -> publish(strings, shouldThrow));
+        Disposable subscribe = buffer.subscribe(b -> log.info("published? " + b));
 
         //publish from different threads
         twoThreadsPublishSleeping(objectPublishSubject, 10L);
@@ -129,13 +130,14 @@ public class RxTestCase {
         }
     }
 
-    private String publish(List<String> aList, AtomicBoolean shouldThrow) {
+    private Boolean publish(List<String> aList, AtomicBoolean shouldThrow) {
         log.info("publishing " + aList);
         silentlySleep(200L);
+        boolean published = true;
         String theString = "published " + aList;
         if (shouldThrow.get()) {
-            throw new RuntimeException("exception while publishing!");
+            published = false;
         }
-        return theString;
+        return published;
     }
 }
