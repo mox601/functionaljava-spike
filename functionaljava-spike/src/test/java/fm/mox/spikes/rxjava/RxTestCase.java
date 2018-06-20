@@ -59,4 +59,15 @@ public class RxTestCase {
     private void subscribe(Flowable<String> aSingle) {
         aSingle.subscribeOn(Schedulers.io()).subscribe(log::info, Throwable::printStackTrace, () -> log.info("onComplete"));
     }
+
+    @Test
+    public void testPagination() {
+
+        List<String> firstPage = Arrays.asList("1", "2");
+        List<String> secondPage = Arrays.asList("3", "4");
+        Flowable<List<String>> lists = Flowable.fromArray(firstPage, secondPage);
+
+
+
+    }
 }
