@@ -1,30 +1,26 @@
 package fm.mox.spikes.rxjava;
 
+import static org.testng.Assert.assertEquals;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.reactivestreams.Publisher;
+import org.testng.annotations.Test;
+
 import cyclops.companion.Streams;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.internal.functions.Functions;
-import io.reactivex.internal.util.ArrayListSupplier;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 import lombok.extern.slf4j.Slf4j;
-import org.reactivestreams.Publisher;
-import org.testng.annotations.Test;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-import java.util.StringJoiner;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import static org.testng.Assert.assertEquals;
 
 /**
  * Created by matteo (dot) moci (at) gmail (dot) com
@@ -59,7 +55,7 @@ public class RxTestCase {
         for (int i = 0; i < 3; i++) {
             new Thread(() -> subscribe(share)).start();
         }
-        Thread.sleep(4000L);
+        silentlySleep(4_000L);
     }
 
     private void subscribe(Flowable<String> aSingle) {
@@ -89,17 +85,20 @@ public class RxTestCase {
                 .doOnNext(strings -> log.info("re-buffer " + strings.toString()))
                 .map(strings -> publish(strings, shouldThrow));
 
-        //TODO handle publishing errors
-        Disposable subscribe = buffer.subscribe(b -> log.info("published? " + b));
+        //TODO handle publishing errors, logging and resuming next
+        Disposable subscribe = buffer.subscribe(
+            b -> log.info("published? " + b),
+            Functions.ON_ERROR_MISSING,
+            Functions.EMPTY_ACTION);
 
         //publish from different threads
-        twoThreadsPublishSleeping(objectPublishSubject, 10L);
+        twoThreadsPublishSleeping(objectPublishSubject, 10L, shouldThrow);
 
         silentlySleep(1_000L);
     }
 
     private void twoThreadsPublishSleeping(PublishSubject<String> stringPublishSubject,
-                                           long millis) {
+                                           long millis, AtomicBoolean shouldThrow) {
         Thread one = new Thread(() -> {
             stringPublishSubject.onNext("1");
             silentlySleep(millis);
@@ -114,6 +113,7 @@ public class RxTestCase {
             silentlySleep(millis);
             stringPublishSubject.onNext("4");
             silentlySleep(millis);
+            shouldThrow.set(true);
             stringPublishSubject.onNext("5");
             silentlySleep(millis);
         });
@@ -133,11 +133,11 @@ public class RxTestCase {
     private Boolean publish(List<String> aList, AtomicBoolean shouldThrow) {
         log.info("publishing " + aList);
         silentlySleep(200L);
-        boolean published = true;
         String theString = "published " + aList;
         if (shouldThrow.get()) {
-            published = false;
+            //throw instead of returning boolean?
+            throw new RuntimeException("exception while publishing " + aList.toString());
         }
-        return published;
+        return true;
     }
 }

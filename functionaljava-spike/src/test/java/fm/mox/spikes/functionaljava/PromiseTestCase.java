@@ -1,5 +1,11 @@
 package fm.mox.spikes.functionaljava;
 
+import java.text.MessageFormat;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import org.testng.annotations.Test;
+
 import fj.F;
 import fj.P;
 import fj.P2;
@@ -9,20 +15,13 @@ import fj.control.parallel.Promise;
 import fj.control.parallel.Strategy;
 import fj.data.List;
 import fj.function.Integers;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.testng.annotations.Test;
-
-import java.text.MessageFormat;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Matteo Moci ( matteo (dot) moci (at) gmail (dot) com )
  */
+@Slf4j
 public class PromiseTestCase {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(PromiseTestCase.class);
 
     private static int CUTOFF = 15;
 
@@ -37,7 +36,7 @@ public class PromiseTestCase {
         // This actor performs output and detects the termination condition.
         final Actor<List<Integer>> out = Actor.actor(su, fs -> {
             for (final P2<Integer, Integer> p : fs.zipIndex()) {
-                LOGGER.info(MessageFormat.format("n={0} => {1}", p._2(), p._1()));
+                log.info(MessageFormat.format("n={0} => {1}", p._2(), p._1()));
             }
             pool.shutdown();
         });
@@ -50,7 +49,7 @@ public class PromiseTestCase {
             }
         };
 
-        LOGGER.info("Calculating Fibonacci sequence in parallel...");
+        log.info("Calculating Fibonacci sequence in parallel...");
         Promise.join(su, spi.parMap(fib, List.range(0, 46)).map(Promise.sequence(su))).to(out);
         Thread.sleep(1_000L);
     }
