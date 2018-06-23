@@ -5,9 +5,11 @@ import static org.testng.Assert.assertEquals;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import io.reactivex.functions.Consumer;
 import org.reactivestreams.Publisher;
 import org.testng.annotations.Test;
 
@@ -66,12 +68,14 @@ public class RxTestCase {
     public void testPagination() {
         PublishSubject<String> objectPublishSubject = PublishSubject.create();
 
-        //TODO configure backpressure
-        Flowable<String> items = objectPublishSubject.toFlowable(BackpressureStrategy.DROP);
+        //Downstream has to deal with any overflow
+        Flowable<String> items = objectPublishSubject.toFlowable(BackpressureStrategy.MISSING);
 
         AtomicBoolean shouldThrow = new AtomicBoolean(false);
 
         Flowable<Boolean> buffer = items
+                //on backpressure logs to warn
+                .onBackpressureDrop(s -> log.warn("dropping " + s))
                 .observeOn(Schedulers.io())
                 .doOnNext(item -> log.info("item " + item))
                 //.buffer(100L, TimeUnit.MILLISECONDS, Schedulers.io(), 2)
@@ -99,6 +103,7 @@ public class RxTestCase {
 
     private void twoThreadsPublishSleeping(PublishSubject<String> stringPublishSubject,
                                            long millis, AtomicBoolean shouldThrow) {
+
         Thread one = new Thread(() -> {
             stringPublishSubject.onNext("1");
             silentlySleep(millis);
@@ -111,9 +116,9 @@ public class RxTestCase {
         Thread two = new Thread(() -> {
             stringPublishSubject.onNext("1");
             silentlySleep(millis);
+            shouldThrow.set(true);
             stringPublishSubject.onNext("4");
             silentlySleep(millis);
-            shouldThrow.set(true);
             stringPublishSubject.onNext("5");
             silentlySleep(millis);
         });
