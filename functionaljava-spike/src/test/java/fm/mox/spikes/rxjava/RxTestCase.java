@@ -1,18 +1,5 @@
 package fm.mox.spikes.rxjava;
 
-import static org.testng.Assert.assertEquals;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import io.reactivex.functions.Consumer;
-import org.reactivestreams.Publisher;
-import org.testng.annotations.Test;
-
 import cyclops.companion.Streams;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
@@ -23,6 +10,16 @@ import io.reactivex.internal.functions.Functions;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 import lombok.extern.slf4j.Slf4j;
+import org.reactivestreams.Publisher;
+import org.testng.annotations.Test;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import static org.testng.Assert.assertEquals;
 
 /**
  * Created by matteo (dot) moci (at) gmail (dot) com
@@ -31,18 +28,18 @@ import lombok.extern.slf4j.Slf4j;
 public class RxTestCase {
 
     @Test
-    public void testSingle() throws Exception {
+    public void testSingle() {
         Single<String> spaceSeparated = Single
                 .concat(Arrays.asList(Single.just("one"), Single.just("two")))
                 .doOnNext(m -> log.info(m + ""))
                 .toList()
-                .flatMap((Function<List<String>, Single<String>>) aList -> Single.just(Streams.join( aList.stream(), " ")))
+                .flatMap((Function<List<String>, Single<String>>) aList -> Single.just(Streams.join(aList.stream(), " ")))
                 .doOnEvent((s, throwable) -> log.info(s));
         assertEquals(spaceSeparated.blockingGet(), "one two");
     }
 
     @Test
-    public void testParallelSubscription() throws Exception {
+    public void testParallelSubscription() {
         Single<String> stringSingle = Single.fromCallable(() -> {
             log.info("sleeping");
             silentlySleep(1_000L);
@@ -60,12 +57,12 @@ public class RxTestCase {
         silentlySleep(4_000L);
     }
 
-    private void subscribe(Flowable<String> aSingle) {
-        aSingle.subscribeOn(Schedulers.io()).subscribe(log::info, Throwable::printStackTrace, () -> log.info("onComplete"));
+    private Disposable subscribe(Flowable<String> aSingle) {
+        return aSingle.subscribeOn(Schedulers.io()).subscribe(log::info, Throwable::printStackTrace, () -> log.info("onComplete"));
     }
 
     @Test
-    public void testPagination() {
+    public void testRePagination() {
         PublishSubject<String> objectPublishSubject = PublishSubject.create();
 
         //Downstream has to deal with any overflow
@@ -91,9 +88,9 @@ public class RxTestCase {
 
         //TODO handle publishing errors, logging and resuming next
         Disposable subscribe = buffer.subscribe(
-            b -> log.info("published? " + b),
-            Functions.ON_ERROR_MISSING,
-            Functions.EMPTY_ACTION);
+                b -> log.info("published? " + b),
+                Functions.ON_ERROR_MISSING,
+                Functions.EMPTY_ACTION);
 
         //publish from different threads
         twoThreadsPublishSleeping(objectPublishSubject, 10L, shouldThrow);

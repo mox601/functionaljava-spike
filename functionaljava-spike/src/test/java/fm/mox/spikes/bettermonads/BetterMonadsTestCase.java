@@ -3,6 +3,7 @@ package fm.mox.spikes.bettermonads;
 import com.jasongoodwin.monads.Try;
 import com.jasongoodwin.monads.TryConsumer;
 import lombok.extern.slf4j.Slf4j;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
@@ -168,8 +169,8 @@ public class BetterMonadsTestCase {
             throw new RuntimeException();
         }).filter(o -> true);
 
-        assertEquals(t1.isSuccess(), false);
-        assertEquals(t2.isSuccess(), false);
+        assertFalse(t1.isSuccess());
+        assertFalse(t2.isSuccess());
     }
 
     @Test
@@ -177,8 +178,8 @@ public class BetterMonadsTestCase {
         Try t1 = Try.ofFailable(() -> "yo mama").filter(s -> s.length() > 0);
         Try t2 = Try.ofFailable(() -> "yo mama").filter(s -> s.length() < 0);
 
-        assertEquals(t1.isSuccess(), true);
-        assertEquals(t2.isSuccess(), false);
+        assertTrue(t1.isSuccess());
+        assertFalse(t2.isSuccess());
     }
 
     @Test

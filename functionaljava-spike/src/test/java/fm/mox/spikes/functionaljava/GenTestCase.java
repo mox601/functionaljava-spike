@@ -40,38 +40,38 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class GenTestCase {
 
-    static final Shrink<User> USER_SHRINK = shrinkP2(shrinkString, shrinkString).map(p2 -> new User(p2._1(), p2._2()), u -> p(u.getUsername(), u.getPassword()));
+    private static final Shrink<User> USER_SHRINK = shrinkP2(shrinkString, shrinkString).map(p2 -> new User(p2._1(), p2._2()), u -> p(u.getUsername(), u.getPassword()));
 
-    static final Gen<String> ARB_STRING_BOUNDARIES = arbList(arbCharacterBoundaries).map(List::asString);
+    private static final Gen<String> ARB_STRING_BOUNDARIES = arbList(arbCharacterBoundaries).map(List::asString);
 
-    static final Gen<User> ARB_USER = ARB_STRING_BOUNDARIES
-        .filter((String s) -> s.length() > 0 && s.length() < 10)
-        .bind(arbString.filter(p -> p.length() > 2 && p.length() < 10), username -> password -> new User(username, password));
+    private static final Gen<User> ARB_USER = ARB_STRING_BOUNDARIES
+            .filter((String s) -> s.length() > 0 && s.length() < 10)
+            .bind(arbString.filter(p -> p.length() > 2 && p.length() < 10), username -> password -> new User(username, password));
 
 
     @Test
-    public void givenGeneratedListAllItemsAreLtEq100() throws Exception {
+    public void givenGeneratedListAllItemsAreLtEq100() {
         final F<List<Integer>, P1<Property>> allLtEq =
-            integers -> p(prop(integers.forall(integer -> integer <= 100)));
+                integers -> p(prop(integers.forall(integer -> integer <= 100)));
         final Property forall = forall(listOf(choose(0, 100)), shrinkList(shrinkInteger), allLtEq);
         assertTrue(forall.check(0, 10).isPassed());
     }
 
     @Test
-    public void testFPScala() throws Exception {
+    public void testFPScala() {
         final F<List<Integer>, P1<Property>> reversedTwiceEqualsOriginal =
-            integers -> p(prop(integers.reverse().reverse().equals(integers)));
+                integers -> p(prop(integers.reverse().reverse().equals(integers)));
         final F<List<Integer>, P1<Property>> headEqualsLastOfReverse =
-            integers -> {
-                boolean isHeadEqualsToLastOfReverse = true;
-                final Option<Integer> headOpt = integers.headOption();
-                if (headOpt.isSome()) {
-                    final Integer head = headOpt.some();
-                    final Integer lastOfReverse = integers.reverse().last();
-                    isHeadEqualsToLastOfReverse = head.equals(lastOfReverse);
-                }
-                return p(prop(isHeadEqualsToLastOfReverse));
-            };
+                integers -> {
+                    boolean isHeadEqualsToLastOfReverse = true;
+                    final Option<Integer> headOpt = integers.headOption();
+                    if (headOpt.isSome()) {
+                        final Integer head = headOpt.some();
+                        final Integer lastOfReverse = integers.reverse().last();
+                        isHeadEqualsToLastOfReverse = head.equals(lastOfReverse);
+                    }
+                    return p(prop(isHeadEqualsToLastOfReverse));
+                };
         final Gen<Integer> choose = choose(0, 10);
         final Property reversedTwiceProp = forall(listOf(choose), shrinkList(shrinkInteger), reversedTwiceEqualsOriginal);
         final Property oppositeEqualsProp = forall(listOf(choose), shrinkList(shrinkInteger), headEqualsLastOfReverse);
@@ -80,7 +80,7 @@ public class GenTestCase {
     }
 
     @Test
-    public void testArb() throws Exception {
+    public void testArb() {
 
     }
 
@@ -91,7 +91,7 @@ public class GenTestCase {
     /* state, transitions, ... */
 
     @Test
-    public void testElevatorFsm() throws Exception {
+    public void testElevatorFsm() {
         final F2<Elevator, Elevator.Button, Elevator> elevatorPressButton = Elevator::press;
 
         assertEquals(elevatorPressButton.f(new Elevator(), DOWN).floor, GROUND);
@@ -174,7 +174,7 @@ public class GenTestCase {
     }
 
     @Test
-    public void testName() throws Exception {
+    public void testName() {
         final Property oppositeEqualsProp = forall(ARB_USER, USER_SHRINK, user -> p(prop(user.count() < 10)));
         final CheckResult check = oppositeEqualsProp.check(10, 50, 4, 10);
         assertTrue(check.isPassed());
@@ -184,6 +184,7 @@ public class GenTestCase {
     public static class User {
         String username;
         String password;
+
         public int count() {
             return this.username.length();
         }
