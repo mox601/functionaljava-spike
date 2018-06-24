@@ -5,6 +5,7 @@ import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.internal.functions.Functions;
 import io.reactivex.schedulers.Schedulers;
@@ -26,6 +27,8 @@ import static org.testng.Assert.assertEquals;
  */
 @Slf4j
 public class RxTestCase {
+
+    private static final Consumer<Throwable> ON_ERROR = throwable -> log.error("exception " + throwable.getMessage());
 
     @Test
     public void testSingle() {
@@ -76,11 +79,12 @@ public class RxTestCase {
                 .observeOn(Schedulers.io())
                 .doOnNext(item -> log.info("item " + item))
                 //.buffer(100L, TimeUnit.MILLISECONDS, Schedulers.io(), 2)
-                //buffer removing duplicates
+                //buffer removing duplicates and filter out empty buffers
                 .buffer(100L, TimeUnit.MILLISECONDS, Schedulers.io(), 3, HashSetSupplier.asCallable(), false)
                 .filter(page -> !page.isEmpty())
                 .doOnNext(strings -> log.info("buffer " + strings.toString()))
                 .flatMap((Function<Set<String>, Publisher<String>>) Flowable::fromIterable)
+                //buffer and filter out empty buffers
                 .buffer(100L, TimeUnit.MILLISECONDS, Schedulers.io(), 2)
                 .filter(page -> !page.isEmpty())
                 .doOnNext(strings -> log.info("re-buffer " + strings.toString()))
@@ -89,7 +93,7 @@ public class RxTestCase {
         //TODO handle publishing errors, logging and resuming next
         Disposable subscribe = buffer.subscribe(
                 b -> log.info("published? " + b),
-                Functions.ON_ERROR_MISSING,
+                ON_ERROR,
                 Functions.EMPTY_ACTION);
 
         //publish from different threads
