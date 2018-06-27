@@ -49,7 +49,8 @@ import static org.junit.Assert.assertTrue;
 
         assertEquals("foo", maybeFoo.get());
 
-        Option<String> maybeFooBar = maybeFoo.map(s -> (String) null)
+        Option<String> maybeFooBar = maybeFoo
+                .map(s -> (String) null)
                 .flatMap(s -> Option.of(s)
                         .map(t -> t.toUpperCase() + "bar"));
         assertTrue(maybeFooBar.isEmpty());
@@ -63,7 +64,8 @@ import static org.junit.Assert.assertTrue;
 
         assertEquals("foo", maybeFoo.get());
 
-        Option<String> maybeFooBar = maybeFoo.flatMap(s -> Option.of((String) null))
+        Option<String> maybeFooBar = maybeFoo
+                .flatMap(s -> Option.of((String) null))
                 .map(s -> s.toUpperCase() + "bar");
 
         assertTrue(maybeFooBar.isEmpty());
@@ -75,7 +77,8 @@ import static org.junit.Assert.assertTrue;
 
         Option<String> maybeFoo = Option.of("foo");
         assertEquals("foo", maybeFoo.get());
-        Option<String> maybeFooBar = maybeFoo.map(s -> (String) null)
+        Option<String> maybeFooBar = maybeFoo
+                .map(s -> (String) null)
                 .flatMap(s -> Option.of(s)
                         .map(t -> t.toUpperCase() + "bar"));
         assertTrue(maybeFooBar.isEmpty());
@@ -94,12 +97,9 @@ import static org.junit.Assert.assertTrue;
 
 //    @Test(enabled = false)
     public void prop() throws Exception {
-
-        Arbitrary<Integer> ints = Arbitrary.integer();
-
         // square(int) >= 0: OK, passed 1000 tests.
         Property.def("square(int) >= 0")
-                .forAll(ints)
+                .forAll(Arbitrary.integer())
                 .suchThat(i -> i * i >= 0)
                 .check()
                 .assertIsSatisfied();

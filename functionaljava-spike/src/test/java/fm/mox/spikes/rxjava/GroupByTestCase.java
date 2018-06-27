@@ -3,7 +3,6 @@ package fm.mox.spikes.rxjava;
 import io.reactivex.Flowable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.flowables.GroupedFlowable;
-import io.reactivex.observables.GroupedObservable;
 import lombok.extern.slf4j.Slf4j;
 import org.testng.annotations.Test;
 
@@ -26,7 +25,6 @@ public class GroupByTestCase {
                 .subscribe((group) -> {
                     log.info("Key " + group.getKey());
                     group.subscribe((x) -> log.info((group.getKey() + ": " + x)));
-
                 });
         Thread.sleep(1_000L);
     }
