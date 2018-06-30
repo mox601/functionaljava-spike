@@ -29,14 +29,12 @@ import static org.junit.Assert.assertTrue;
     // that context changed from a Some to a None.
 //    @Test(expectedExceptions = NullPointerException.class)
     public void npe() throws Exception {
-
         Option<String> maybeFoo = Option.of("foo");
 
         assertEquals("foo", maybeFoo.get());
 
         maybeFoo.map(s -> (String) null)
                 .map(s -> s.toUpperCase() + "bar");
-
     }
 
     //    This may seem to make Option useless, but it actually forces you to pay attention to possible
@@ -44,45 +42,30 @@ import static org.junit.Assert.assertTrue;
     // The correct way to deal with occurrences of null is to use flatMap.
 //    @Test
     public void carefully() throws Exception {
-
-        Option<String> maybeFoo = Option.of("foo");
-
-        assertEquals("foo", maybeFoo.get());
-
-        Option<String> maybeFooBar = maybeFoo
+        Option<String> maybeFooBar = Option.of("foo")
                 .map(s -> (String) null)
                 .flatMap(s -> Option.of(s)
                         .map(t -> t.toUpperCase() + "bar"));
         assertTrue(maybeFooBar.isEmpty());
-
     }
 
     //    http://blog.javaslang.io/the-agonizing-death-of-an-astronaut/
 //    @Test
     public void alternative() throws Exception {
-        Option<String> maybeFoo = Option.of("foo");
-
-        assertEquals("foo", maybeFoo.get());
-
-        Option<String> maybeFooBar = maybeFoo
+        Option<String> maybeFooBar = Option.of("foo")
                 .flatMap(s -> Option.of((String) null))
                 .map(s -> s.toUpperCase() + "bar");
 
         assertTrue(maybeFooBar.isEmpty());
-
     }
 
 //    @Test
     public void name() throws Exception {
-
-        Option<String> maybeFoo = Option.of("foo");
-        assertEquals("foo", maybeFoo.get());
-        Option<String> maybeFooBar = maybeFoo
+        Option<String> maybeFooBar = Option.of("foo")
                 .map(s -> (String) null)
                 .flatMap(s -> Option.of(s)
                         .map(t -> t.toUpperCase() + "bar"));
         assertTrue(maybeFooBar.isEmpty());
-
     }
 
 //    @Test
