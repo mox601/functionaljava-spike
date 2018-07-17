@@ -24,11 +24,11 @@ import static org.junit.Assert.assertTrue;
  */
     public class VavrTest {
 
-    //    it adheres to the requirement of a monad to maintain computational context when calling .map.
+    // it adheres to the requirement of a monad to maintain computational context when calling .map.
     // In terms of an Option, this means that calling .map on a Some will result in a Some,
     // and calling .map on a None will result in a None. In the Java Optional example above,
     // that context changed from a Some to a None.
-//    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expectedExceptions = NullPointerException.class)
     public void npe() throws Exception {
         Option<String> maybeFoo = Option.of("foo");
 
@@ -38,10 +38,10 @@ import static org.junit.Assert.assertTrue;
                 .map(s -> s.toUpperCase() + "bar");
     }
 
-    //    This may seem to make Option useless, but it actually forces you to pay attention to possible
+    // This may seem to make Option useless, but it actually forces you to pay attention to possible
     // occurrences of null and deal with them accordingly instead of unknowingly accepting them.
     // The correct way to deal with occurrences of null is to use flatMap.
-//    @Test
+    @Test
     public void carefully() throws Exception {
         Option<String> maybeFooBar = Option.of("foo")
                 .map(s -> (String) null)
@@ -51,7 +51,7 @@ import static org.junit.Assert.assertTrue;
     }
 
     //    http://blog.javaslang.io/the-agonizing-death-of-an-astronaut/
-//    @Test
+    @Test
     public void alternative() throws Exception {
         Option<String> maybeFooBar = Option.of("foo")
                 .flatMap(s -> Option.of((String) null))
@@ -60,8 +60,8 @@ import static org.junit.Assert.assertTrue;
         assertTrue(maybeFooBar.isEmpty());
     }
 
-//    @Test
-    public void name() throws Exception {
+    @Test
+    public void name() {
         Option<String> maybeFooBar = Option.of("foo")
                 .map(s -> (String) null)
                 .flatMap(s -> Option.of(s)
@@ -69,7 +69,7 @@ import static org.junit.Assert.assertTrue;
         assertTrue(maybeFooBar.isEmpty());
     }
 
-//    @Test
+    @Test
     public void trya() throws Exception {
         Try<Integer> divide = divide(1, 0);
         assertEquals(1, divide.getOrElse(() -> 1).intValue());
@@ -90,7 +90,7 @@ import static org.junit.Assert.assertTrue;
                 .assertIsSatisfied();
     }
 
-//    @Test
+    @Test
     public void lifting() throws Exception {
 
         Function2<Integer, Integer, Integer> divide = (a, b) -> a / b;
@@ -110,7 +110,7 @@ import static org.junit.Assert.assertTrue;
     }
 
     //TODO https://koziolekweb.pl/2016/06/18/pattern-matching-w-javie-z-javaslang-ii/
-//    @Test
+    @Test
     public void testMatch() throws Exception {
         String s = Match(1).of(
                 Case($(1), "one"),
