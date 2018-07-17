@@ -21,24 +21,24 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
         <javac.version>1.8</javac.version>
-        <kotlin.version>1.2.50</kotlin.version>
+        <kotlin.version>1.2.51</kotlin.version>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
 
         <arrow-core.version>0.7.2</arrow-core.version>
         <commons-math3.version>3.6.1</commons-math3.version>
         <cyclops-react.version>2.1.1</cyclops-react.version>
-        <docker-client.version>8.11.6</docker-client.version>
+        <docker-client.version>8.11.7</docker-client.version>
         <durian.version>3.4.0</durian.version>
         <easymock.version>3.6</easymock.version>
         <functionaljava.version>4.7</functionaljava.version>
         <guava.version>25.1-jre</guava.version>
-        <javaparser-core.version>3.6.10</javaparser-core.version>
+        <javaparser-core.version>3.6.14</javaparser-core.version>
         <joda-time.version>2.10</joda-time.version>
         <junit.version>4.12</junit.version>
         <log4j.version>1.2.17</log4j.version>
         <lombok.version>1.18.0</lombok.version>
-        <resilience4j.version>0.13.0</resilience4j.version>
-        <rxjava.version>2.1.15</rxjava.version>
+        <resilience4j.version>0.13.1</resilience4j.version>
+        <rxjava.version>2.1.16</rxjava.version>
         <slf4j-api.version>1.7.25</slf4j-api.version>
         <testng.version>6.14.3</testng.version>
         <totallylazy.version>2.183</totallylazy.version>

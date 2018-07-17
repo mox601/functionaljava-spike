@@ -11,6 +11,7 @@ import io.vavr.control.Validation;
 import io.vavr.test.Arbitrary;
 import io.vavr.test.Property;
 import lombok.Value;
+import org.testng.annotations.Test;
 
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
@@ -70,7 +71,8 @@ import static org.junit.Assert.assertTrue;
 
 //    @Test
     public void trya() throws Exception {
-        assertEquals(1, divide(1, 0).getOrElse(() -> 1).intValue());
+        Try<Integer> divide = divide(1, 0);
+        assertEquals(1, divide.getOrElse(() -> 1).intValue());
     }
 
     // = Success(result) or Failure(exception)
@@ -141,15 +143,17 @@ import static org.junit.Assert.assertTrue;
 
     }
 
-//    @Test
+    @Test
     public void validator() throws Exception {
 
         // Valid(Person(John Doe, 30))
         Validation<Seq<String>, Person> valid = PersonValidator.validatePerson("John Doe", 30);
+        assertTrue(valid.isValid());
         assertEquals(new Person("John Doe", 30), valid.get());
 
         // Invalid(List(Name contains invalid characters: '!4?', Age must be greater than 0))
         Validation<Seq<String>, Person> invalid = PersonValidator.validatePerson("John? Doe!4", -1);
+        assertTrue(invalid.isInvalid());
         assertEquals(List.of("Name contains invalid characters: '!4?'", "Age must be at least 0"), invalid.getError());
 
     }
