@@ -14,8 +14,6 @@ import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.testng.annotations.Test;
 
-import java.util.function.Consumer;
-
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
 import static io.vavr.API.Match;
@@ -88,18 +86,29 @@ public class VavrTest {
     @Test
     public void testLogging() {
         divide(1, 0)
-                .onFailure(t -> log.error(t.getMessage(), t))
-                .andThenTry(() -> {
-                    log.info("never executed when failure");
-                });
+                .onFailure(t -> log.error(t.getMessage(), t));
+        log.info("post division");
     }
 
-    // = Success(result) or Failure(exception)
+    @Test
+    public void testLoggingWithTryCatch() {
+        try {
+            divideWithoutTryCatch(1, 0);
+        } catch (Throwable t) {
+            log.error(t.getMessage(), t);
+        }
+        log.info("post division");
+    }
+
+    private int divideWithoutTryCatch(int dividend, int divisor) {
+        log.info("pre division");
+        return dividend / divisor;
+    }
+
     private Try<Integer> divide(Integer dividend, Integer divisor) {
         return Try.of(() -> {
             log.info("pre division");
-            int division = dividend / divisor;
-            return division;
+            return dividend / divisor;
         });
     }
 
