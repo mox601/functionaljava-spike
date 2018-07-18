@@ -11,7 +11,10 @@ import io.vavr.control.Validation;
 import io.vavr.test.Arbitrary;
 import io.vavr.test.Property;
 import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.testng.annotations.Test;
+
+import java.util.function.Consumer;
 
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
@@ -22,7 +25,8 @@ import static org.junit.Assert.assertTrue;
 /**
  * Created by matteo (dot) moci (at) gmail (dot) com
  */
-    public class VavrTest {
+@Slf4j
+public class VavrTest {
 
     // it adheres to the requirement of a monad to maintain computational context when calling .map.
     // In terms of an Option, this means that calling .map on a Some will result in a Some,
@@ -70,17 +74,36 @@ import static org.junit.Assert.assertTrue;
     }
 
     @Test
-    public void trya() throws Exception {
+    public void trya() {
         Try<Integer> divide = divide(1, 0);
         assertEquals(1, divide.getOrElse(() -> 1).intValue());
     }
 
-    // = Success(result) or Failure(exception)
-    private Try<Integer> divide(Integer dividend, Integer divisor) {
-        return Try.of(() -> dividend / divisor);
+    @Test(expectedExceptions = ArithmeticException.class)
+    public void testException() {
+        Try<Integer> divide = divide(1, 0);
+        divide.get();
     }
 
-//    @Test(enabled = false)
+    @Test
+    public void testLogging() {
+        divide(1, 0)
+                .onFailure(t -> log.error(t.getMessage(), t))
+                .andThenTry(() -> {
+                    log.info("never executed when failure");
+                });
+    }
+
+    // = Success(result) or Failure(exception)
+    private Try<Integer> divide(Integer dividend, Integer divisor) {
+        return Try.of(() -> {
+            log.info("pre division");
+            int division = dividend / divisor;
+            return division;
+        });
+    }
+
+    //    @Test(enabled = false)
     public void prop() throws Exception {
         // square(int) >= 0: OK, passed 1000 tests.
         Property.def("square(int) >= 0")
