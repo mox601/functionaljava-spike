@@ -17,8 +17,7 @@ import org.testng.annotations.Test;
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
 import static io.vavr.API.Match;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 /**
  * Created by matteo (dot) moci (at) gmail (dot) com
