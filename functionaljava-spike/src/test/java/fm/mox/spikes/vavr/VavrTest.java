@@ -30,7 +30,7 @@ public class VavrTest {
     // and calling .map on a None will result in a None. In the Java Optional example above,
     // that context changed from a Some to a None.
     @Test(expectedExceptions = NullPointerException.class)
-    public void npe() throws Exception {
+    public void npe() {
         Option<String> maybeFoo = Option.of("foo");
 
         assertEquals("foo", maybeFoo.get());
@@ -43,7 +43,7 @@ public class VavrTest {
     // occurrences of null and deal with them accordingly instead of unknowingly accepting them.
     // The correct way to deal with occurrences of null is to use flatMap.
     @Test
-    public void carefully() throws Exception {
+    public void carefully() {
         Option<String> maybeFooBar = Option.of("foo")
                 .map(s -> (String) null)
                 .flatMap(s -> Option.of(s)
@@ -53,7 +53,7 @@ public class VavrTest {
 
     //    http://blog.javaslang.io/the-agonizing-death-of-an-astronaut/
     @Test
-    public void alternative() throws Exception {
+    public void alternative() {
         Option<String> maybeFooBar = Option.of("foo")
                 .flatMap(s -> Option.of((String) null))
                 .map(s -> s.toUpperCase() + "bar");
@@ -112,7 +112,7 @@ public class VavrTest {
     }
 
     //    @Test(enabled = false)
-    public void prop() throws Exception {
+    public void prop() {
         // square(int) >= 0: OK, passed 1000 tests.
         Property.def("square(int) >= 0")
                 .forAll(Arbitrary.integer())
@@ -142,7 +142,7 @@ public class VavrTest {
 
     //TODO https://koziolekweb.pl/2016/06/18/pattern-matching-w-javie-z-javaslang-ii/
     @Test
-    public void testMatch() throws Exception {
+    public void testMatch() {
         String s = Match(1).of(
                 Case($(1), "one"),
                 Case($(2), "two"),
@@ -175,7 +175,7 @@ public class VavrTest {
     }
 
     @Test
-    public void validator() throws Exception {
+    public void validator() {
 
         // Valid(Person(John Doe, 30))
         Validation<Seq<String>, Person> valid = PersonValidator.validatePerson("John Doe", 30);
