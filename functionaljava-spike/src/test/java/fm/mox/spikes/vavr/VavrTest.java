@@ -14,6 +14,8 @@ import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.testng.annotations.Test;
 
+import java.util.function.Consumer;
+
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
 import static io.vavr.API.Match;
@@ -34,7 +36,7 @@ public class VavrTest {
     public void npe() {
         Option<String> maybeFoo = Option.of("foo");
 
-        assertEquals("foo", maybeFoo.get());
+        assertEquals(maybeFoo.get(), "foo");
 
         maybeFoo.map(s -> (String) null)
                 .map(s -> s.toUpperCase() + "bar");
@@ -74,7 +76,7 @@ public class VavrTest {
     @Test
     public void trya() {
         Try<Integer> divide = divide(1, 0);
-        assertEquals(1, divide.getOrElse(() -> 1).intValue());
+        assertEquals(divide.getOrElse(() -> 1).intValue(), 1);
     }
 
     @Test(expectedExceptions = ArithmeticException.class)
@@ -85,9 +87,11 @@ public class VavrTest {
 
     @Test
     public void testLogging() {
-        divide(1, 0)
-                .onFailure(t -> log.error(t.getMessage(), t));
+        Try<Integer> tryDivide = divide(1, 0)
+                .onFailure(t -> log.error(t.getMessage(), t))
+                .recover(ArithmeticException.class, 1);
         log.info("post division");
+        assertEquals(tryDivide.get().intValue(), 1);
     }
 
     @Test
