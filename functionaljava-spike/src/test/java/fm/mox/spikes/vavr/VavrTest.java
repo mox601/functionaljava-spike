@@ -17,7 +17,8 @@ import org.testng.annotations.Test;
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
 import static io.vavr.API.Match;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertEquals;
 
 /**
  * Created by matteo (dot) moci (at) gmail (dot) com
@@ -122,7 +123,7 @@ public class VavrTest {
     }
 
     @Test
-    public void lifting() throws Exception {
+    public void lifting() {
 
         Function2<Integer, Integer, Integer> divide = (a, b) -> a / b;
         Function2<Integer, Integer, Option<Integer>> safeDivide = Function2.lift(divide);
