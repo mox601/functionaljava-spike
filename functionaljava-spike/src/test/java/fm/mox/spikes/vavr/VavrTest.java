@@ -1,5 +1,13 @@
 package fm.mox.spikes.vavr;
 
+import static io.vavr.API.$;
+import static io.vavr.API.Case;
+import static io.vavr.API.Match;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+
+import org.testng.annotations.Test;
+
 import io.vavr.Function1;
 import io.vavr.Function2;
 import io.vavr.collection.CharSeq;
@@ -12,15 +20,6 @@ import io.vavr.test.Arbitrary;
 import io.vavr.test.Property;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
-import org.testng.annotations.Test;
-
-import java.util.function.Consumer;
-
-import static io.vavr.API.$;
-import static io.vavr.API.Case;
-import static io.vavr.API.Match;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertEquals;
 
 /**
  * Created by matteo (dot) moci (at) gmail (dot) com
@@ -54,7 +53,7 @@ public class VavrTest {
         assertTrue(maybeFooBar.isEmpty());
     }
 
-    //    http://blog.javaslang.io/the-agonizing-death-of-an-astronaut/
+    // http://blog.vavr.io/the-agonizing-death-of-an-astronaut/
     @Test
     public void alternative() {
         Option<String> maybeFooBar = Option.of("foo")
