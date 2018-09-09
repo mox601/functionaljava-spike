@@ -16,14 +16,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
-import java.util.function.Consumer;
 
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
 import static io.vavr.API.Match;
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertEquals;
 
 /**
  * Created by matteo (dot) moci (at) gmail (dot) com
@@ -57,7 +56,7 @@ public class VavrTest {
         assertTrue(maybeFooBar.isEmpty());
     }
 
-    //    http://blog.javaslang.io/the-agonizing-death-of-an-astronaut/
+    // http://blog.vavr.io/the-agonizing-death-of-an-astronaut/
     @Test
     public void alternative() {
         Option<String> maybeFooBar = Option.of("foo")
