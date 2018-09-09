@@ -227,6 +227,7 @@ public class VavrTest {
         integers.add(1);
         integers.add(2);
         Array<Integer> emptyVavr = Array.of();
+        //makes 2 copies
         Array<Integer> vavrInsts = emptyVavr.append(1).append(2);
         integers.forEach(integer -> log.info(integer.toString()));
         String s = vavrInsts.mkString("\n");
