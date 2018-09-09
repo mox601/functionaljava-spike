@@ -2,6 +2,7 @@ package fm.mox.spikes.vavr;
 
 import io.vavr.Function1;
 import io.vavr.Function2;
+import io.vavr.collection.Array;
 import io.vavr.collection.CharSeq;
 import io.vavr.collection.List;
 import io.vavr.collection.Seq;
@@ -14,11 +15,13 @@ import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.function.Consumer;
 
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
 import static io.vavr.API.Match;
+import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.assertEquals;
 
@@ -88,10 +91,9 @@ public class VavrTest {
     @Test
     public void testLogging() {
         Try<Integer> tryDivide = divide(1, 0)
-                .onFailure(t -> log.error(t.getMessage(), t))
-                .recover(ArithmeticException.class, 1);
+                .onFailure(t -> log.error(t.getMessage(), t));
         log.info("post division");
-        assertEquals(tryDivide.get().intValue(), 1);
+        assertNull(tryDivide.getOrNull());
     }
 
     @Test
@@ -218,5 +220,17 @@ public class VavrTest {
     public static class Person {
         String name;
         int age;
+    }
+
+    @Test
+    public void testCollections() {
+        java.util.List<Integer> integers = new ArrayList<>();
+        integers.add(1);
+        integers.add(2);
+        Array<Integer> emptyVavr = Array.of();
+        Array<Integer> vavrInsts = emptyVavr.append(1).append(2);
+        integers.forEach(integer -> log.info(integer.toString()));
+        String s = vavrInsts.mkString("\n");
+        log.info(s);
     }
 }

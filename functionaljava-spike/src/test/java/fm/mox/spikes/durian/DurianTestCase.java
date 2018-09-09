@@ -20,7 +20,6 @@ import static org.testng.Assert.assertTrue;
 /**
  * @author Matteo Moci ( matteo (dot) moci (at) gmail (dot) com )
  */
-@Data
 public class DurianTestCase {
 
     private String value;
@@ -100,6 +99,14 @@ public class DurianTestCase {
         assertEquals("A", forValue.get());
         forValue.set("B");
         assertEquals("B", forValue.get());
+    }
+
+    private String getValue() {
+        return this.value;
+    }
+
+    private void setValue(String s) {
+        this.value = s;
     }
 
     @Test
