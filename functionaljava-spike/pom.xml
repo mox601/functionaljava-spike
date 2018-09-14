@@ -21,7 +21,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
         <javac.version>1.8</javac.version>
-        <kotlin.version>1.2.61</kotlin.version>
+        <kotlin.version>1.2.70</kotlin.version>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
 
         <arrow-core.version>0.7.3</arrow-core.version>
