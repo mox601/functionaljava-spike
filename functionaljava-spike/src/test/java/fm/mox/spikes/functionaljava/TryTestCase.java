@@ -26,13 +26,13 @@ public class TryTestCase {
     }
 
     @Test (expectedExceptions = ArithmeticException.class)
-    public void divide() throws Exception {
+    public void divide() {
         assertEquals(0, divide(1, 2));
         assertEquals(0, divide(9, 0));
     }
 
     @Test
-    public void tryDivideTest() throws Exception {
+    public void tryDivideTest() {
         Try2<Integer, Integer, Integer, ArithmeticException> a = tryDivide();
     }
 
@@ -56,5 +56,4 @@ public class TryTestCase {
         };
         return Try.f(t).f(i);
     }
-
 }

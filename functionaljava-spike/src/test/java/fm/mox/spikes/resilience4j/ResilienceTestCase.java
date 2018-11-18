@@ -15,7 +15,7 @@ public class ResilienceTestCase {
 
     //http://resilience4j.github.io/resilience4j/
     @Test
-    public void testName() throws Exception {
+    public void testName() {
 
         CircuitBreakerRegistry circuitBreakerRegistry = CircuitBreakerRegistry.ofDefaults();
 

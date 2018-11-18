@@ -1,16 +1,9 @@
 package fm.mox.spikes.functionaljava.reader;
 
-import fj.F;
-import fj.P;
-import fj.P2;
 import fj.data.Reader;
-import fj.data.State;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.awt.image.ReplicateScaleFilter;
-
-import static fm.mox.spikes.functionaljava.reader.ReaderTestCase.Env.ENV_READER;
 import static fm.mox.spikes.functionaljava.reader.ReaderTestCase.Env.REPOSITORIES_READER;
 import static org.testng.Assert.assertEquals;
 
@@ -26,15 +19,14 @@ public class ReaderTestCase {
     //http://stackoverflow.com/questions/12792595/how-to-convert-this-map-flatmap-into-a-for-comprehension-in-scala
     //http://troydm.github.io/blog/2015/01/25/write-you-a-monad-for-no-particular-reason-at-all/
     //https://gist.github.com/danhyun/fda27d5682b7dbed151b
-    //
-    //
 
     private UserRepository userRepository;
     private User bobSupervisor;
     private IEnv anEnvWithMockUserRepository;
 
     @BeforeMethod
-    public void setUp() throws Exception {
+    public void setUp() {
+
         bobSupervisor = new User(2, "bob's supervisor");
 
         userRepository = new UserRepository() {
@@ -57,7 +49,7 @@ public class ReaderTestCase {
     }
 
     @Test
-    public void testR() throws Exception {
+    public void testR() {
 
         // http://www.davesquared.net/2012/08/reader-monad.html
 
@@ -72,9 +64,8 @@ public class ReaderTestCase {
     }
 
     @Test
-    public void testEnv() throws Exception {
+    public void testEnv() {
         String oneUsername = UserService.getUsername(1).f(anEnvWithMockUserRepository);
-
         assertEquals(oneUsername, "Bob");
     }
 
@@ -86,10 +77,12 @@ public class ReaderTestCase {
         UserRepository userRepository();
     }
 
+    //todo config framework using reader monad
     //Reader for dependency injection https://www.youtube.com/watch?v=xPlsVVaMoB0&t=1659s
     public static class Env {
-        static final Reader<IEnv, IEnv> ENV_READER =
-                Reader.unit((F<IEnv, IEnv>) r -> r);
+
+        static final Reader<IEnv, IEnv> ENV_READER = Reader.unit(r -> r);
+
         static final Reader<IEnv, IRepositories> REPOSITORIES_READER =
                 ENV_READER.map(IEnv::repositories);
     }
@@ -106,6 +99,7 @@ public class ReaderTestCase {
     }
 
     public static class UserService {
+
         static Reader<IEnv, String> getUsername(int userId) {
             return UserRepo.get(userId).map(User::getUsername);
         }
@@ -113,5 +107,6 @@ public class ReaderTestCase {
         static Reader<IEnv, User> getUserSupervisor(int userId) {
             return UserRepo.get(userId).map(User::getSupervisor);
         }
+
     }
 }

@@ -2,15 +2,12 @@ package fm.mox.spikes.javaparser;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.printer.DotPrinter;
 import com.github.javaparser.printer.JsonPrinter;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.testng.annotations.Test;
 
 import java.io.FileWriter;
-import java.io.InputStream;
 import java.io.PrintWriter;
 
 /**

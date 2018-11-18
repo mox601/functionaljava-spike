@@ -1,10 +1,5 @@
 package fm.mox.spikes.scalacheck;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import fj.F;
 import fj.P;
 import fj.P1;
@@ -16,6 +11,11 @@ import fj.test.Property;
 import fj.test.Shrink;
 import fm.mox.spikes.scalacheck.commands.Get;
 import fm.mox.spikes.scalacheck.commands.Increment;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by matteo (dot) moci (at) gmail (dot) com

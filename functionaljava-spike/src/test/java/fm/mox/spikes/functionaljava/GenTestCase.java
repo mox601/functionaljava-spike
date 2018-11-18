@@ -1,5 +1,18 @@
 package fm.mox.spikes.functionaljava;
 
+import fj.F;
+import fj.F2;
+import fj.P1;
+import fj.data.List;
+import fj.data.Option;
+import fj.test.CheckResult;
+import fj.test.Gen;
+import fj.test.Property;
+import fj.test.Shrink;
+import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
+import org.testng.annotations.Test;
+
 import static fj.P.p;
 import static fj.test.Arbitrary.arbCharacterBoundaries;
 import static fj.test.Arbitrary.arbList;
@@ -19,21 +32,6 @@ import static fm.mox.spikes.functionaljava.GenTestCase.Elevator.Floor.GROUND;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import org.testng.annotations.Test;
-
-import fj.F;
-import fj.F2;
-import fj.P1;
-import fj.data.List;
-import fj.data.Option;
-import fj.test.CheckResult;
-import fj.test.Gen;
-import fj.test.Property;
-import fj.test.Rand;
-import fj.test.Shrink;
-import lombok.Value;
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * @author Matteo Moci ( matteo (dot) moci (at) gmail (dot) com )
  */
@@ -47,7 +45,6 @@ public class GenTestCase {
     private static final Gen<User> ARB_USER = ARB_STRING_BOUNDARIES
             .filter((String s) -> s.length() > 0 && s.length() < 10)
             .bind(arbString.filter(p -> p.length() > 2 && p.length() < 10), username -> password -> new User(username, password));
-
 
     @Test
     public void givenGeneratedListAllItemsAreLtEq100() {
@@ -86,6 +83,9 @@ public class GenTestCase {
 
     //  TODO  "I would generate arbitrary functions and then map over that to produce
     // arbitrary states (using the existing State class)"
+    // Arbitrary function would generate such Commands to be executed one by one and verify during a process.
+    // You will find that the State class has property tests in props-core/src/test/java/fj/data/StateProperties.java.
+    // Is that what you're looking for?
 
     //TODO how to test a FSM?
     /* state, transitions, ... */
@@ -153,7 +153,7 @@ public class GenTestCase {
                     if (button.equals(DOWN)) {
                         afterPushing = new Elevator(GROUND);
                     }
-                    // introduced a bug here:use a property checker to discover it
+                    // introduced a bug here: TODO use a property checker to discover it
                     if (button.equals(UP)) {
                         afterPushing = new Elevator(GROUND);
                     }

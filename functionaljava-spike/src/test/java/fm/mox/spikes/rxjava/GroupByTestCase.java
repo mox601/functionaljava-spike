@@ -18,7 +18,7 @@ public class GroupByTestCase {
     @Test
     public void testName() throws InterruptedException {
         Flowable<GroupedFlowable<String, Integer>> groupedBy =
-                Flowable.fromIterable(getList(1000))
+                Flowable.fromIterable(getList(10))
                         .groupBy((i) -> 0 == i % 2 ? "EVEN" : "ODD");
 
         Disposable subscribe = groupedBy

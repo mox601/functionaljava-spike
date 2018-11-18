@@ -7,7 +7,6 @@ import fj.Unit;
 import fj.data.IO;
 import fj.data.IOFunctions;
 import fj.data.IOW;
-import org.testng.annotations.Test;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,7 +18,7 @@ import java.io.InputStreamReader;
 public class IOTestCase {
 
 //    @Test
-    public void name() throws Exception {
+    public void name() {
         final IO<Unit> askName = () -> {
             System.out.println("Hi, what's your name?");
             return Unit.unit();

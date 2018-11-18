@@ -13,7 +13,7 @@ import static org.testng.Assert.assertEquals;
 public class ShowTestCase {
 
     @Test
-    public void testName() throws Exception {
+    public void testName() {
         final Show<Integer> integerShow = Show.showS(Object::toString);
         assertEquals(integerShow.showS(1), "1");
     }

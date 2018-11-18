@@ -1,8 +1,7 @@
 package fm.mox.spikes.functionaljava.state.accountweb;
 
-import org.testng.annotations.Test;
-
 import lombok.extern.slf4j.Slf4j;
+import org.testng.annotations.Test;
 
 /**
  * Created by matteo (dot) moci (at) gmail (dot) com

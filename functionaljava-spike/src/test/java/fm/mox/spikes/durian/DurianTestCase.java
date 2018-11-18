@@ -4,7 +4,6 @@ import com.diffplug.common.base.Box;
 import com.diffplug.common.base.Either;
 import com.diffplug.common.base.StringPrinter;
 import com.diffplug.common.base.Unhandled;
-import lombok.Data;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

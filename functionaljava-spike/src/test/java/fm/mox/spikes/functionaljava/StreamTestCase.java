@@ -20,7 +20,7 @@ import static fj.data.Stream.iterableStream;
 public class StreamTestCase {
 
     @Test(enabled = false)
-    public void testName() throws Exception {
+    public void testName() {
         final Natural one = natural(1).some();
         final Stream<Natural> forever = forever(naturalEnumerator, one, 2);
         final F<Natural, Boolean> lessThan =
@@ -30,7 +30,7 @@ public class StreamTestCase {
     }
 
     @Test
-    public void testAStream() throws Exception {
+    public void testAStream() {
         final Iterable<Integer> anIterable = List.range(1, 10);
         final Stream<String> fromList = iterableStream(anIterable)
                 .cons(100)

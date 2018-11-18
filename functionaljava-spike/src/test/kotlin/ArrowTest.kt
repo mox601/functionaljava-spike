@@ -5,6 +5,9 @@ import arrow.data.NonEmptyList
 import arrow.data.Validated
 import arrow.data.invalid
 import arrow.data.valid
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.testng.annotations.Test
 import kotlin.test.assertTrue
 
@@ -81,6 +84,12 @@ class ArrowTest {
 
     @Test
     fun testCoroutines() {
-        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        GlobalScope.launch {
+            // launch new coroutine in background and continue
+            delay(1000L) // non-blocking delay for 1 second (default time unit is ms)
+            println("World!") // print after delay
+        }
+        println("Hello,") // main thread continues while coroutine is delayed
+        Thread.sleep(2000L) // block main thread for 2 seconds to keep JVM alive
     }
 }

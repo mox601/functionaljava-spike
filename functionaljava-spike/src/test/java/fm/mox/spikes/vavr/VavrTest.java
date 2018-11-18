@@ -2,6 +2,8 @@ package fm.mox.spikes.vavr;
 
 import io.vavr.Function1;
 import io.vavr.Function2;
+import io.vavr.Tuple;
+import io.vavr.Tuple2;
 import io.vavr.collection.Array;
 import io.vavr.collection.CharSeq;
 import io.vavr.collection.List;
@@ -10,12 +12,17 @@ import io.vavr.control.Option;
 import io.vavr.control.Try;
 import io.vavr.control.Validation;
 import io.vavr.test.Arbitrary;
+import io.vavr.test.Gen;
 import io.vavr.test.Property;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
@@ -117,7 +124,7 @@ public class VavrTest {
         });
     }
 
-    //    @Test(enabled = false)
+    @Test
     public void prop() {
         // square(int) >= 0: OK, passed 1000 tests.
         Property.def("square(int) >= 0")
@@ -232,5 +239,46 @@ public class VavrTest {
         integers.forEach(integer -> log.info(integer.toString()));
         String s = vavrInsts.mkString("\n");
         log.info(s);
+    }
+
+    @Test
+    public void testArb() {
+
+    }
+
+    @Getter
+    @ToString
+    @EqualsAndHashCode
+    public static class User {
+
+        private final String id;
+        private final String name;
+
+        public User(String id, String name) {
+
+            if (id == null) {
+                throw new IllegalArgumentException();
+            }
+            if (name == null) {
+                throw new IllegalArgumentException();
+            }
+
+            int parsedId = Integer.parseInt(id);
+
+            if (parsedId < 0) {
+                throw new IllegalArgumentException();
+            }
+
+            if (name.isEmpty()) {
+                throw new IllegalArgumentException();
+            }
+
+            if (name.length() > 100) {
+                throw new IllegalArgumentException();
+            }
+
+            this.id = id;
+            this.name = name;
+        }
     }
 }

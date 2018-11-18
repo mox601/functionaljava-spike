@@ -1,11 +1,5 @@
 package fm.mox.spikes.functionaljava;
 
-import java.text.MessageFormat;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import org.testng.annotations.Test;
-
 import fj.F;
 import fj.P;
 import fj.P2;
@@ -16,6 +10,11 @@ import fj.control.parallel.Strategy;
 import fj.data.List;
 import fj.function.Integers;
 import lombok.extern.slf4j.Slf4j;
+import org.testng.annotations.Test;
+
+import java.text.MessageFormat;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * @author Matteo Moci ( matteo (dot) moci (at) gmail (dot) com )

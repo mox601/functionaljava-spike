@@ -3,7 +3,6 @@ package fm.mox.spikes.bettermonads;
 import com.jasongoodwin.monads.Try;
 import com.jasongoodwin.monads.TryConsumer;
 import lombok.extern.slf4j.Slf4j;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
@@ -23,7 +22,7 @@ import static org.testng.AssertJUnit.assertFalse;
 public class BetterMonadsTestCase {
 
     @Test
-    public void itShouldBeSuccessOnSuccess() throws Throwable {
+    public void itShouldBeSuccessOnSuccess() {
         Try<String> t = Try.ofFailable(() -> "hey");
 
         assertTrue(t.isSuccess());

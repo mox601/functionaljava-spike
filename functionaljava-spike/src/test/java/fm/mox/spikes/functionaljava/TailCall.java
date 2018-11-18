@@ -1,10 +1,10 @@
 package fm.mox.spikes.functionaljava;
 
-import static java.lang.Character.isLetter;
-import static java.lang.Character.toLowerCase;
-
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+
+import static java.lang.Character.isLetter;
+import static java.lang.Character.toLowerCase;
 
 public interface TailCall<T> {
 
