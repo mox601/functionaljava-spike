@@ -7,10 +7,9 @@ import lombok.Value;
  */
 @Value
 public class VendingMachine {
-    boolean locked;
-    int items;
-    int coins;
-
+    protected boolean locked;
+    protected int items;
+    protected int coins;
     VendingMachine next(final Input i) {
         if (items == 0) {
             return this;
@@ -26,6 +25,4 @@ public class VendingMachine {
             return this;
         }
     }
-
-
 }

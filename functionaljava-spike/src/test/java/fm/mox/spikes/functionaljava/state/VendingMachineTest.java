@@ -3,10 +3,13 @@ package fm.mox.spikes.functionaljava.state;
 import fj.F2;
 import fj.data.List;
 import fj.data.State;
+import fj.test.Gen;
+import io.vavr.test.Arbitrary;
 import lombok.extern.slf4j.Slf4j;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotEquals;
 
 /**
  * Created by matteo (dot) moci (at) gmail (dot) com
@@ -55,4 +58,60 @@ public class VendingMachineTest {
                 = (vendingMachineState, input) -> vendingMachineState.map(m -> m.next(input));
         return list.foldLeft(fToApplyEach, beginningValue);
     }
+
+    // https://blog.johanneslink.net/2018/09/06/stateful-testing/
+
+    ////////////////////////////////////////
+
+    public interface Action<M> {
+
+        default boolean precondition(M model) {
+            return true;
+        }
+
+        M run(M model);
+    }
+
+    public static class InsertCoin implements Action<VendingMachine> {
+        @Override
+        public VendingMachine run(VendingMachine model) {
+            int coinsBefore = model.coins;
+            VendingMachine next = model.next(Input.COIN);
+            int coinsAfter = next.coins;
+
+            assertNotEquals(coinsBefore, 0);
+            assertEquals(coinsAfter, coinsBefore + 1);
+
+            return next;
+        }
+    }
+
+    public static class Turn implements Action<VendingMachine> {
+        @Override
+        public VendingMachine run(VendingMachine model) {
+            VendingMachine next = model.next(Input.TURN);
+
+            //empty
+
+            return next;
+        }
+    }
+
+    static Gen<Action<VendingMachine>> actions() {
+        return Gen.elements(insertCoin(), turn());
+    }
+
+    private static Action<VendingMachine> insertCoin() {
+        return new InsertCoin();
+    }
+
+    private static Action<VendingMachine> turn() {
+        return new Turn();
+    }
+
+    @Test
+    public void testStateMachine() {
+
+    }
+
 }

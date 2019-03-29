@@ -31,9 +31,9 @@ public class StateTestCase {
         // Again, nothing has been evaluated yet.
         // To get the result, we just evaluate the result, using an initial state:
 
-        List<Either<Exception, Integer>> outcome = state.eval(0);
+        //List<Either<Exception, Integer>> outcome = state.eval(0);
 
-        log.info(outcome.toString());
+        //log.info(outcome.toString());
 
     }
 }
