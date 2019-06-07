@@ -18,6 +18,7 @@ import static fj.test.Arbitrary.arbCharacterBoundaries;
 import static fj.test.Arbitrary.arbList;
 import static fj.test.Arbitrary.arbString;
 import static fj.test.Gen.choose;
+import static fj.test.Gen.elements;
 import static fj.test.Gen.listOf;
 import static fj.test.Property.forall;
 import static fj.test.Property.prop;
@@ -91,7 +92,7 @@ public class GenTestCase {
     /* state, transitions, ... */
 
     @Test
-    public void testElevatorFsm() {
+    public void testElev() {
         final F2<Elevator, Elevator.Button, Elevator> elevatorPressButton = Elevator::press;
 
         assertEquals(elevatorPressButton.f(new Elevator(), DOWN).floor, GROUND);
@@ -99,14 +100,14 @@ public class GenTestCase {
 
         assertEquals(elevatorPressButton.f(new Elevator(FIRST), DOWN).floor, GROUND);
 //        assertEquals(elevatorPressButton.f(new Elevator(FIRST), UP).floor, FIRST);
+    }
 
-        //generator of sequences of Buttons
-        Gen<Elevator.Button> buttons = Gen.elements(Elevator.Button.DOWN, Elevator.Button.UP);
-
-        Gen<List<Elevator.Button>> listOfButtons = Gen.listOf(buttons);
+    @Test
+    public void testElevatorFsm() {
 
         Shrink<Elevator.Button> buttonShrink = Shrink.shrinkBoolean.map(b -> b ? DOWN : UP, button -> button.equals(DOWN));
 
+        //actions
         F<List<Elevator.Button>, P1<Property>> propWithResults = pressedButtons -> {
 
             Elevator elevator = new Elevator();
@@ -122,11 +123,15 @@ public class GenTestCase {
             return p(prop(isFirstOrGround));
         };
 
-        final Property aProperty = forall(listOfButtons, shrinkList(buttonShrink), propWithResults);
+        final Property aProperty = forall(listOfButtons(), shrinkList(buttonShrink), propWithResults);
 
         final CheckResult check = aProperty.check(0, 10);
 
         assertTrue(check.isPassed());
+    }
+
+    private Gen<List<Elevator.Button>> listOfButtons() {
+        return listOf(elements(Elevator.Button.DOWN, Elevator.Button.UP));
     }
 
     public static class Elevator {
@@ -189,5 +194,7 @@ public class GenTestCase {
             return this.username.length();
         }
     }
+
+    //TODO test https://jqwik.net/docs/current/user-guide.html#stateful-testing
 
 }
