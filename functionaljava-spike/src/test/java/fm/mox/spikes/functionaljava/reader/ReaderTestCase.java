@@ -1,8 +1,11 @@
 package fm.mox.spikes.functionaljava.reader;
 
+import fj.F;
 import fj.data.Reader;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.util.Map;
 
 import static fm.mox.spikes.functionaljava.reader.ReaderTestCase.Env.REPOSITORIES_READER;
 import static org.testng.Assert.assertEquals;
@@ -79,6 +82,8 @@ public class ReaderTestCase {
 
     //todo config framework using reader monad
     //Reader for dependency injection https://www.youtube.com/watch?v=xPlsVVaMoB0&t=1659s
+    //https://www.originate.com/thinking/stories/reader-monad-for-dependency-injection/
+
     public static class Env {
 
         static final Reader<IEnv, IEnv> ENV_READER = Reader.unit(r -> r);
@@ -96,6 +101,9 @@ public class ReaderTestCase {
         static Reader<IEnv, User> get(int id) {
             return Repositories.USER_REPOSITORY.map(userRepository -> userRepository.get(id));
         }
+        static Reader<IEnv, User> find(String username) {
+            return Repositories.USER_REPOSITORY.map(userRepository -> userRepository.find(username));
+        }
     }
 
     public static class UserService {
@@ -107,6 +115,5 @@ public class ReaderTestCase {
         static Reader<IEnv, User> getUserSupervisor(int userId) {
             return UserRepo.get(userId).map(User::getSupervisor);
         }
-
     }
 }

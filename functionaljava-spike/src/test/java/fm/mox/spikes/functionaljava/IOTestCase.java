@@ -86,8 +86,8 @@ public class IOTestCase {
                 .safe()
                 .run()
                 .on((IOException e) -> {
-            e.printStackTrace();
-            return Unit.unit();
-        });
+                        e.printStackTrace();
+                        return Unit.unit();
+                    });
     }
 }
