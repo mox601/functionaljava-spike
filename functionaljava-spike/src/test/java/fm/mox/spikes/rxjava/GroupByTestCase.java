@@ -1,8 +1,8 @@
 package fm.mox.spikes.rxjava;
 
-import io.reactivex.Flowable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.flowables.GroupedFlowable;
+import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.flowables.GroupedFlowable;
 import lombok.extern.slf4j.Slf4j;
 import org.testng.annotations.Test;
 

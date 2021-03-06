@@ -29,20 +29,21 @@
         <commons-math3.version>3.6.1</commons-math3.version>
         <cyclops-react.version>2.1.1</cyclops-react.version>
         <durian.version>3.4.0</durian.version>
-        <easymock.version>4.1</easymock.version>
+        <easymock.version>4.2</easymock.version>
         <functionaljava.version>4.8.1</functionaljava.version>
-        <guava.version>28.1-jre</guava.version>
-        <javaparser-core.version>3.15.5</javaparser-core.version>
-        <joda-time.version>2.10.5</joda-time.version>
+        <guava.version>30.1-jre</guava.version>
+        <javaparser-core.version>3.19.0</javaparser-core.version>
+        <joda-time.version>2.10.10</joda-time.version>
         <junit.version>4.12</junit.version>
         <log4j.version>1.2.17</log4j.version>
-        <lombok.version>1.18.10</lombok.version>
-        <resilience4j.version>1.1.0</resilience4j.version>
-        <rxjava.version>2.2.15</rxjava.version>
+        <lombok.version>1.18.18</lombok.version>
+        <resilience4j.version>1.7.0</resilience4j.version>
+        <rxjava2.version>2.2.21</rxjava2.version>
+        <rxjava3.version>3.0.11</rxjava3.version>
         <slf4j-api.version>2.0.0-alpha1</slf4j-api.version>
-        <testng.version>7.0.0</testng.version>
+        <testng.version>7.4.0</testng.version>
         <totallylazy.version>2.183</totallylazy.version>
-        <vavr.version>0.10.2</vavr.version>
+        <vavr.version>0.10.3</vavr.version>
 
         <!--
         mvn versions:update-properties
@@ -97,10 +98,17 @@
     </dependencyManagement>
 
     <dependencies>
+        <!--
         <dependency>
             <groupId>io.reactivex.rxjava2</groupId>
             <artifactId>rxjava</artifactId>
-            <version>${rxjava.version}</version>
+            <version>${rxjava2.version}</version>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>io.reactivex.rxjava3</groupId>
+            <artifactId>rxjava</artifactId>
+            <version>${rxjava3.version}</version>
         </dependency>
         <dependency>
             <groupId>org.functionaljava</groupId>

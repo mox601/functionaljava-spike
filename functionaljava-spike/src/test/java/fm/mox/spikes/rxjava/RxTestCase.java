@@ -1,15 +1,16 @@
 package fm.mox.spikes.rxjava;
 
 import cyclops.companion.Streams;
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.Single;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
-import io.reactivex.internal.functions.Functions;
-import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subjects.PublishSubject;
+
+import io.reactivex.rxjava3.core.BackpressureStrategy;
+import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.functions.Consumer;
+import io.reactivex.rxjava3.functions.Function;
+import io.reactivex.rxjava3.internal.functions.Functions;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+import io.reactivex.rxjava3.subjects.PublishSubject;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Publisher;
 import org.testng.annotations.Test;
@@ -78,12 +79,13 @@ public class RxTestCase {
                 .onBackpressureDrop(s -> log.warn("dropping " + s))
                 .observeOn(Schedulers.io())
                 .doOnNext(item -> log.info("item " + item))
-                //.buffer(100L, TimeUnit.MILLISECONDS, Schedulers.io(), 2)
+                .buffer(100L, TimeUnit.MILLISECONDS, Schedulers.io(), 2)
                 //buffer removing duplicates and filter out empty buffers
-                .buffer(100L, TimeUnit.MILLISECONDS, Schedulers.io(), 3, HashSetSupplier.asCallable(), false)
+                //.buffer(100L, TimeUnit.MILLISECONDS, Schedulers.io(), 3, HashSetSupplier.asCallable(), false)
                 .filter(page -> !page.isEmpty())
                 .doOnNext(strings -> log.info("buffer " + strings.toString()))
-                .flatMap((Function<Set<String>, Publisher<String>>) Flowable::fromIterable)
+                //.flatMap((Function<Set<String>, Publisher<String>>) Flowable::fromIterable)
+                .flatMap(Flowable::fromIterable)
                 //buffer and filter out empty buffers
                 .buffer(100L, TimeUnit.MILLISECONDS, Schedulers.io(), 2)
                 .filter(page -> !page.isEmpty())

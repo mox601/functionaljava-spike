@@ -48,26 +48,27 @@ fromStoAandS c | c `mod` 5 == 0 = ("foo",c+1)
     public void testNamea() throws Exception {
 
         //state, pair(written state, output)
-        F<Integer, P2<Integer, String>> fromStoAandS = c -> {
+        F<Integer, P2<Integer, String>> fromStoAandS = initialState -> {
             P2<Integer, String> result;
-            if (c % 5 == 0) {
-                result = P.p(c + 1, "foo");
+            int updatedState = initialState + 1;
+            if (initialState % 5 == 0) {
+                result = P.p(updatedState, "foo");
             } else {
-                result = P.p(c + 1, "bar");
+                result = P.p(updatedState, "bar");
             }
             return result;
         };
 
         State<Integer, String> stateIntString = State.unit(fromStoAandS);
 
-        P2<Integer, String> afterRun = stateIntString.run(1);
+        P2<Integer, String> updatedStateAndOutput = stateIntString.run(1);
 
-        String resultStatus = stateIntString.eval(1);
-        Integer resultOutput = stateIntString.exec(1);
+        String outputAfterEval = stateIntString.eval(1);
+        Integer stateAfterExec = stateIntString.exec(1);
 
-        log.info(resultStatus);
-        log.info(resultOutput + "");
-        log.info(afterRun + "");
+        log.info(outputAfterEval);
+        log.info(stateAfterExec + "");
+        log.info(updatedStateAndOutput + "");
     }
 
     @Test

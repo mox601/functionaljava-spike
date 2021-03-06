@@ -1,6 +1,7 @@
 package fm.mox.spikes.rxjava;
 
-import io.reactivex.functions.Function;
+
+import io.reactivex.rxjava3.functions.Function;
 
 import java.util.HashSet;
 import java.util.Set;
